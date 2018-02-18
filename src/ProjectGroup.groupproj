@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{221757CB-78B2-4D80-96C0-5BE993DEC0D6}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="Training.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="ItemControl.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="Training">
+        <MSBuild Projects="Training.dproj"/>
+    </Target>
+    <Target Name="Training:Clean">
+        <MSBuild Projects="Training.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Training:Make">
+        <MSBuild Projects="Training.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ItemControl">
+        <MSBuild Projects="ItemControl.dproj"/>
+    </Target>
+    <Target Name="ItemControl:Clean">
+        <MSBuild Projects="ItemControl.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ItemControl:Make">
+        <MSBuild Projects="ItemControl.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="Training;ItemControl"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="Training:Clean;ItemControl:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="Training:Make;ItemControl:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

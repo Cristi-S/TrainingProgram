@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 0
   Caption = 'Form1'
   ClientHeight = 396
-  ClientWidth = 982
+  ClientWidth = 559
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,12 +13,6 @@ object Form1: TForm1
   OldCreateOrder = False
   PixelsPerInch = 120
   TextHeight = 16
-  object Control11: TControl1
-    Left = 184
-    Top = 152
-    Width = 130
-    Height = 60
-  end
   object Button1: TButton
     Left = 360
     Top = 187
@@ -31,10 +25,12 @@ object Form1: TForm1
   object FlowPanel1: TFlowPanel
     Left = 0
     Top = 0
-    Width = 982
-    Height = 129
+    Width = 559
+    Height = 105
     Align = alTop
-    Caption = 'FlowPanel1'
+    Color = clWhite
+    ParentBackground = False
     TabOrder = 1
+    ExplicitWidth = 982
   end
 end

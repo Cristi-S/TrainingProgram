@@ -38,6 +38,7 @@ begin
   inherited Create(AOwner);
     Height:= 60;
     Width := 100;
+    TitleMain:='Info';
     TitleNext:='Null';
     TitlePrev:='Null';
     IsLast:=false;
@@ -85,18 +86,20 @@ begin
 
   if (not IsLast) then
   begin
-    Canvas.Font.Size:=14;
+    Canvas.Font.Size:=19;
+
+
+
+    x:=Canvas.TextWidth('←');
+    y:=Canvas.TextHeight('←');
+
+    Canvas.TextOut(MinWidth+1, Round(MinHeigth*2/3+((MinHeigth*3/3-MinHeigth*2/3-y)/2)-5), '←');
 
     x:=Canvas.TextWidth('→');
     y:=Canvas.TextHeight('→');
 
     Width:=MinWidth+x;
     Canvas.TextOut(MinWidth+1, Round(MinHeigth*1/3+((MinHeigth*2/3-MinHeigth*1/3-y)/2)-5), '→');
-
-    x:=Canvas.TextWidth('←');
-    y:=Canvas.TextHeight('←');
-
-    Canvas.TextOut(MinWidth+1, Round(MinHeigth*2/3+((MinHeigth*3/3-MinHeigth*2/3-y)/2)-5), '←');
   end;
 end;
 end.

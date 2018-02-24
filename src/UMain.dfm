@@ -11,6 +11,7 @@ object Form1: TForm1
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 120
   TextHeight = 16
   object Button1: TButton
@@ -31,6 +32,29 @@ object Form1: TForm1
     Color = clWhite
     ParentBackground = False
     TabOrder = 1
-    ExplicitWidth = 982
+  end
+  object Edit1: TEdit
+    Left = 112
+    Top = 187
+    Width = 121
+    Height = 24
+    TabOrder = 2
+  end
+  object Button2: TButton
+    Left = 120
+    Top = 344
+    Width = 75
+    Height = 25
+    Caption = 'NextStep()'
+    TabOrder = 3
+    OnClick = Button2Click
+  end
+  object Button3: TButton
+    Left = 344
+    Top = 320
+    Width = 75
+    Height = 25
+    Caption = 'Add'
+    TabOrder = 4
   end
 end

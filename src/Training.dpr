@@ -3,7 +3,9 @@ program Training;
 uses
   Vcl.Forms,
   UMain in 'UMain.pas' {Form1},
-  Control1 in 'Control1.pas';
+  Control1 in 'Control1.pas',
+  UList in 'Classes\UList.pas',
+  UListItem in 'Classes\UListItem.pas';
 
 {$R *.res}
 

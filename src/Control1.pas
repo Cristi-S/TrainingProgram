@@ -38,7 +38,7 @@ begin
   inherited Create(AOwner);
     Height:= 60;
     Width := 100;
-    TitleMain:='Info';
+    TitleMain:='Null';
     TitleNext:='Null';
     TitlePrev:='Null';
     IsLast:=false;

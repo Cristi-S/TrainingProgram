@@ -83,6 +83,7 @@ begin
         ListItem := TControl1.Create(FlowPanel1);
         ListItem.TitleMain := s1;
         ListItem.TitleNext := s2;
+        if i = 1 then ListItem.IsFirst:=true;
         ListItem.IsLast := False;
         //ListItem.Refresh;
         ControlList[i] := ListItem;

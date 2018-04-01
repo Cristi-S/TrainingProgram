@@ -71,7 +71,7 @@ begin
     if _IsFirst then
     begin
       ItemTop := 50;
-      ItemLeft := 50;
+      ItemLeft := 120;
     end;
   end;
 end;
@@ -132,6 +132,25 @@ begin
     Canvas.TextOut(ItemLeft + MinWidth + 2,
       ItemTop + round(MinHeigth * 1 / 3 + ((MinHeigth * 2 / 3 - MinHeigth * 1 /
       3 - y) / 2) - 5), '──>');
+  end;
+
+  if IsFirst then
+  begin
+    Canvas.Font.Size := 8;
+    Canvas.Rectangle(0, 0, 80, 40);
+
+    // возвращает ширину текста в пикселях с учетом гарнитуры шрифта
+    x := Canvas.TextWidth('First');
+    y := Canvas.TextHeight('First');
+
+    // рисуем First
+    Canvas.TextOut(0 + round((80 - x) / 2), 0 + round((40 - y) / 2), 'First');
+
+    Canvas.MoveTo(0 + 40, 40);
+    Canvas.LineTo(0 + 40, ItemTop + round(MinHeigth * 1 / 3 +
+      ((MinHeigth * 2 / 3 - MinHeigth * 1 / 3 - y) / 2) - 5));
+
+    //ToDo:дорисовать стрелочку до элемента
   end;
 end;
 

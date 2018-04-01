@@ -44,9 +44,9 @@ type
 
 var
   Form1: TForm1;
-  //массив контролов
+  // массив контролов
   ControlList: array [1 .. 6] of TControl1;
-  //контейнер списка
+  // контейнер списка
   List: TList;
 
 implementation
@@ -83,9 +83,10 @@ begin
         ListItem := TControl1.Create(FlowPanel1);
         ListItem.TitleMain := s1;
         ListItem.TitleNext := s2;
-        if i = 1 then ListItem.IsFirst:=true;
+        if i = 1 then
+          ListItem.IsFirst := True;
         ListItem.IsLast := False;
-        //ListItem.Refresh;
+        // ListItem.Refresh;
         ControlList[i] := ListItem;
       end;
     end;
@@ -94,7 +95,7 @@ begin
     begin
       ListItem := TControl1.Create(FlowPanel1);
       ListItem.IsLast := False;
-      //ListItem.Refresh;
+      // ListItem.Refresh;
 
       ControlList[i] := ListItem;
     end;
@@ -110,7 +111,7 @@ end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 var
- ListItem: TControl1;
+  ListItem: TControl1;
   i, k: Integer;
   s1, s2: string;
 begin
@@ -119,8 +120,8 @@ begin
   ListItem := TControl1.Create(FlowPanel1);
   ListItem.TitleMain := s1;
   ListItem.IsLast := False;
- // ListItem.Refresh;
-  //ControlList[i] := ListItem;
+  // ListItem.Refresh;
+  // ControlList[i] := ListItem;
 
   ListItem.IsLast := True;
 
@@ -136,21 +137,25 @@ begin
   k := StrToInt(InputBox('Новый элемент',
     'Введите номер элемента,ПОСЛЕ которого хотите добавить новый элемент:', '1')
     );
-  Unit2.Form2.Edit2.Text := IntToStr(k);
-  s2 := Form2.Edit2.Text;
-  Form2.ShowModal;
-  s1 := Form2.Edit1.Text;
+  // Unit2.Form2.Edit2.Text := IntToStr(k);
+  // s2 := Form2.Edit2.Text;
+  // Form2.ShowModal;
+  // s1 := Form2.Edit1.Text;
 
-  ListItem := TControl1.Create(FlowPanel1);
-  ListItem.TitleMain := s1;
-  ListItem.TitleNext := s2;
-  ListItem.IsLast := False;
-  //ListItem.Refresh;
-  ControlList[i] := ListItem;
+  // ControlList[i].Refresh;
 
-  ListItem.IsLast := True;
+  // ListItem := TControl1.Create(FlowPanel1);
+  // ListItem.TitleMain := s1;
+  // ListItem.TitleNext := s2;
+  // ListItem.IsLast := False;
+  // //ListItem.Refresh;
+  // ControlList[i] := ListItem;
+  //
+  // ListItem.IsLast := True;
+  //
+  // Button8.Enabled := True;
 
-  Button8.Enabled := True;
+  ControlList[k].IsAddAfter := True;
 end;
 
 procedure TForm1.Button8Click(Sender: TObject);

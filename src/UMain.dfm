@@ -3,8 +3,8 @@ object Form1: TForm1
   Top = 0
   BorderStyle = bsSingle
   Caption = #1058#1088#1077#1085#1072#1078#1077#1088#1085#1072#1103' '#1087#1088#1086#1075#1088#1072#1084#1084#1072
-  ClientHeight = 432
-  ClientWidth = 837
+  ClientHeight = 514
+  ClientWidth = 964
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,17 +18,17 @@ object Form1: TForm1
   PixelsPerInch = 120
   TextHeight = 16
   object Label1: TLabel
-    Left = 272
-    Top = 160
+    Left = 280
+    Top = 240
     Width = 40
     Height = 16
     Caption = #1050#1086#1083'-'#1074#1086
   end
   object FlowPanel1: TFlowPanel
-    Left = 252
+    Left = 260
     Top = 8
-    Width = 561
-    Height = 142
+    Width = 669
+    Height = 222
     Align = alCustom
     Color = clWhite
     ParentBackground = False
@@ -38,12 +38,10 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 241
-    Height = 432
+    Height = 514
     Align = alLeft
     TabOrder = 1
-    ExplicitLeft = 8
-    ExplicitTop = 40
-    ExplicitHeight = 481
+    ExplicitHeight = 432
     object Panel2: TPanel
       Left = 1
       Top = 1
@@ -174,8 +172,8 @@ object Form1: TForm1
     end
   end
   object Edit1: TEdit
-    Left = 318
-    Top = 156
+    Left = 326
+    Top = 236
     Width = 96
     Height = 24
     ReadOnly = True
@@ -183,8 +181,8 @@ object Form1: TForm1
     OnKeyPress = Edit1KeyPress
   end
   object Button2: TButton
-    Left = 420
-    Top = 156
+    Left = 428
+    Top = 236
     Width = 50
     Height = 25
     Caption = 'NextStep()'
@@ -193,8 +191,8 @@ object Form1: TForm1
     OnClick = Button2Click
   end
   object Button1: TButton
-    Left = 676
-    Top = 156
+    Left = 684
+    Top = 236
     Width = 137
     Height = 25
     Caption = #1057#1092#1086#1088#1084#1080#1088#1086#1074#1072#1090#1100
@@ -203,17 +201,17 @@ object Form1: TForm1
     OnClick = Button1Click
   end
   object Memo1: TMemo
-    Left = 255
-    Top = 187
-    Width = 561
+    Left = 260
+    Top = 266
+    Width = 669
     Height = 233
     Align = alCustom
     ReadOnly = True
     TabOrder = 5
   end
   object Button8: TButton
-    Left = 595
-    Top = 156
+    Left = 603
+    Top = 236
     Width = 75
     Height = 25
     Caption = 'Clear'

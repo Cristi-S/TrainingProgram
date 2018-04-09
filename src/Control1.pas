@@ -25,7 +25,7 @@ type
     Arrow4: TArrow;
   End;
 
-  TControl1 = class(TGraphicControl)
+  TListControl = class(TGraphicControl)
   const
     FirstWidth = 80; // ширина элемента First
     FirstHeight = 40; // высота элемента First
@@ -72,10 +72,10 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Samples', [TControl1]);
+  RegisterComponents('Samples', [TListControl]);
 end;
 
-constructor TControl1.Create(AOwner: TComponent);
+constructor TListControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
@@ -95,7 +95,7 @@ begin
   Parent := TWinControl(AOwner);
 end;
 
-procedure TControl1.SetPaddings;
+procedure TListControl.SetPaddings;
 begin
   if _IsFirst and _IsAddBefore then
   begin
@@ -116,7 +116,7 @@ end;
 
 {$REGION 'Set- методы'}
 
-procedure TControl1.SetIsFirst(const Value: boolean);
+procedure TListControl.SetIsFirst(const Value: boolean);
 begin
   if Value <> _IsFirst then
   begin
@@ -126,7 +126,7 @@ begin
   end;
 end;
 
-procedure TControl1.SetIsLast(const Value: boolean);
+procedure TListControl.SetIsLast(const Value: boolean);
 begin
   if Value <> _IsLast then
   begin
@@ -136,7 +136,7 @@ begin
   end;
 end;
 
-procedure TControl1.SetIsAddBefore(const Value: boolean);
+procedure TListControl.SetIsAddBefore(const Value: boolean);
 begin
   if Value <> _IsAddBefore then
   begin
@@ -146,7 +146,7 @@ begin
   end;
 end;
 
-procedure TControl1.SetIsAddAfter(const Value: boolean);
+procedure TListControl.SetIsAddAfter(const Value: boolean);
 begin
   if Value <> _IsAddAfter then
   begin
@@ -280,7 +280,7 @@ begin
 end;
 {$ENDREGION}
 
-procedure TControl1.Paint();
+procedure TListControl.Paint();
 var
   // координаты для стрелочек, откуда они будут рисоваться
   // для каждого элемента - 4 координаты

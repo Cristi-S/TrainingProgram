@@ -46,7 +46,7 @@ var
   Form1: TForm1;
   // массив контролов
   // ControlList: array [1 .. 6] of TControl1;
-  ControlList: TList<TControl1>;
+  ListControl: TList<TListControl>;
   // контейнер списка
   List: TList;
 
@@ -56,7 +56,7 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 var
-  ListItem: TControl1;
+  ListItem: TListControl;
   i, j, k: Integer;
   s1, s2: string;
 
@@ -81,25 +81,25 @@ begin
       s1 := Form2.Edit1.Text;
       // if (not ControlList[i] = null) then
       // begin
-      ListItem := TControl1.Create(FlowPanel1);
+      ListItem := TListControl.Create(FlowPanel1);
       ListItem.ItemMain.TitleMain := s1;
       ListItem.ItemMain.TitleNext := s2;
       if i = 1 then
         ListItem.IsFirst := True;
       ListItem.IsLast := False;
       // ListItem.Refresh;
-      ControlList.Add(ListItem);
+      ListControl.Add(ListItem);
       // end;
     end;
   if RadioButton2.Checked = True then
   begin
     // if (not ControlList[i] = null) then
     // begin
-    ListItem := TControl1.Create(FlowPanel1);
+    ListItem := TListControl.Create(FlowPanel1);
     ListItem.IsLast := False;
     // ListItem.Refresh;
 
-    ControlList.Add(ListItem);
+    ListControl.Add(ListItem);
   end;
   ListItem.IsLast := True;
   // if (not ControlList[i] = null) then
@@ -108,7 +108,7 @@ end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 var
-  ListItem: TControl1;
+  ListItem: TListControl;
 begin
   // if ControlList[1].AddAfterStep > 4 then
   // begin
@@ -119,20 +119,20 @@ begin
   // ControlList[i] := ListItem;
   // end
   // else
-  Inc(ControlList[1].AddAfterStep);
+  Inc(ListControl[1].AddAfterStep);
 
-  ControlList[1].Refresh;
+  ListControl[1].Refresh;
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 var
-  ListItem: TControl1;
+  ListItem: TListControl;
   i, k: Integer;
   s1, s2: string;
 begin
   Form2.ShowModal;
   s1 := Form2.Edit1.Text;
-  ListItem := TControl1.Create(FlowPanel1);
+  ListItem := TListControl.Create(FlowPanel1);
   ListItem.ItemMain.Arrow1.visible := True;
   ListItem.ItemMain.TitleMain := s1;
   ListItem.IsLast := False;
@@ -146,7 +146,7 @@ end;
 
 procedure TForm1.Button4Click(Sender: TObject);
 var
-  ListItem: TControl1;
+  ListItem: TListControl;
   i, k: Integer;
   // s1, s2: string;
 begin
@@ -171,7 +171,7 @@ begin
   //
   // Button8.Enabled := True;
 
-  ControlList[k].IsAddAfter := True;
+  ListControl[k].IsAddAfter := True;
 end;
 
 procedure TForm1.Button8Click(Sender: TObject);
@@ -183,11 +183,11 @@ begin
   // if ControlList[i]= null then
   // Inc(count);
 
-  for i := 1 to ControlList.count do
+  for i := 1 to ListControl.count do
   begin
 
     FlowPanel1.Controls[0].DisposeOf;
-    ControlList.Delete(i);
+    ListControl.Delete(i);
   end;
 
 end;
@@ -201,7 +201,7 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   List := TList.Create;
-  ControlList := TList<TControl1>.Create;
+  ListControl := TList<TListControl>.Create;
 end;
 
 procedure TForm1.RadioButton1Click(Sender: TObject);

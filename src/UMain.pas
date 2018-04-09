@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Vcl.Graphics,
+  System.Classes, Vcl.Graphics, System.Generics.Collections,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Control1, Vcl.ExtCtrls,
   UList, UListItem, Unit2;
 
@@ -45,7 +45,8 @@ type
 var
   Form1: TForm1;
   // массив контролов
-  ControlList: array [1 .. 6] of TControl1;
+  // ControlList: array [1 .. 6] of TControl1;
+  ControlList: TList<TControl1>;
   // контейнер списка
   List: TList;
 
@@ -78,30 +79,31 @@ begin
       s2 := Form2.Edit2.Text;
       Form2.ShowModal;
       s1 := Form2.Edit1.Text;
-      if (not Assigned(ControlList[i])) then
-      begin
-        ListItem := TControl1.Create(FlowPanel1);
-        ListItem.TitleMain := s1;
-        ListItem.TitleNext := s2;
-        if i = 1 then
-          ListItem.IsFirst := True;
-        ListItem.IsLast := False;
-        // ListItem.Refresh;
-        ControlList[i] := ListItem;
-      end;
-    end;
-  if RadioButton2.Checked = True then
-    if (not Assigned(ControlList[i])) then
-    begin
+      // if (not ControlList[i] = null) then
+      // begin
       ListItem := TControl1.Create(FlowPanel1);
+      ListItem.ItemMain.TitleMain := s1;
+      ListItem.ItemMain.TitleNext := s2;
+      if i = 1 then
+        ListItem.IsFirst := True;
       ListItem.IsLast := False;
       // ListItem.Refresh;
-
-      ControlList[i] := ListItem;
+      ControlList.Add(ListItem);
+      // end;
     end;
+  if RadioButton2.Checked = True then
+  begin
+    // if (not ControlList[i] = null) then
+    // begin
+    ListItem := TControl1.Create(FlowPanel1);
+    ListItem.IsLast := False;
+    // ListItem.Refresh;
+
+    ControlList.Add(ListItem);
+  end;
   ListItem.IsLast := True;
-  if (not Assigned(ControlList[i])) then
-    Button8.Enabled := True;
+  // if (not ControlList[i] = null) then
+  Button8.Enabled := True;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
@@ -131,8 +133,8 @@ begin
   Form2.ShowModal;
   s1 := Form2.Edit1.Text;
   ListItem := TControl1.Create(FlowPanel1);
-  ListItem.arrow1.visible:=true;
-  ListItem.TitleMain := s1;
+  ListItem.ItemMain.Arrow1.visible := True;
+  ListItem.ItemMain.TitleMain := s1;
   ListItem.IsLast := False;
   // ListItem.Refresh;
   // ControlList[i] := ListItem;
@@ -146,7 +148,7 @@ procedure TForm1.Button4Click(Sender: TObject);
 var
   ListItem: TControl1;
   i, k: Integer;
-  s1, s2: string;
+  // s1, s2: string;
 begin
   k := StrToInt(InputBox('Новый элемент',
     'Введите номер элемента,ПОСЛЕ которого хотите добавить новый элемент:', '1')
@@ -174,18 +176,18 @@ end;
 
 procedure TForm1.Button8Click(Sender: TObject);
 var
-  i, count: Integer;
+  i: Integer;
 begin
-  count := 0;
-  for i := 1 to Length(ControlList) do
-    if Assigned(ControlList[i]) then
-      Inc(count);
+  // count := 0;
+  // for i := 1 to Length(ControlList) do
+  // if ControlList[i]= null then
+  // Inc(count);
 
-  for i := 1 to count do
+  for i := 1 to ControlList.count do
   begin
 
     FlowPanel1.Controls[0].DisposeOf;
-    ControlList[i] := nil;
+    ControlList.Delete(i);
   end;
 
 end;
@@ -199,6 +201,7 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   List := TList.Create;
+  ControlList := TList<TControl1>.Create;
 end;
 
 procedure TForm1.RadioButton1Click(Sender: TObject);

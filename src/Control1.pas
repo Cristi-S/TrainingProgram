@@ -13,6 +13,18 @@ type
     color: TColor;
   end;
 
+  TItem = Record
+    visible: boolean;
+    color: TColor;
+    TitleMain: string;
+    TitleNext: string;
+    TitlePrev: string;
+    Arrow1: TArrow;
+    Arrow2: TArrow;
+    Arrow3: TArrow;
+    Arrow4: TArrow;
+  End;
+
   TControl1 = class(TGraphicControl)
   const
     FirstWidth = 80; // ширина элемента First
@@ -36,16 +48,14 @@ type
   protected
     procedure Paint; override;
   public
-    x, y: integer;
-    TitleMain: String;
-    TitleNext, TitlePrev: string;
+    // TitleMain: String;
+    // TitleNext, TitlePrev: string;
     AddBeforeStep: byte;
     AddAfterStep: byte;
 
-    arrow1: TArrow;
-    arrow2: TArrow;
-    arrow3: TArrow;
-    arrow4: TArrow;
+    ItemMain: TItem;
+    ItemAfret: TItem;
+    ItemBefore: TItem;
 
     constructor Create(AOwner: TComponent); override;
   published
@@ -74,9 +84,9 @@ begin
 
   Height := ItemTop + ItemHeigth;
   Width := ItemLeft + ItemWidth;
-  TitleMain := 'Null';
-  TitleNext := 'Null';
-  TitlePrev := 'Null';
+  ItemMain.TitleMain := 'Null';
+  ItemMain.TitleNext := 'Null';
+  ItemMain.TitlePrev := 'Null';
   IsLast := false;
   color := clWhite;
 
@@ -279,6 +289,7 @@ var
   RightItemPoints: array [1 .. 4] of TPoint;
   aHeight, aWidth: integer;
   p: TPoint; // произвольная коодината для облегчения жизни
+  x, y: integer;
 
 begin
   aWidth := Width;
@@ -289,7 +300,7 @@ begin
   Canvas.Brush.color := clWhite;
   Canvas.Pen.color := clWhite;
   DrawListItem(Canvas, Point(ItemLeft, ItemTop), ItemWidth, ItemHeigth,
-    TitleMain, TitleNext, TitlePrev, MainItemPoints);
+    ItemMain.TitleMain, ItemMain.TitleNext, ItemMain.TitlePrev, MainItemPoints);
 
   // рисуем стрелочки влево/вправо
   if (not IsLast) and (not IsAddAfter) then
@@ -334,7 +345,8 @@ begin
   if IsAddBefore then
   begin
     DrawListItem(Canvas, Point(0, ItemTop + ItemHeigth), ItemWidth, ItemHeigth,
-      TitleMain, TitleNext, TitlePrev, LeftItemPoints);
+      ItemBefore.TitleMain, ItemBefore.TitleNext, ItemBefore.TitlePrev,
+      LeftItemPoints);
 
     // рисуем стрелочки по диогонали для левого элемента
     DrawArrow(Canvas, LeftItemPoints[3].x, LeftItemPoints[3].y,
@@ -362,8 +374,8 @@ begin
     end;
     // рисуем сам контрол
     DrawListItem(Canvas, Point(ItemLeft + ItemWidth + ArrowWidth,
-      ItemTop + ItemHeigth), ItemWidth, ItemHeigth, TitleMain, TitleNext,
-      TitlePrev, RightItemPoints);
+      ItemTop + ItemHeigth), ItemWidth, ItemHeigth, ItemAfret.TitleMain,
+      ItemAfret.TitleNext, ItemAfret.TitlePrev, RightItemPoints);
 
     if AddAfterStep = 3 then
     begin

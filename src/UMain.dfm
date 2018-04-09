@@ -41,7 +41,6 @@ object Form1: TForm1
     Height = 514
     Align = alLeft
     TabOrder = 1
-    ExplicitHeight = 432
     object Panel2: TPanel
       Left = 1
       Top = 1
@@ -183,11 +182,10 @@ object Form1: TForm1
   object Button2: TButton
     Left = 428
     Top = 236
-    Width = 50
+    Width = 85
     Height = 25
     Caption = 'NextStep()'
     TabOrder = 3
-    Visible = False
     OnClick = Button2Click
   end
   object Button1: TButton

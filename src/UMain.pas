@@ -105,8 +105,21 @@ begin
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
+var
+  ListItem: TControl1;
 begin
-  List.NextStep();
+  // if ControlList[1].AddAfterStep > 4 then
+  // begin
+  // ListItem := TControl1.Create(FlowPanel1);
+  // ListItem.IsLast := False;
+  // // ListItem.Refresh;
+  //
+  // ControlList[i] := ListItem;
+  // end
+  // else
+  Inc(ControlList[1].AddAfterStep);
+
+  ControlList[1].Refresh;
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
@@ -118,6 +131,7 @@ begin
   Form2.ShowModal;
   s1 := Form2.Edit1.Text;
   ListItem := TControl1.Create(FlowPanel1);
+  ListItem.arrow1.visible:=true;
   ListItem.TitleMain := s1;
   ListItem.IsLast := False;
   // ListItem.Refresh;
@@ -165,7 +179,7 @@ begin
   count := 0;
   for i := 1 to Length(ControlList) do
     if Assigned(ControlList[i]) then
-      inc(count);
+      Inc(count);
 
   for i := 1 to count do
   begin

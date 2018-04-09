@@ -8,6 +8,11 @@ uses
   Vcl.StdCtrls, Math;
 
 type
+  TArrow = Record
+    visible: boolean;
+    color: TColor;
+  end;
+
   TControl1 = class(TGraphicControl)
   const
     FirstWidth = 80; // ширина элемента First
@@ -34,6 +39,13 @@ type
     x, y: integer;
     TitleMain: String;
     TitleNext, TitlePrev: string;
+    AddBeforeStep: byte;
+    AddAfterStep: byte;
+
+    arrow1: TArrow;
+    arrow2: TArrow;
+    arrow3: TArrow;
+    arrow4: TArrow;
 
     constructor Create(AOwner: TComponent); override;
   published
@@ -66,7 +78,9 @@ begin
   TitleNext := 'Null';
   TitlePrev := 'Null';
   IsLast := false;
-  Color := clWhite;
+  color := clWhite;
+
+  AddAfterStep := 0;
 
   Parent := TWinControl(AOwner);
 end;
@@ -162,19 +176,25 @@ begin
   // OldBrush := Canvas.Brush;
 
   Canvas.Pen.Width := 1;
-  Canvas.Brush.Color := clBlack;
+  Canvas.Brush.color := clBlack;
   Canvas.Polygon(Arrow);
 
-  Canvas.Brush.Color := clWhite;
+  Canvas.Brush.color := clWhite;
   Canvas.Pen.Width := OldWidth;
   // Canvas.Brush := OldBrush;
 end;
 
-procedure DrawArrow(Canvas: TCanvas; X1, Y1, X2, Y2: integer; LW: Extended = 3);
+procedure DrawArrow(Canvas: TCanvas; X1, Y1, X2, Y2: integer; LW: Extended = 3
+  // ;Color: TColor = clBlack
+  );
 var
   Angle: Extended;
   OldWidth: integer;
+  // oldColor: TColor;
 begin
+  // oldColor := Canvas.Pen.Color;
+  // Canvas.Pen.Color := Color;
+
   OldWidth := Canvas.Pen.Width;
   Canvas.Pen.Width := 2;
   Canvas.Pen.Style := psDot;
@@ -185,15 +205,25 @@ begin
   Canvas.Pen.Width := OldWidth;
   Canvas.Pen.Style := psSolid;
   DrawArrowHead(Canvas, X2, Y2, Angle, LW);
+
+  // Canvas.Pen.Color := oldColor;
 end;
 
+{$ENDREGION}
+{$REGION 'рисование самого элемента'}
+
 Procedure DrawListItem(Canvas: TCanvas; p: TPoint; Width, Height: integer;
-  TitleMain, TitleNext, TitlePrev: string; var points: Array Of TPoint);
+  TitleMain, TitleNext, TitlePrev: string; var points: Array Of TPoint
+  // ; PenColor: TColor = clBlack
+  );
 var
   x, y: integer;
+  oldPenColor: TColor;
 begin
+  // oldPenColor := Canvas.Pen.Color;
+  // Canvas.Pen.Color := PenColor;
   Canvas.Rectangle(p.x, p.y, p.x + Width, p.y + Height);
-  Canvas.Pen.Color := clBlack;
+  Canvas.Pen.color := clBlack;
   Canvas.Rectangle(p.x, p.y, p.x + Width, p.y + Height);
   Canvas.Rectangle(p.x, p.y + Round(Height * 1 / 3), p.x + Width,
     p.y + Round(Height * 1 / 3 + 1));
@@ -222,6 +252,8 @@ begin
     p.y + Round(Height * 2 / 3 + ((Height * 3 / 3 - Height * 2 / 3 - y) / 2)),
     TitlePrev);
 
+  // Canvas.Pen.Color := oldPenColor;
+
   // вычислим координты откуда нужно будет присовать срелочки
   points[0] := Point(p.x,
     p.y + Round(Height * 1 / 3 + ((Height * 3 / 3 - Height * 2 / 3 - y)
@@ -241,7 +273,7 @@ end;
 procedure TControl1.Paint();
 var
   // координаты для стрелочек, откуда они будут рисоваться
-  //для каждого элемента - 4 координаты
+  // для каждого элемента - 4 координаты
   MainItemPoints: array [1 .. 4] of TPoint;
   LeftItemPoints: array [1 .. 4] of TPoint;
   RightItemPoints: array [1 .. 4] of TPoint;
@@ -254,8 +286,8 @@ begin
   Canvas.Font.Size := 8;
   Canvas.Pen.Style := psSolid;
   Canvas.Brush.Style := bsClear;
-  Canvas.Brush.Color := clWhite;
-  Canvas.Pen.Color := clWhite;
+  Canvas.Brush.color := clWhite;
+  Canvas.Pen.color := clWhite;
   DrawListItem(Canvas, Point(ItemLeft, ItemTop), ItemWidth, ItemHeigth,
     TitleMain, TitleNext, TitlePrev, MainItemPoints);
 
@@ -276,7 +308,7 @@ begin
     aHeight := ItemTop + ItemHeigth * 2;
 
     Canvas.Font.Size := 8;
-    Canvas.Brush.Color := clWhite;
+    Canvas.Brush.color := clWhite;
     Canvas.Rectangle(0, 0, FirstWidth, FirstHeight);
 
     // возвращает ширину текста в пикселях с учетом гарнитуры шрифта
@@ -319,32 +351,54 @@ begin
   begin
     // рисуем длинные стрелочки
 
-    DrawArrow(Canvas, MainItemPoints[3].x, MainItemPoints[3].y,
-      MainItemPoints[3].x + ItemWidth + ArrowWidth * 2, MainItemPoints[3].y);
+    if AddAfterStep <> 4 then
+    begin
 
-    DrawArrow(Canvas, MainItemPoints[4].x + ItemWidth + ArrowWidth * 2,
-      MainItemPoints[4].y, MainItemPoints[4].x, MainItemPoints[4].y);
+      DrawArrow(Canvas, MainItemPoints[3].x, MainItemPoints[3].y,
+        MainItemPoints[3].x + ItemWidth + ArrowWidth * 2, MainItemPoints[3].y);
 
+      DrawArrow(Canvas, MainItemPoints[4].x + ItemWidth + ArrowWidth * 2,
+        MainItemPoints[4].y, MainItemPoints[4].x, MainItemPoints[4].y);
+    end;
     // рисуем сам контрол
     DrawListItem(Canvas, Point(ItemLeft + ItemWidth + ArrowWidth,
       ItemTop + ItemHeigth), ItemWidth, ItemHeigth, TitleMain, TitleNext,
       TitlePrev, RightItemPoints);
 
-    // рисуем стрелочки по диогонали для правого элемента
-    DrawArrow(Canvas, RightItemPoints[3].x, RightItemPoints[3].y,
-      MainItemPoints[3].x + ArrowWidth + ItemWidth + ArrowWidth,
-      MainItemPoints[3].y);
+    if AddAfterStep = 3 then
+    begin
+      // рисуем стрелочки по диогонали от нового элемента вправо
+      DrawArrow(Canvas, RightItemPoints[3].x, RightItemPoints[3].y,
+        MainItemPoints[3].x + ArrowWidth + ItemWidth + ArrowWidth,
+        MainItemPoints[3].y);
+      // добавить описисание
+      DrawArrow(Canvas, RightItemPoints[2].x, RightItemPoints[2].y,
+        MainItemPoints[4].x, MainItemPoints[4].y);
 
-    DrawArrow(Canvas, MainItemPoints[4].x + ArrowWidth + ItemWidth + ArrowWidth,
-      MainItemPoints[4].y, RightItemPoints[4].x, RightItemPoints[4].y);
+    end;
 
-    // рисуем стрелочки по диогонали для правого элемента
-    DrawArrow(Canvas, MainItemPoints[3].x, MainItemPoints[3].y,
-      RightItemPoints[1].x, RightItemPoints[1].y);
+    if AddAfterStep = 4 then
+    begin
+      // переделать, хардкод
 
-    DrawArrow(Canvas, RightItemPoints[2].x, RightItemPoints[2].y,
-      MainItemPoints[4].x, MainItemPoints[4].y);
+      // рисуем стрелочки по диогонали от нового элемента вправо
+      DrawArrow(Canvas, RightItemPoints[3].x, RightItemPoints[3].y,
+        MainItemPoints[3].x + ArrowWidth + ItemWidth + ArrowWidth,
+        MainItemPoints[3].y);
+      // добавить описисание
+      DrawArrow(Canvas, RightItemPoints[2].x, RightItemPoints[2].y,
+        MainItemPoints[4].x, MainItemPoints[4].y);
 
+      // коднец переделать, хардкод
+      // рисуем стрелочки по диогонали от главного элемента к новому
+      DrawArrow(Canvas, MainItemPoints[4].x + ArrowWidth + ItemWidth +
+        ArrowWidth, MainItemPoints[4].y, RightItemPoints[4].x,
+        RightItemPoints[4].y);
+      // добавить описисание
+      // рисуем стрелочки по диогонали от главного элемента всправо
+      DrawArrow(Canvas, MainItemPoints[3].x, MainItemPoints[3].y,
+        RightItemPoints[1].x, RightItemPoints[1].y);
+    end;
     aWidth := ItemLeft + ItemWidth * 2 + ArrowWidth * 2;
     aHeight := ItemTop + ItemHeigth * 2;
   end;

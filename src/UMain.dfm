@@ -225,11 +225,20 @@ object Form1: TForm1
   end
   object Button9: TButton
     Left = 950
-    Top = 242
+    Top = 234
     Width = 121
     Height = 25
     Caption = 'SetLastItemColor'
     TabOrder = 7
     OnClick = Button9Click
+  end
+  object Button10: TButton
+    Left = 952
+    Top = 262
+    Width = 121
+    Height = 25
+    Caption = 'SetLastItemVisible'
+    TabOrder = 8
+    OnClick = Button10Click
   end
 end

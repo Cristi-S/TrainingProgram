@@ -29,6 +29,7 @@ type
     FlowPanel1: TPanel;
     Memo1: TMemo;
     Button9: TButton;
+    Button10: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -40,6 +41,7 @@ type
     procedure Button3Click(Sender: TObject);
     procedure RedrawPanel();
     procedure Button9Click(Sender: TObject);
+    procedure Button10Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -72,6 +74,12 @@ begin
       width := width + ListControl.Items[i].width;
     ListControl[i].Refresh;
   end;
+end;
+
+procedure TForm1.Button10Click(Sender: TObject);
+begin
+  ListControl.Last.ItemMain.Visible := false;
+  ListControl.Last.Refresh;
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -119,7 +127,7 @@ begin
         ListItem.IsFirst := True;
         ListItem.IsAddBefore := True;
       end;
-      ListItem.IsLast := False;
+      ListItem.IsLast := false;
       // ListItem.Refresh;
       ListControl.add(ListItem);
       // end;
@@ -130,7 +138,7 @@ begin
     // if (not ControlList[i] = null) then
     // begin
     ListItem := TListControl.Create(FlowPanel1);
-    ListItem.IsLast := False;
+    ListItem.IsLast := false;
     // ListItem.Refresh;
 
     ListControl.add(ListItem);
@@ -167,9 +175,9 @@ begin
   Form2.ShowModal;
   s1 := Form2.Edit1.Text;
   ListItem := TListControl.Create(FlowPanel1);
-  //ListItem.ItemMain.Arrow1.visible := True;
+  // ListItem.ItemMain.Arrow1.visible := True;
   ListItem.ItemMain.TitleMain := s1;
-  ListItem.IsLast := False;
+  ListItem.IsLast := false;
   // ListItem.Refresh;
   // ControlList[i] := ListItem;
 
@@ -228,9 +236,8 @@ end;
 
 procedure TForm1.Button9Click(Sender: TObject);
 begin
-  ListControl.Last.ItemMain.color:=clRed;
+  ListControl.Last.ItemMain.color := clRed;
   ListControl.Last.Refresh;
-
 end;
 
 procedure TForm1.Edit1KeyPress(Sender: TObject; var Key: Char);
@@ -249,7 +256,7 @@ procedure TForm1.RadioButton1Click(Sender: TObject);
 begin
   if RadioButton1.Checked = True then
   begin
-    Edit1.ReadOnly := False;
+    Edit1.ReadOnly := false;
     Button1.Enabled := True;
   end;
 end;
@@ -260,7 +267,7 @@ begin
 
   begin
     Button3.Enabled := True;
-    Edit1.ReadOnly := False;
+    Edit1.ReadOnly := false;
     Button1.Enabled := True;
   end
 end;

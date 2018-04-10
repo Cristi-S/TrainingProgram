@@ -86,6 +86,7 @@ begin
   ItemMain.TitleMain := 'Null';
   ItemMain.TitleNext := 'Null';
   ItemMain.TitlePrev := 'Null';
+  ItemMain.visible := true;
   _IsFirst := false;
   IsLast := false;
 
@@ -243,15 +244,14 @@ begin
     p.y + Round(Height * 2 / 3 + ((Height * 2 / 3 - Height * 1 / 3) / 2)));
 end;
 
-Procedure DrawListItem(Canvas: TCanvas; p: TPoint; 
-Width, Height: integer;
-  TitleMain, TitleNext, TitlePrev: string; 
-  var points: Array Of TPoint;
-  PenColor: TColor = clBlack);
+Procedure DrawListItem(Canvas: TCanvas; p: TPoint; Width, Height: integer;
+  item: TItem; var points: Array Of TPoint; PenColor: TColor = clBlack);
 var
   x, y: integer;
   oldPenColor: TColor;
 begin
+  if not item.visible then
+    exit;
   oldPenColor := Canvas.Pen.color;
   Canvas.Pen.color := PenColor;
 
@@ -263,33 +263,32 @@ begin
     p.y + Round(Height * 2 / 3 + 1));
 
   // возвращает ширину текста в пикселях с учетом гарнитуры шрифта
-  x := Canvas.TextWidth(TitleMain);
-  y := Canvas.TextHeight(TitleMain);
+  x := Canvas.TextWidth(item.TitleMain);
+  y := Canvas.TextHeight(item.TitleMain);
 
   Canvas.Pen.color := oldPenColor;
 
   // рисуем заголовок компонента
   Canvas.TextOut(p.x + Round((Width - x) / 2),
-    p.y + Round((Height * 1 / 3 - y) / 2), TitleMain);
+    p.y + Round((Height * 1 / 3 - y) / 2), item.TitleMain);
 
-  x := Canvas.TextWidth(TitleNext);
-  y := Canvas.TextHeight(TitleNext);
+  x := Canvas.TextWidth(item.TitleNext);
+  y := Canvas.TextHeight(item.TitleNext);
   // рисуем поле ссылку на след элемент
   Canvas.TextOut(p.x + Round((Width - x) / 2),
     p.y + Round(Height * 1 / 3 + ((Height * 2 / 3 - Height * 1 / 3 - y) / 2)),
-    TitleNext);
+    item.TitleNext);
 
-  x := Canvas.TextWidth(TitlePrev);
-  y := Canvas.TextHeight(TitlePrev);
+  x := Canvas.TextWidth(item.TitlePrev);
+  y := Canvas.TextHeight(item.TitlePrev);
   // рисуем поле ссылку на след элемент
   Canvas.TextOut(p.x + Round((Width - x) / 2),
     p.y + Round(Height * 2 / 3 + ((Height * 3 / 3 - Height * 2 / 3 - y) / 2)),
-    TitlePrev);
+    item.TitlePrev);
 
   // вычислим координты откуда нужно будет присовать срелочки
   CalcPointsForArrows(p, Width, Height, points);
 end;
-
 
 {$ENDREGION}
 
@@ -316,8 +315,7 @@ begin
     normal:
       begin
         DrawListItem(Canvas, Point(ItemLeft, ItemTop), ItemWidth, ItemHeigth,
-          ItemMain.TitleMain, ItemMain.TitleNext, ItemMain.TitlePrev, 
-          MainItemPoints, ItemMain.color);
+          ItemMain, MainItemPoints, ItemMain.color);
         if not IsLast then
         begin
           // рисуем стрелочки влево/вправо
@@ -335,8 +333,7 @@ begin
       begin
         // оснвной элемент - начало
         DrawListItem(Canvas, Point(ItemLeft, ItemTop), ItemWidth, ItemHeigth,
-          ItemMain.TitleMain, ItemMain.TitleNext, ItemMain.TitlePrev,
-          MainItemPoints);
+          ItemMain, MainItemPoints);
         aWidth := ItemLeft + ItemWidth + ArrowWidth;
         // оснвной элемент - конец
 
@@ -372,8 +369,8 @@ begin
         end;
         // рисуем сам контрол
         DrawListItem(Canvas, Point(ItemLeft + ItemWidth + ArrowWidth,
-          ItemTop + ItemHeigth), ItemWidth, ItemHeigth, ItemMain.TitleMain,
-          ItemMain.TitleNext, ItemMain.TitlePrev, RightItemPoints);
+          ItemTop + ItemHeigth), ItemWidth, ItemHeigth, ItemMain,
+          RightItemPoints);
 
         // рисуем стрелочки по диогонали от нового элемента вправо
         DrawArrow(Canvas, RightItemPoints[3].x, RightItemPoints[3].y,
@@ -413,12 +410,12 @@ begin
     Canvas.LineTo(p.x, p.y);
     Canvas.Pen.Width := 1;
     Arrow.visible := true;
-    Arrow.color:= clBlack;
+    Arrow.color := clBlack;
     DrawArrow(Canvas, p.x, p.y, ItemLeft, p.y, Arrow);
   end;
 
   Width := aWidth;
   Height := aHeight;
 end;
- 
+
 end.

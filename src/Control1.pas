@@ -8,9 +8,14 @@ uses
   Vcl.StdCtrls, Math;
 
 type
+  TCross = record
+    visible: boolean;
+  end;
+
   TArrow = Record
     visible: boolean;
     color: TColor;
+    cross: TCross;
   end;
 
   TItem = Record
@@ -205,13 +210,20 @@ var
   Angle: Extended;
   OldWidth: integer;
   oldColor: TColor;
+  oldFontSize: integer;
+  oldFontColor: TColor;
+  p1, p2, center: TPoint;
 begin
+  if not Arrow.visible then
+    exit;
+
+  p1 := Point(X1, Y1);
+  p2 := Point(X2, Y2);
   oldColor := Canvas.Pen.color;
   Canvas.Pen.color := Arrow.color;
   OldWidth := Canvas.Pen.Width;
-
-  if not Arrow.visible then
-    exit;
+  oldFontSize := Canvas.Font.Size;
+  oldFontColor := Canvas.Font.color;
 
   Canvas.Pen.Width := 2;
   Canvas.Pen.Style := psDot;
@@ -219,12 +231,28 @@ begin
   Canvas.MoveTo(X1, Y1);
   Canvas.LineTo(X2 - Round(2 * LW * Cos(Angle)),
     Y2 + Round(2 * LW * Sin(Angle)));
+
+  // рисуем крестик
+  if Arrow.cross.visible then
+  begin
+    Canvas.Font.Size := 12;
+    Canvas.Font.color := clRed;
+    center.x := Round((p1.x + p2.x) / 2);
+    center.y := Round((p1.y + p2.y) / 2);
+
+    Canvas.TextOut(center.x - Round(Canvas.TextWidth('x') / 2),
+      center.y - Round((Canvas.TextHeight('x') / 2) + 0.6), 'x');
+    Canvas.Font.Size := oldFontSize;
+    Canvas.Font.color := oldFontColor;
+  end
+
   // Canvas.Pen.Width := OldWidth;
   Canvas.Pen.Style := psSolid;
   DrawArrowHead(Canvas, X2, Y2, Angle, LW, Arrow.color);
 
   Canvas.Pen.Width := OldWidth;
   Canvas.Pen.color := oldColor;
+
 end;
 
 {$ENDREGION}
@@ -249,11 +277,15 @@ Procedure DrawListItem(Canvas: TCanvas; p: TPoint; Width, Height: integer;
 var
   x, y: integer;
   oldPenColor: TColor;
+  oldPenWidth: integer;
 begin
   if not item.visible then
     exit;
   oldPenColor := Canvas.Pen.color;
   Canvas.Pen.color := PenColor;
+  oldPenWidth := Canvas.Pen.Width;
+
+  Canvas.Pen.Width := 2;
 
   Canvas.Rectangle(p.x, p.y, p.x + Width, p.y + Height);
   Canvas.Rectangle(p.x, p.y, p.x + Width, p.y + Height);
@@ -262,6 +294,7 @@ begin
   Canvas.Rectangle(p.x, p.y + Round(Height * 2 / 3), p.x + Width,
     p.y + Round(Height * 2 / 3 + 1));
 
+  Canvas.Pen.Width := oldPenWidth;
   // возвращает ширину текста в пикселях с учетом гарнитуры шрифта
   x := Canvas.TextWidth(item.TitleMain);
   y := Canvas.TextHeight(item.TitleMain);
@@ -311,6 +344,8 @@ begin
   Canvas.Brush.Style := bsClear;
   Canvas.Brush.color := clWhite;
 
+  // удоли
+  Canvas.TextOut(ItemLeft, ItemTop, 'x');
   case State of
     normal:
       begin

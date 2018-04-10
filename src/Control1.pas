@@ -55,8 +55,6 @@ type
     procedure Paint; override;
   public
     ItemMain: TItem;
-    // ItemAfret: TItem;
-    // ItemBefore: TItem;
     State: TItemState;
     constructor Create(AOwner: TComponent); override;
   published
@@ -91,6 +89,13 @@ begin
   _IsFirst := false;
   IsLast := false;
   color := clWhite;
+
+  ItemMain.ArrowRight.visible := true;
+  ItemMain.ArrowLeft.visible := true;
+  ItemMain.ArrowDownLeft.visible := true;
+  ItemMain.ArrowUpLeft.visible := true;
+  ItemMain.ArrowUpRight.visible := true;
+  ItemMain.ArrowDownRight.visible := true;
 
   Parent := TWinControl(AOwner);
 end;
@@ -194,7 +199,8 @@ begin
   // Canvas.Brush := OldBrush;
 end;
 
-procedure DrawArrow(Canvas: TCanvas; X1, Y1, X2, Y2: integer; LW: Extended = 3
+procedure DrawArrow(Canvas: TCanvas; X1, Y1, X2, Y2: integer; Arrow: TArrow;
+  LW: Extended = 3
   // ;Color: TColor = clBlack
   );
 var
@@ -204,6 +210,8 @@ var
 begin
   // oldColor := Canvas.Pen.Color;
   // Canvas.Pen.Color := Color;
+  if not Arrow.visible then
+    exit;
 
   OldWidth := Canvas.Pen.Width;
   Canvas.Pen.Width := 2;
@@ -294,7 +302,7 @@ var
   aHeight, aWidth: integer;
   p: TPoint; // произвольная коодината для облегчения жизни
   x, y: integer;
-
+  Arrow: TArrow;
 begin
   aWidth := Width;
   aHeight := Height;
@@ -313,12 +321,12 @@ begin
         if not IsLast then
         begin
           // рисуем стрелочки влево/вправо
-          if ItemMain.ArrowRight.visible then
-            DrawArrow(Canvas, MainItemPoints[3].x, MainItemPoints[3].y,
-              MainItemPoints[3].x + ArrowWidth, MainItemPoints[3].y);
-          if ItemMain.ArrowLeft.visible then
-            DrawArrow(Canvas, MainItemPoints[4].x + ArrowWidth,
-              MainItemPoints[4].y, MainItemPoints[4].x, MainItemPoints[4].y);
+          DrawArrow(Canvas, MainItemPoints[3].x, MainItemPoints[3].y,
+            MainItemPoints[3].x + ArrowWidth, MainItemPoints[3].y,
+            ItemMain.ArrowRight);
+          DrawArrow(Canvas, MainItemPoints[4].x + ArrowWidth,
+            MainItemPoints[4].y, MainItemPoints[4].x, MainItemPoints[4].y,
+            ItemMain.ArrowLeft);
         end;
 
         aWidth := ItemLeft + ItemWidth + ArrowWidth;
@@ -336,22 +344,19 @@ begin
           ItemTop + ItemHeigth), ItemWidth, ItemHeigth, RightItemPoints);
 
         // рисуем длинные стрелочки
-        if ItemMain.ArrowLongRight.visible then
-          DrawArrow(Canvas, MainItemPoints[3].x, MainItemPoints[3].y,
-            MainItemPoints[3].x + ItemWidth + ArrowWidth * 2,
-            MainItemPoints[3].y);
-        if ItemMain.ArrowLongLeft.visible then
-          DrawArrow(Canvas, MainItemPoints[4].x + ItemWidth + ArrowWidth * 2,
-            MainItemPoints[4].y, MainItemPoints[4].x, MainItemPoints[4].y);
+        DrawArrow(Canvas, MainItemPoints[3].x, MainItemPoints[3].y,
+          MainItemPoints[3].x + ItemWidth + ArrowWidth * 2, MainItemPoints[3].y,
+          ItemMain.ArrowLongRight);
+        DrawArrow(Canvas, MainItemPoints[4].x + ItemWidth + ArrowWidth * 2,
+          MainItemPoints[4].y, MainItemPoints[4].x, MainItemPoints[4].y,
+          ItemMain.ArrowLongLeft);
 
         // рисуем стрелочки по диогонали от главного элемента всправо
-        if ItemMain.ArrowDownLeft.visible then
-          DrawArrow(Canvas, MainItemPoints[3].x, MainItemPoints[3].y,
-            RightItemPoints[1].x, RightItemPoints[1].y);
+        DrawArrow(Canvas, MainItemPoints[3].x, MainItemPoints[3].y,
+          RightItemPoints[1].x, RightItemPoints[1].y, ItemMain.ArrowDownLeft);
         // рисуем стрелочки по диогонали от правого элемента к главному
-        if ItemMain.ArrowUpLeft.visible then
-          DrawArrow(Canvas, RightItemPoints[2].x, RightItemPoints[2].y,
-            MainItemPoints[4].x, MainItemPoints[4].y);
+        DrawArrow(Canvas, RightItemPoints[2].x, RightItemPoints[2].y,
+          MainItemPoints[4].x, MainItemPoints[4].y, ItemMain.ArrowUpLeft);
 
         aWidth := ItemLeft + ItemWidth * 2 + ArrowWidth * 2;
         aHeight := ItemTop + ItemHeigth * 2;
@@ -371,15 +376,13 @@ begin
           ItemMain.TitleNext, ItemMain.TitlePrev, RightItemPoints);
 
         // рисуем стрелочки по диогонали от нового элемента вправо
-        if ItemMain.ArrowUpRight.visible then
-          DrawArrow(Canvas, RightItemPoints[3].x, RightItemPoints[3].y,
-            MainItemPoints[3].x + ArrowWidth + ItemWidth + ArrowWidth,
-            MainItemPoints[3].y);
+        DrawArrow(Canvas, RightItemPoints[3].x, RightItemPoints[3].y,
+          MainItemPoints[3].x + ArrowWidth + ItemWidth + ArrowWidth,
+          MainItemPoints[3].y, ItemMain.ArrowUpRight);
         // рисуем стрелочки по диогонали от правого элемента к новому
-        if ItemMain.ArrowDownRight.visible then
-          DrawArrow(Canvas, MainItemPoints[4].x + ArrowWidth + ItemWidth +
-            ArrowWidth, MainItemPoints[4].y, RightItemPoints[4].x,
-            RightItemPoints[4].y);
+        DrawArrow(Canvas, MainItemPoints[4].x + ArrowWidth + ItemWidth +
+          ArrowWidth, MainItemPoints[4].y, RightItemPoints[4].x,
+          RightItemPoints[4].y, ItemMain.ArrowDownRight);
 
         aWidth := ItemLeft + ItemWidth * 2 + ArrowWidth * 2;
         aHeight := ItemTop + ItemHeigth * 2;
@@ -411,7 +414,8 @@ begin
 
     Canvas.LineTo(p.x, p.y);
     Canvas.Pen.Width := 1;
-    DrawArrow(Canvas, p.x, p.y, ItemLeft, p.y);
+    Arrow.visible := true;
+    DrawArrow(Canvas, p.x, p.y, ItemLeft, p.y, Arrow);
   end;
 
   Width := aWidth;

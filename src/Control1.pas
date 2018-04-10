@@ -19,14 +19,15 @@ type
     TitleMain: string;
     TitleNext: string;
     TitlePrev: string;
-    ArrowRight: TArrow;
+
     ArrowLeft: TArrow;
-    ArrowDownLeft: TArrow;
+    ArrowRight: TArrow;
     ArrowUpLeft: TArrow;
     ArrowUpRight: TArrow;
+    ArrowDownLeft: TArrow;
+    ArrowLongLeft: TArrow;
     ArrowDownRight: TArrow;
     ArrowLongRight: TArrow;
-    ArrowLongLeft: TArrow;
   End;
 
   TItemState = (normal, add, new);
@@ -90,11 +91,11 @@ begin
   IsLast := false;
   color := clWhite;
 
-  ItemMain.ArrowRight.visible := true;
   ItemMain.ArrowLeft.visible := true;
-  ItemMain.ArrowDownLeft.visible := true;
+  ItemMain.ArrowRight.visible := true;
   ItemMain.ArrowUpLeft.visible := true;
   ItemMain.ArrowUpRight.visible := true;
+  ItemMain.ArrowDownLeft.visible := true;
   ItemMain.ArrowDownRight.visible := true;
 
   Parent := TWinControl(AOwner);
@@ -165,7 +166,8 @@ end;
 {$REGION 'рисование стрелок'}
 
 // взято на просторах интеренета, говорят что это рисует стрелочку
-procedure DrawArrowHead(Canvas: TCanvas; x, y: integer; Angle, LW: Extended);
+procedure DrawArrowHead(Canvas: TCanvas; x, y: integer; Angle, LW: Extended;
+  color: TColor);
 var
   A1, A2: Extended;
   Arrow: array [0 .. 3] of TPoint;
@@ -188,49 +190,49 @@ begin
     y - Round(LineLen * LW * Sin(A2)));
 
   OldWidth := Canvas.Pen.Width;
-  // OldBrush := Canvas.Brush;
+  OldBrush := Canvas.Brush;
 
   Canvas.Pen.Width := 1;
-  Canvas.Brush.color := clBlack;
+  Canvas.Brush.color := color;
   Canvas.Polygon(Arrow);
 
-  Canvas.Brush.color := clWhite;
+  // Canvas.Brush.color := clWhite;
   Canvas.Pen.Width := OldWidth;
-  // Canvas.Brush := OldBrush;
+  Canvas.Brush := OldBrush;
 end;
 
 procedure DrawArrow(Canvas: TCanvas; X1, Y1, X2, Y2: integer; Arrow: TArrow;
-  LW: Extended = 3
-  // ;Color: TColor = clBlack
-  );
+ LW: Extended = 3);
 var
   Angle: Extended;
   OldWidth: integer;
-  // oldColor: TColor;
+  oldColor: TColor;
 begin
-  // oldColor := Canvas.Pen.Color;
-  // Canvas.Pen.Color := Color;
+  oldColor := Canvas.Pen.color;
+  Canvas.Pen.color := Arrow.color;
+  OldWidth := Canvas.Pen.Width;
+
   if not Arrow.visible then
     exit;
 
-  OldWidth := Canvas.Pen.Width;
   Canvas.Pen.Width := 2;
   Canvas.Pen.Style := psDot;
   Angle := ArcTan2(Y1 - Y2, X2 - X1);
   Canvas.MoveTo(X1, Y1);
   Canvas.LineTo(X2 - Round(2 * LW * Cos(Angle)),
     Y2 + Round(2 * LW * Sin(Angle)));
-  Canvas.Pen.Width := OldWidth;
+  // Canvas.Pen.Width := OldWidth;
   Canvas.Pen.Style := psSolid;
-  DrawArrowHead(Canvas, X2, Y2, Angle, LW);
+  DrawArrowHead(Canvas, X2, Y2, Angle, LW, Arrow.color);
 
-  // Canvas.Pen.Color := oldColor;
+  Canvas.Pen.Width := OldWidth;
+  Canvas.Pen.color := oldColor;
 end;
 
 {$ENDREGION}
 {$REGION 'рисование самого элемента'}
 
-// вычисляет координати откуда нужно будет рисовать стрелочки
+// вычисляет координаты откуда нужно будет рисовать стрелочки
 procedure CalcPointsForArrows(p: TPoint; Width, Height: integer;
   var points: Array Of TPoint);
 begin

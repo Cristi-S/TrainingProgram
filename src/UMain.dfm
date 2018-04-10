@@ -31,7 +31,6 @@ object Form1: TForm1
     Height = 608
     Align = alLeft
     TabOrder = 0
-    ExplicitHeight = 514
     object Panel2: TPanel
       Left = 1
       Top = 1
@@ -215,10 +214,6 @@ object Form1: TForm1
       Color = clWindow
       ParentBackground = False
       TabOrder = 0
-      ExplicitLeft = -299
-      ExplicitTop = -119
-      ExplicitWidth = 1076
-      ExplicitHeight = 307
     end
   end
   object Memo1: TMemo
@@ -227,5 +222,14 @@ object Form1: TForm1
     Width = 811
     Height = 212
     TabOrder = 6
+  end
+  object Button9: TButton
+    Left = 950
+    Top = 242
+    Width = 121
+    Height = 25
+    Caption = 'SetLastItemColor'
+    TabOrder = 7
+    OnClick = Button9Click
   end
 end

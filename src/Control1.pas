@@ -59,7 +59,6 @@ type
     State: TItemState;
     constructor Create(AOwner: TComponent); override;
   published
-    { Published declarations }
     property IsFirst: boolean read _IsFirst write SetIsFirst;
     property IsLast: boolean read _IsLast write SetIsLast;
     property IsAddBefore: boolean read _IsAddBefore write SetIsAddBefore;
@@ -89,7 +88,6 @@ begin
   ItemMain.TitlePrev := 'Null';
   _IsFirst := false;
   IsLast := false;
-  color := clWhite;
 
   ItemMain.ArrowLeft.visible := true;
   ItemMain.ArrowRight.visible := true;
@@ -172,7 +170,7 @@ var
   A1, A2: Extended;
   Arrow: array [0 .. 3] of TPoint;
   OldWidth: integer;
-  OldBrush: TBrush;
+  OldBrushColor: TColor;
 const
   Beta = 0.322;
   LineLen = 4.74;
@@ -190,19 +188,18 @@ begin
     y - Round(LineLen * LW * Sin(A2)));
 
   OldWidth := Canvas.Pen.Width;
-  OldBrush := Canvas.Brush;
+  OldBrushColor := Canvas.Brush.color;
 
   Canvas.Pen.Width := 1;
   Canvas.Brush.color := color;
   Canvas.Polygon(Arrow);
 
-  // Canvas.Brush.color := clWhite;
+  Canvas.Brush.color := OldBrushColor;
   Canvas.Pen.Width := OldWidth;
-  Canvas.Brush := OldBrush;
 end;
 
 procedure DrawArrow(Canvas: TCanvas; X1, Y1, X2, Y2: integer; Arrow: TArrow;
- LW: Extended = 3);
+  LW: Extended = 3);
 var
   Angle: Extended;
   OldWidth: integer;
@@ -246,18 +243,19 @@ begin
     p.y + Round(Height * 2 / 3 + ((Height * 2 / 3 - Height * 1 / 3) / 2)));
 end;
 
-Procedure DrawListItem(Canvas: TCanvas; p: TPoint; Width, Height: integer;
-  TitleMain, TitleNext, TitlePrev: string; var points: Array Of TPoint
-  // ; PenColor: TColor = clBlack
-  );
+Procedure DrawListItem(Canvas: TCanvas; p: TPoint; 
+Width, Height: integer;
+  TitleMain, TitleNext, TitlePrev: string; 
+  var points: Array Of TPoint;
+  PenColor: TColor = clBlack);
 var
   x, y: integer;
   oldPenColor: TColor;
 begin
-  // oldPenColor := Canvas.Pen.Color;
-  // Canvas.Pen.Color := PenColor;
+  oldPenColor := Canvas.Pen.color;
+  Canvas.Pen.color := PenColor;
+
   Canvas.Rectangle(p.x, p.y, p.x + Width, p.y + Height);
-  Canvas.Pen.color := clBlack;
   Canvas.Rectangle(p.x, p.y, p.x + Width, p.y + Height);
   Canvas.Rectangle(p.x, p.y + Round(Height * 1 / 3), p.x + Width,
     p.y + Round(Height * 1 / 3 + 1));
@@ -267,6 +265,8 @@ begin
   // возвращает ширину текста в пикселях с учетом гарнитуры шрифта
   x := Canvas.TextWidth(TitleMain);
   y := Canvas.TextHeight(TitleMain);
+
+  Canvas.Pen.color := oldPenColor;
 
   // рисуем заголовок компонента
   Canvas.TextOut(p.x + Round((Width - x) / 2),
@@ -286,11 +286,10 @@ begin
     p.y + Round(Height * 2 / 3 + ((Height * 3 / 3 - Height * 2 / 3 - y) / 2)),
     TitlePrev);
 
-  // Canvas.Pen.Color := oldPenColor;
-
   // вычислим координты откуда нужно будет присовать срелочки
   CalcPointsForArrows(p, Width, Height, points);
 end;
+
 
 {$ENDREGION}
 
@@ -312,14 +311,13 @@ begin
   Canvas.Pen.Style := psSolid;
   Canvas.Brush.Style := bsClear;
   Canvas.Brush.color := clWhite;
-  Canvas.Pen.color := clWhite;
 
   case State of
     normal:
       begin
         DrawListItem(Canvas, Point(ItemLeft, ItemTop), ItemWidth, ItemHeigth,
-          ItemMain.TitleMain, ItemMain.TitleNext, ItemMain.TitlePrev,
-          MainItemPoints);
+          ItemMain.TitleMain, ItemMain.TitleNext, ItemMain.TitlePrev, 
+          MainItemPoints, ItemMain.color);
         if not IsLast then
         begin
           // рисуем стрелочки влево/вправо
@@ -395,8 +393,6 @@ begin
   begin
     aHeight := ItemTop + ItemHeigth * 2;
 
-    Canvas.Font.Size := 8;
-    Canvas.Brush.color := clWhite;
     Canvas.Rectangle(0, 0, FirstWidth, FirstHeight);
 
     // возвращает ширину текста в пикселях с учетом гарнитуры шрифта
@@ -417,11 +413,12 @@ begin
     Canvas.LineTo(p.x, p.y);
     Canvas.Pen.Width := 1;
     Arrow.visible := true;
+    Arrow.color:= clBlack;
     DrawArrow(Canvas, p.x, p.y, ItemLeft, p.y, Arrow);
   end;
 
   Width := aWidth;
   Height := aHeight;
 end;
-
+ 
 end.

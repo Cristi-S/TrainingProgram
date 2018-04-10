@@ -28,6 +28,7 @@ type
     ScrollBox1: TScrollBox;
     FlowPanel1: TPanel;
     Memo1: TMemo;
+    Button9: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -227,7 +228,8 @@ end;
 
 procedure TForm1.Button9Click(Sender: TObject);
 begin
-  // Risowashka;
+  ListControl.Last.ItemMain.color:=clRed;
+  ListControl.Last.Refresh;
 
 end;
 
@@ -255,6 +257,7 @@ end;
 procedure TForm1.RadioButton2Click(Sender: TObject);
 begin
   if RadioButton2.Checked = True then
+
   begin
     Button3.Enabled := True;
     Edit1.ReadOnly := False;

@@ -3,8 +3,8 @@ object Form1: TForm1
   Top = 0
   BorderStyle = bsSingle
   Caption = #1058#1088#1077#1085#1072#1078#1077#1088#1085#1072#1103' '#1087#1088#1086#1075#1088#1072#1084#1084#1072
-  ClientHeight = 514
-  ClientWidth = 964
+  ClientHeight = 608
+  ClientWidth = 1236
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -24,23 +24,14 @@ object Form1: TForm1
     Height = 16
     Caption = #1050#1086#1083'-'#1074#1086
   end
-  object FlowPanel1: TFlowPanel
-    Left = 260
-    Top = 8
-    Width = 669
-    Height = 222
-    Align = alCustom
-    Color = clWhite
-    ParentBackground = False
-    TabOrder = 0
-  end
   object Panel1: TPanel
     Left = 0
     Top = 0
     Width = 241
-    Height = 514
+    Height = 608
     Align = alLeft
-    TabOrder = 1
+    TabOrder = 0
+    ExplicitHeight = 514
     object Panel2: TPanel
       Left = 1
       Top = 1
@@ -137,7 +128,7 @@ object Form1: TForm1
         OnClick = Button4Click
       end
       object Button3: TButton
-        Left = 1
+        Left = 0
         Top = 6
         Width = 239
         Height = 57
@@ -176,7 +167,7 @@ object Form1: TForm1
     Width = 96
     Height = 24
     ReadOnly = True
-    TabOrder = 2
+    TabOrder = 1
     OnKeyPress = Edit1KeyPress
   end
   object Button2: TButton
@@ -185,7 +176,7 @@ object Form1: TForm1
     Width = 85
     Height = 25
     Caption = 'NextStep()'
-    TabOrder = 3
+    TabOrder = 2
     OnClick = Button2Click
   end
   object Button1: TButton
@@ -195,17 +186,8 @@ object Form1: TForm1
     Height = 25
     Caption = #1057#1092#1086#1088#1084#1080#1088#1086#1074#1072#1090#1100
     Enabled = False
-    TabOrder = 4
+    TabOrder = 3
     OnClick = Button1Click
-  end
-  object Memo1: TMemo
-    Left = 260
-    Top = 266
-    Width = 669
-    Height = 233
-    Align = alCustom
-    ReadOnly = True
-    TabOrder = 5
   end
   object Button8: TButton
     Left = 603
@@ -214,7 +196,36 @@ object Form1: TForm1
     Height = 25
     Caption = 'Clear'
     Enabled = False
-    TabOrder = 6
+    TabOrder = 4
     OnClick = Button8Click
+  end
+  object ScrollBox1: TScrollBox
+    Left = 260
+    Top = 25
+    Width = 813
+    Height = 205
+    HorzScrollBar.Increment = 1
+    TabOrder = 5
+    object FlowPanel1: TPanel
+      Left = 0
+      Top = 0
+      Width = 809
+      Height = 201
+      Align = alClient
+      Color = clWindow
+      ParentBackground = False
+      TabOrder = 0
+      ExplicitLeft = -299
+      ExplicitTop = -119
+      ExplicitWidth = 1076
+      ExplicitHeight = 307
+    end
+  end
+  object Memo1: TMemo
+    Left = 262
+    Top = 293
+    Width = 811
+    Height = 212
+    TabOrder = 6
   end
 end

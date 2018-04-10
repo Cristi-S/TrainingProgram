@@ -48,15 +48,9 @@ type
   protected
     procedure Paint; override;
   public
-    // TitleMain: String;
-    // TitleNext, TitlePrev: string;
-    AddBeforeStep: byte;
-    AddAfterStep: byte;
-
     ItemMain: TItem;
     ItemAfret: TItem;
     ItemBefore: TItem;
-
     constructor Create(AOwner: TComponent); override;
   published
     { Published declarations }
@@ -87,10 +81,9 @@ begin
   ItemMain.TitleMain := 'Null';
   ItemMain.TitleNext := 'Null';
   ItemMain.TitlePrev := 'Null';
+  _IsFirst := false;
   IsLast := false;
   color := clWhite;
-
-  AddAfterStep := 0;
 
   Parent := TWinControl(AOwner);
 end;
@@ -362,55 +355,42 @@ begin
   if IsAddAfter then
   begin
     // рисуем длинные стрелочки
+    DrawArrow(Canvas, MainItemPoints[3].x, MainItemPoints[3].y,
+      MainItemPoints[3].x + ItemWidth + ArrowWidth * 2, MainItemPoints[3].y);
 
-    if AddAfterStep <> 4 then
-    begin
+    DrawArrow(Canvas, MainItemPoints[4].x + ItemWidth + ArrowWidth * 2,
+      MainItemPoints[4].y, MainItemPoints[4].x, MainItemPoints[4].y);
 
-      DrawArrow(Canvas, MainItemPoints[3].x, MainItemPoints[3].y,
-        MainItemPoints[3].x + ItemWidth + ArrowWidth * 2, MainItemPoints[3].y);
-
-      DrawArrow(Canvas, MainItemPoints[4].x + ItemWidth + ArrowWidth * 2,
-        MainItemPoints[4].y, MainItemPoints[4].x, MainItemPoints[4].y);
-    end;
     // рисуем сам контрол
     DrawListItem(Canvas, Point(ItemLeft + ItemWidth + ArrowWidth,
       ItemTop + ItemHeigth), ItemWidth, ItemHeigth, ItemAfret.TitleMain,
       ItemAfret.TitleNext, ItemAfret.TitlePrev, RightItemPoints);
 
-    if AddAfterStep = 3 then
-    begin
-      // рисуем стрелочки по диогонали от нового элемента вправо
-      DrawArrow(Canvas, RightItemPoints[3].x, RightItemPoints[3].y,
-        MainItemPoints[3].x + ArrowWidth + ItemWidth + ArrowWidth,
-        MainItemPoints[3].y);
-      // добавить описисание
-      DrawArrow(Canvas, RightItemPoints[2].x, RightItemPoints[2].y,
-        MainItemPoints[4].x, MainItemPoints[4].y);
+    // рисуем стрелочки по диогонали от нового элемента вправо
+    DrawArrow(Canvas, RightItemPoints[3].x, RightItemPoints[3].y,
+      MainItemPoints[3].x + ArrowWidth + ItemWidth + ArrowWidth,
+      MainItemPoints[3].y);
+    // добавить описисание
+    DrawArrow(Canvas, RightItemPoints[2].x, RightItemPoints[2].y,
+      MainItemPoints[4].x, MainItemPoints[4].y);
 
-    end;
+    // рисуем стрелочки по диогонали от нового элемента вправо
+    DrawArrow(Canvas, RightItemPoints[3].x, RightItemPoints[3].y,
+      MainItemPoints[3].x + ArrowWidth + ItemWidth + ArrowWidth,
+      MainItemPoints[3].y);
+    // добавить описисание
+    DrawArrow(Canvas, RightItemPoints[2].x, RightItemPoints[2].y,
+      MainItemPoints[4].x, MainItemPoints[4].y);
 
-    if AddAfterStep = 4 then
-    begin
-      // переделать, хардкод
+    // коднец переделать, хардкод
+    // рисуем стрелочки по диогонали от главного элемента к новому
+    DrawArrow(Canvas, MainItemPoints[4].x + ArrowWidth + ItemWidth + ArrowWidth,
+      MainItemPoints[4].y, RightItemPoints[4].x, RightItemPoints[4].y);
+    // добавить описисание
+    // рисуем стрелочки по диогонали от главного элемента всправо
+    DrawArrow(Canvas, MainItemPoints[3].x, MainItemPoints[3].y,
+      RightItemPoints[1].x, RightItemPoints[1].y);
 
-      // рисуем стрелочки по диогонали от нового элемента вправо
-      DrawArrow(Canvas, RightItemPoints[3].x, RightItemPoints[3].y,
-        MainItemPoints[3].x + ArrowWidth + ItemWidth + ArrowWidth,
-        MainItemPoints[3].y);
-      // добавить описисание
-      DrawArrow(Canvas, RightItemPoints[2].x, RightItemPoints[2].y,
-        MainItemPoints[4].x, MainItemPoints[4].y);
-
-      // коднец переделать, хардкод
-      // рисуем стрелочки по диогонали от главного элемента к новому
-      DrawArrow(Canvas, MainItemPoints[4].x + ArrowWidth + ItemWidth +
-        ArrowWidth, MainItemPoints[4].y, RightItemPoints[4].x,
-        RightItemPoints[4].y);
-      // добавить описисание
-      // рисуем стрелочки по диогонали от главного элемента всправо
-      DrawArrow(Canvas, MainItemPoints[3].x, MainItemPoints[3].y,
-        RightItemPoints[1].x, RightItemPoints[1].y);
-    end;
     aWidth := ItemLeft + ItemWidth * 2 + ArrowWidth * 2;
     aHeight := ItemTop + ItemHeigth * 2;
   end;

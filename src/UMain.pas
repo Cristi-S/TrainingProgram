@@ -107,19 +107,14 @@ begin
       s2 := Form2.Edit2.Text;
       Form2.ShowModal;
       s1 := Form2.Edit1.Text;
-      // if (not ControlList[i] = null) then
-      // begin
       ListItem := TListControl.Create(FlowPanel1);
       if i = 1 then
       begin
 
         ListItem.Top := 0;
         ListItem.Left := 0;
-      end
-      else
-      begin
-        // ListItem.Left := ListControl.Items[0].Width;
       end;
+
       ListItem.ItemMain.TitleMain := s1;
       ListItem.ItemMain.TitleNext := s2;
       if i = 1 then

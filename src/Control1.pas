@@ -16,6 +16,7 @@ type
     visible: boolean;
     color: TColor;
     cross: TCross;
+    style: TPenStyle;
   end;
 
   TItem = Record
@@ -101,6 +102,12 @@ begin
   ItemMain.ArrowUpRight.visible := true;
   ItemMain.ArrowDownLeft.visible := true;
   ItemMain.ArrowDownRight.visible := true;
+
+  ItemMain.ArrowLongLeft.visible := true;
+  ItemMain.ArrowLongRight.visible := true;
+
+  ItemMain.ArrowLongLeft.style := psDash;
+  ItemMain.ArrowLongRight.style := psDash;
 
   Parent := TWinControl(AOwner);
 end;
@@ -225,8 +232,13 @@ begin
   oldFontSize := Canvas.Font.Size;
   oldFontColor := Canvas.Font.color;
 
-  Canvas.Pen.Width := 2;
-  Canvas.Pen.Style := psDot;
+  if Arrow.style = psDash then
+    Canvas.Pen.Width := 1
+  else
+    Canvas.Pen.Width := 2;
+
+  Canvas.Pen.style := Arrow.style;
+
   Angle := ArcTan2(Y1 - Y2, X2 - X1);
   Canvas.MoveTo(X1, Y1);
   Canvas.LineTo(X2 - Round(2 * LW * Cos(Angle)),
@@ -244,10 +256,9 @@ begin
       center.y - Round((Canvas.TextHeight('x') / 2) + 0.6), 'x');
     Canvas.Font.Size := oldFontSize;
     Canvas.Font.color := oldFontColor;
-  end
+  end;
 
-  // Canvas.Pen.Width := OldWidth;
-  Canvas.Pen.Style := psSolid;
+  Canvas.Pen.style := psSolid;
   DrawArrowHead(Canvas, X2, Y2, Angle, LW, Arrow.color);
 
   Canvas.Pen.Width := OldWidth;
@@ -340,12 +351,10 @@ begin
   aWidth := Width;
   aHeight := Height;
   Canvas.Font.Size := 8;
-  Canvas.Pen.Style := psSolid;
-  Canvas.Brush.Style := bsClear;
+  Canvas.Pen.style := psSolid;
+  Canvas.Brush.style := bsClear;
   Canvas.Brush.color := clWhite;
 
-  // удоли
-  Canvas.TextOut(ItemLeft, ItemTop, 'x');
   case State of
     normal:
       begin
@@ -376,6 +385,7 @@ begin
           ItemTop + ItemHeigth), ItemWidth, ItemHeigth, RightItemPoints);
 
         // рисуем длинные стрелочки
+
         DrawArrow(Canvas, MainItemPoints[3].x, MainItemPoints[3].y,
           MainItemPoints[3].x + ItemWidth + ArrowWidth * 2, MainItemPoints[3].y,
           ItemMain.ArrowLongRight);

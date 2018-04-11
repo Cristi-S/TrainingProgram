@@ -15,14 +15,14 @@ type
     RadioButton2: TRadioButton;
     RadioButton1: TRadioButton;
     Panel3: TPanel;
-    Button4: TButton;
-    Button5: TButton;
-    Button6: TButton;
+    ButtonAddAfter: TButton;
+    ButtonAddBefore: TButton;
+    ButtonDelete: TButton;
     Edit1: TEdit;
     Button2: TButton;
-    Button1: TButton;
-    Button7: TButton;
-    Button8: TButton;
+    ButtonCreate: TButton;
+    ButtonStop: TButton;
+    ButtonClear: TButton;
     Label1: TLabel;
     Button3: TButton;
     ScrollBox1: TScrollBox;
@@ -30,18 +30,19 @@ type
     Memo1: TMemo;
     Button9: TButton;
     Button10: TButton;
-    procedure Button1Click(Sender: TObject);
+    procedure ButtonCreateClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure Button8Click(Sender: TObject);
+    procedure ButtonClearClick(Sender: TObject);
     procedure RadioButton1Click(Sender: TObject);
     procedure RadioButton2Click(Sender: TObject);
     procedure Edit1KeyPress(Sender: TObject; var Key: Char);
-    procedure Button4Click(Sender: TObject);
+    procedure ButtonAddAfterClick(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure RedrawPanel();
     procedure Button9Click(Sender: TObject);
     procedure Button10Click(Sender: TObject);
+    procedure ButtonAddBeforeClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -85,7 +86,7 @@ begin
 
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TForm1.ButtonCreateClick(Sender: TObject);
 var
   ListItem: TListControl;
   i, j, k: integer;
@@ -126,6 +127,7 @@ begin
       end;
       ListItem.IsLast := false;
       ListControl.add(ListItem);
+      RedrawPanel();
     end;
   if RadioButton2.Checked = True then
   begin
@@ -134,9 +136,9 @@ begin
     ListControl.add(ListItem);
   end;
   ListItem.IsLast := True;
-  Button8.Enabled := True;
-
-  RedrawPanel();
+  ButtonAddAfter.Enabled := True;
+  ButtonAddBefore.Enabled := True;
+  ButtonClear.Enabled := True;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
@@ -174,10 +176,12 @@ begin
 
   ListItem.IsLast := True;
 
-  Button8.Enabled := True;
+  ButtonAddAfter.Enabled := True;
+  ButtonAddBefore.Enabled := True;
+
 end;
 
-procedure TForm1.Button4Click(Sender: TObject);
+procedure TForm1.ButtonAddAfterClick(Sender: TObject);
 var
   ListItem: TListControl;
   i, k: integer;
@@ -208,7 +212,38 @@ begin
   RedrawPanel();
 end;
 
-procedure TForm1.Button8Click(Sender: TObject);
+procedure TForm1.ButtonAddBeforeClick(Sender: TObject);
+var
+  ListItem: TListControl;
+  i, k: integer;
+  s1, s2: string;
+begin
+  k := StrToInt(InputBox('Новый элемент',
+    'Введите номер элемента,ПОСЛЕ которого хотите добавить новый элемент:', '1')
+    );
+
+  ListItem := TListControl.Create(FlowPanel1);
+  ListItem.ItemMain.TitleMain := 'new';
+  ListItem.ItemMain.TitleNext := 'nul';
+  ListItem.ItemMain.TitlePrev := 'nul';
+
+  if ListControl[k].IsLast then
+  begin
+    ListItem.State := normal;
+    ListItem.IsLast := True;
+  end
+  else
+  begin
+    ListItem.State := new;
+    ListControl[k].State := addAfter;
+  end;
+
+  ListControl.Insert(k + 1, ListItem);
+
+  RedrawPanel();
+end;
+
+procedure TForm1.ButtonClearClick(Sender: TObject);
 var
   i: integer;
 begin
@@ -221,7 +256,7 @@ begin
   begin
 
     FlowPanel1.Controls[0].DisposeOf;
-    // ListControl.Delete(0);
+    ListControl.Delete(0);
   end;
 
 end;
@@ -229,6 +264,8 @@ end;
 procedure TForm1.Button9Click(Sender: TObject);
 begin
   ListControl.Last.ItemMain.color := clRed;
+
+  ListControl.Items[0].ItemMain.ArrowRight.cross.visible := True;
   RedrawPanel();
 end;
 
@@ -249,7 +286,7 @@ begin
   if RadioButton1.Checked = True then
   begin
     Edit1.ReadOnly := false;
-    Button1.Enabled := True;
+    ButtonCreate.Enabled := True;
   end;
 end;
 
@@ -260,7 +297,6 @@ begin
   begin
     Button3.Enabled := True;
     Edit1.ReadOnly := false;
-    Button1.Enabled := True;
   end
 end;
 

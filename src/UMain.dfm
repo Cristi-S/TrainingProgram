@@ -78,7 +78,7 @@ object Form1: TForm1
       Height = 240
       Align = alTop
       TabOrder = 1
-      object Button5: TButton
+      object ButtonAddBefore: TButton
         Left = 1
         Top = 119
         Width = 239
@@ -93,8 +93,9 @@ object Form1: TForm1
         Font.Style = []
         ParentFont = False
         TabOrder = 0
+        OnClick = ButtonAddBeforeClick
       end
-      object Button6: TButton
+      object ButtonDelete: TButton
         Left = 1
         Top = 184
         Width = 239
@@ -110,7 +111,7 @@ object Form1: TForm1
         ParentFont = False
         TabOrder = 1
       end
-      object Button4: TButton
+      object ButtonAddAfter: TButton
         Left = 1
         Top = 69
         Width = 239
@@ -124,7 +125,7 @@ object Form1: TForm1
         Font.Style = []
         ParentFont = False
         TabOrder = 2
-        OnClick = Button4Click
+        OnClick = ButtonAddAfterClick
       end
       object Button3: TButton
         Left = 0
@@ -144,7 +145,7 @@ object Form1: TForm1
         OnClick = Button3Click
       end
     end
-    object Button7: TButton
+    object ButtonStop: TButton
       Left = 1
       Top = 344
       Width = 239
@@ -178,7 +179,7 @@ object Form1: TForm1
     TabOrder = 2
     OnClick = Button2Click
   end
-  object Button1: TButton
+  object ButtonCreate: TButton
     Left = 684
     Top = 300
     Width = 137
@@ -186,9 +187,9 @@ object Form1: TForm1
     Caption = #1057#1092#1086#1088#1084#1080#1088#1086#1074#1072#1090#1100
     Enabled = False
     TabOrder = 3
-    OnClick = Button1Click
+    OnClick = ButtonCreateClick
   end
-  object Button8: TButton
+  object ButtonClear: TButton
     Left = 603
     Top = 300
     Width = 75
@@ -196,7 +197,7 @@ object Form1: TForm1
     Caption = 'Clear'
     Enabled = False
     TabOrder = 4
-    OnClick = Button8Click
+    OnClick = ButtonClearClick
   end
   object ScrollBox1: TScrollBox
     Left = 260

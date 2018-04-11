@@ -36,7 +36,7 @@ type
     ArrowLongRight: TArrow;
   End;
 
-  TItemState = (normal, addAfter, new);
+  TItemState = (normal, addAfter, addBefore, new);
 
   TListControl = class(TGraphicControl)
   const
@@ -360,7 +360,7 @@ begin
   Canvas.Brush.color := clWhite;
 
   case State of
-    normal:
+    normal, addBefore:
       begin
         DrawListItem(Canvas, Point(ItemLeft, ItemTop), ItemWidth, ItemHeigth,
           ItemMain, MainItemPoints);

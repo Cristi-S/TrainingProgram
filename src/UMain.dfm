@@ -19,7 +19,7 @@ object Form1: TForm1
   TextHeight = 16
   object Label1: TLabel
     Left = 280
-    Top = 240
+    Top = 304
     Width = 40
     Height = 16
     Caption = #1050#1086#1083'-'#1074#1086
@@ -162,7 +162,7 @@ object Form1: TForm1
   end
   object Edit1: TEdit
     Left = 326
-    Top = 236
+    Top = 300
     Width = 96
     Height = 24
     ReadOnly = True
@@ -171,7 +171,7 @@ object Form1: TForm1
   end
   object Button2: TButton
     Left = 428
-    Top = 236
+    Top = 300
     Width = 85
     Height = 25
     Caption = 'NextStep()'
@@ -180,7 +180,7 @@ object Form1: TForm1
   end
   object Button1: TButton
     Left = 684
-    Top = 236
+    Top = 300
     Width = 137
     Height = 25
     Caption = #1057#1092#1086#1088#1084#1080#1088#1086#1074#1072#1090#1100
@@ -190,7 +190,7 @@ object Form1: TForm1
   end
   object Button8: TButton
     Left = 603
-    Top = 236
+    Top = 300
     Width = 75
     Height = 25
     Caption = 'Clear'
@@ -202,30 +202,31 @@ object Form1: TForm1
     Left = 260
     Top = 25
     Width = 813
-    Height = 205
+    Height = 258
     HorzScrollBar.Increment = 1
     TabOrder = 5
     object FlowPanel1: TPanel
       Left = 0
       Top = 0
       Width = 809
-      Height = 201
+      Height = 254
       Align = alClient
       Color = clWindow
       ParentBackground = False
       TabOrder = 0
+      ExplicitHeight = 201
     end
   end
   object Memo1: TMemo
     Left = 262
-    Top = 293
+    Top = 357
     Width = 811
     Height = 212
     TabOrder = 6
   end
   object Button9: TButton
     Left = 950
-    Top = 234
+    Top = 298
     Width = 121
     Height = 25
     Caption = 'SetLastItemColor'
@@ -234,10 +235,10 @@ object Form1: TForm1
   end
   object Button10: TButton
     Left = 952
-    Top = 262
+    Top = 326
     Width = 121
     Height = 25
-    Caption = 'SetLastItemVisible'
+    Caption = 'SetNewItemColor'
     TabOrder = 8
     OnClick = Button10Click
   end

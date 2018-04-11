@@ -67,19 +67,22 @@ begin
   for i := 0 to ListControl.Count - 1 do
   begin
     ListControl.Items[i].Left := width;
-    if ListControl.Items[i].State = add then
+    ListControl[i].Refresh;
+    if ListControl.Items[i].State = addAfter then
       width := width + ListControl.Items[i].width -
         (ListControl.Items[i].ItemWidth + ListControl.Items[i].ArrowWidth)
     else
       width := width + ListControl.Items[i].width;
-    ListControl[i].Refresh;
+
   end;
 end;
 
 procedure TForm1.Button10Click(Sender: TObject);
 begin
-  ListControl.Last.ItemMain.Visible := false;
-  ListControl.Last.Refresh;
+  // ListControl.Items[1].ItemMain.color := clLime;
+  RedrawPanel();
+  // ListControl.Items[1-1].Refresh;
+
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -120,27 +123,20 @@ begin
       if i = 1 then
       begin
         ListItem.IsFirst := True;
-        ListItem.IsAddBefore := True;
       end;
       ListItem.IsLast := false;
-      // ListItem.Refresh;
       ListControl.add(ListItem);
-      // end;
-      RedrawPanel();
     end;
   if RadioButton2.Checked = True then
   begin
-    // if (not ControlList[i] = null) then
-    // begin
     ListItem := TListControl.Create(FlowPanel1);
     ListItem.IsLast := false;
-    // ListItem.Refresh;
-
     ListControl.add(ListItem);
   end;
   ListItem.IsLast := True;
-  // if (not ControlList[i] = null) then
   Button8.Enabled := True;
+
+  RedrawPanel();
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
@@ -195,6 +191,7 @@ begin
   ListItem.ItemMain.TitleMain := 'new';
   ListItem.ItemMain.TitleNext := 'nul';
   ListItem.ItemMain.TitlePrev := 'nul';
+
   if ListControl[k].IsLast then
   begin
     ListItem.State := normal;
@@ -203,7 +200,7 @@ begin
   else
   begin
     ListItem.State := new;
-    ListControl[k].State := add;
+    ListControl[k].State := addAfter;
   end;
 
   ListControl.Insert(k + 1, ListItem);
@@ -232,7 +229,7 @@ end;
 procedure TForm1.Button9Click(Sender: TObject);
 begin
   ListControl.Last.ItemMain.color := clRed;
-  ListControl.Last.Refresh;
+  RedrawPanel();
 end;
 
 procedure TForm1.Edit1KeyPress(Sender: TObject; var Key: Char);

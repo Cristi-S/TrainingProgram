@@ -36,7 +36,7 @@ type
     ArrowLongRight: TArrow;
   End;
 
-  TItemState = (normal, add, new);
+  TItemState = (normal, addAfter, new);
 
   TListControl = class(TGraphicControl)
   const
@@ -93,7 +93,7 @@ begin
   ItemMain.TitleNext := 'Null';
   ItemMain.TitlePrev := 'Null';
   ItemMain.visible := true;
-  _IsFirst := false;
+  IsFirst := false;
   IsLast := false;
 
   ItemMain.ArrowLeft.visible := true;
@@ -108,22 +108,23 @@ begin
 
   ItemMain.ArrowLongLeft.style := psDash;
   ItemMain.ArrowLongRight.style := psDash;
+  ItemMain.ArrowLongLeft.cross.visible := true;
 
   Parent := TWinControl(AOwner);
 end;
 
 procedure TListControl.SetPaddings;
 begin
-  if IsFirst and _IsAddBefore then
-  begin
-    ItemLeft := ItemWidth + ArrowWidth;
-    exit;
-  end;
-
-  if _IsAddBefore then
-  begin
-    ItemLeft := ItemWidth + ArrowWidth;
-  end;
+  // if IsFirst and _IsAddBefore then
+  // begin
+  // ItemLeft := ItemWidth + ArrowWidth;
+  // exit;
+  // end;
+  //
+  // if _IsAddBefore then
+  // begin
+  // ItemLeft := ItemWidth + ArrowWidth;
+  // end;
 
   if IsFirst then
   begin
@@ -284,7 +285,7 @@ begin
 end;
 
 Procedure DrawListItem(Canvas: TCanvas; p: TPoint; Width, Height: integer;
-  item: TItem; var points: Array Of TPoint; PenColor: TColor = clBlack);
+  item: TItem; var points: Array Of TPoint);
 var
   x, y: integer;
   oldPenColor: TColor;
@@ -293,7 +294,7 @@ begin
   if not item.visible then
     exit;
   oldPenColor := Canvas.Pen.color;
-  Canvas.Pen.color := PenColor;
+  Canvas.Pen.color := item.color;
   oldPenWidth := Canvas.Pen.Width;
 
   Canvas.Pen.Width := 2;
@@ -351,7 +352,10 @@ begin
   aWidth := Width;
   aHeight := Height;
   Canvas.Font.Size := 8;
+  Canvas.Pen.Width := 2;
   Canvas.Pen.style := psSolid;
+  Canvas.Pen.color := clBlack;
+
   Canvas.Brush.style := bsClear;
   Canvas.Brush.color := clWhite;
 
@@ -359,7 +363,7 @@ begin
     normal:
       begin
         DrawListItem(Canvas, Point(ItemLeft, ItemTop), ItemWidth, ItemHeigth,
-          ItemMain, MainItemPoints, ItemMain.color);
+          ItemMain, MainItemPoints);
         if not IsLast then
         begin
           // рисуем стрелочки влево/вправо
@@ -373,7 +377,7 @@ begin
 
         aWidth := ItemLeft + ItemWidth + ArrowWidth;
       end;
-    add:
+    addAfter:
       begin
         // оснвной элемент - начало
         DrawListItem(Canvas, Point(ItemLeft, ItemTop), ItemWidth, ItemHeigth,
@@ -405,28 +409,22 @@ begin
       end;
     new:
       begin
-        CalcPointsForArrows(Point(ItemLeft, ItemTop), ItemWidth, ItemHeigth,
-          MainItemPoints);
-
-        if IsLast then
-        begin
-
-        end;
         // рисуем сам контрол
-        DrawListItem(Canvas, Point(ItemLeft + ItemWidth + ArrowWidth,
-          ItemTop + ItemHeigth), ItemWidth, ItemHeigth, ItemMain,
-          RightItemPoints);
+        DrawListItem(Canvas, Point(ItemLeft, ItemTop + ItemHeigth), ItemWidth,
+          ItemHeigth, ItemMain, MainItemPoints);
+
+        // вычисляем координаты для правого элемента
+        CalcPointsForArrows(Point(ItemLeft + ItemWidth + ArrowWidth, ItemTop),
+          ItemWidth, ItemHeigth, RightItemPoints);
 
         // рисуем стрелочки по диогонали от нового элемента вправо
-        DrawArrow(Canvas, RightItemPoints[3].x, RightItemPoints[3].y,
-          MainItemPoints[3].x + ArrowWidth + ItemWidth + ArrowWidth,
-          MainItemPoints[3].y, ItemMain.ArrowUpRight);
+        DrawArrow(Canvas, MainItemPoints[3].x, MainItemPoints[3].y,
+          RightItemPoints[1].x, RightItemPoints[1].y, ItemMain.ArrowUpRight);
         // рисуем стрелочки по диогонали от правого элемента к новому
-        DrawArrow(Canvas, MainItemPoints[4].x + ArrowWidth + ItemWidth +
-          ArrowWidth, MainItemPoints[4].y, RightItemPoints[4].x,
-          RightItemPoints[4].y, ItemMain.ArrowDownRight);
+        DrawArrow(Canvas, MainItemPoints[4].x, MainItemPoints[4].y,
+          RightItemPoints[2].x, RightItemPoints[2].y, ItemMain.ArrowDownRight);
 
-        aWidth := ItemLeft + ItemWidth * 2 + ArrowWidth * 2;
+        aWidth := ItemLeft + ItemWidth + ArrowWidth;
         aHeight := ItemTop + ItemHeigth * 2;
       end;
   end;

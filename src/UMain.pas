@@ -69,7 +69,9 @@ begin
   begin
     ListControl.Items[i].Left := width;
     ListControl[i].Refresh;
-    if ListControl.Items[i].State = addAfter then
+    if (i = 0) and (ListControl.Items[i].State = new) then
+      width := 0
+    else if ListControl.Items[i].State = addAfter then
       width := width + ListControl.Items[i].width -
         (ListControl.Items[i].ItemWidth + ListControl.Items[i].ArrowWidth)
     else
@@ -189,7 +191,7 @@ var
 begin
   k := StrToInt(InputBox('Новый элемент',
     'Введите номер элемента,ПОСЛЕ которого хотите добавить новый элемент:', '1')
-    );
+    ) - 1;
 
   ListItem := TListControl.Create(FlowPanel1);
   ListItem.ItemMain.TitleMain := 'new';
@@ -219,8 +221,8 @@ var
   s1, s2: string;
 begin
   k := StrToInt(InputBox('Новый элемент',
-    'Введите номер элемента,ПОСЛЕ которого хотите добавить новый элемент:', '1')
-    );
+    'Введите номер элемента,ПОСЛЕ которого хотите добавить новый элемент:',
+    '1')) - 1;
 
   ListItem := TListControl.Create(FlowPanel1);
   ListItem.ItemMain.TitleMain := 'new';
@@ -235,11 +237,20 @@ begin
   else
   begin
     ListItem.State := new;
-    ListControl[k].State := addAfter;
+    ListControl[k].State := addBefore;
   end;
 
-  ListControl.Insert(k + 1, ListItem);
+  if k > 0 then
+  begin
+    ListControl[k - 1].State := addAfter;
+  end
+  else
+  begin
+    ListControl.Items[k].PaddingLeft := ListControl.Items[k].PaddingLeft +
+      ListControl.Items[k].ArrowWidth;
+  end;
 
+  ListControl.Insert(k, ListItem);
   RedrawPanel();
 end;
 

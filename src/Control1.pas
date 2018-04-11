@@ -69,6 +69,7 @@ type
     property IsLast: boolean read _IsLast write SetIsLast;
     property IsAddBefore: boolean read _IsAddBefore write SetIsAddBefore;
     property IsAddAfter: boolean read _IsAddAfter write SetIsAddAfter;
+    property PaddingLeft: integer read ItemLeft write ItemLeft;
   end;
 
 procedure Register;

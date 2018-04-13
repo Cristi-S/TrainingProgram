@@ -215,7 +215,6 @@ object Form1: TForm1
       Color = clWindow
       ParentBackground = False
       TabOrder = 0
-      ExplicitHeight = 201
     end
   end
   object Memo1: TMemo
@@ -242,5 +241,23 @@ object Form1: TForm1
     Caption = 'SetNewItemColor'
     TabOrder = 8
     OnClick = Button10Click
+  end
+  object Button1: TButton
+    Left = 262
+    Top = 575
+    Width = 179
+    Height = 25
+    Caption = 'Create and Add Item'
+    TabOrder = 9
+    OnClick = Button1Click
+  end
+  object Button4: TButton
+    Left = 464
+    Top = 575
+    Width = 75
+    Height = 25
+    Caption = 'Resume'
+    TabOrder = 10
+    OnClick = Button4Click
   end
 end

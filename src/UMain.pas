@@ -32,6 +32,7 @@ type
     Button10: TButton;
     Button1: TButton;
     Button4: TButton;
+    Button5: TButton;
     procedure ButtonCreateClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -47,6 +48,7 @@ type
     procedure ButtonAddBeforeClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -65,23 +67,65 @@ implementation
 
 procedure TForm1.RedrawPanel();
 var
-  i: integer;
   width: integer;
-begin
-  width := 0;
-  for i := 0 to ListControl.Count - 1 do
+  temp: TListItem;
+  ListControlItem: TListControl;
+
+  procedure PlaceControlItems();
+  var
+    i: integer;
   begin
-    ListControl.Items[i].Left := width;
-    ListControl[i].Refresh;
-    if (i = 0) and (ListControl.Items[i].State = new) then
-      width := 0
-    else if ListControl.Items[i].State = addAfter then
-      width := width + ListControl.Items[i].width -
-        (ListControl.Items[i].ItemWidth + ListControl.Items[i].ArrowWidth)
-    else
-      width := width + ListControl.Items[i].width;
+    width := 0;
+    for i := 0 to ListControl.Count - 1 do
+    begin
+      ListControl.Items[i].Left := width;
+      ListControl[i].Refresh;
+      if (i = 0) and (ListControl.Items[i].State = new) then
+        width := 0
+      else if ListControl.Items[i].State = addAfter then
+        width := width + ListControl.Items[i].width -
+          (ListControl.Items[i].ItemWidth + ListControl.Items[i].ArrowWidth)
+      else
+        width := width + ListControl.Items[i].width;
+
+    end;
 
   end;
+
+begin
+  ListControl.Clear;
+  case List.State of
+    lsNormal:
+      begin
+        temp := List.GetFirst;
+        while temp <> nil do
+        begin
+          ListControlItem := TListControl.Create(FlowPanel1);
+          ListControlItem.ItemMain.TitleMain := temp.GetInfo;
+          ListControlItem.ItemMain.TitleNext := temp.GetNextInfo;
+          ListControlItem.ItemMain.TitlePrev := temp.GetPrevInfo;
+          ListControlItem.IsLast := temp.IsLast;
+          ListControlItem.IsFirst := temp.IsFirst;
+
+          ListControl.Add(ListControlItem);
+          temp := temp.GetNext;
+        end;
+      end;
+    lsAddbefore:
+      begin
+
+      end;
+    lsAddafter:
+      begin
+
+      end;
+    lsDelete:
+      begin
+
+      end;
+
+  end;
+  PlaceControlItems;
 end;
 
 procedure TForm1.Button10Click(Sender: TObject);
@@ -132,14 +176,14 @@ begin
         ListItem.IsFirst := True;
       end;
       ListItem.IsLast := false;
-      ListControl.add(ListItem);
+      ListControl.Add(ListItem);
       RedrawPanel();
     end;
   if RadioButton2.Checked = True then
   begin
     ListItem := TListControl.Create(FlowPanel1);
     ListItem.IsLast := false;
-    ListControl.add(ListItem);
+    ListControl.Add(ListItem);
   end;
   ListItem.IsLast := True;
   ButtonAddAfter.Enabled := True;
@@ -154,12 +198,12 @@ begin
   if List.Getcount = 0 then
   begin
     temp := TListItem.Create('item' + IntToStr(List.Getcount));
-    List.add('', temp);
+    List.Add('', temp);
   end
   else
   begin
     temp := TListItem.Create('item' + IntToStr(List.Getcount));
-    List.add('item' + IntToStr(List.Getcount - 1), temp);
+    List.Add('item' + IntToStr(List.Getcount - 1), temp);
   end;
 end;
 
@@ -183,29 +227,30 @@ end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 var
-  ListItem: TListControl;
+  ListItem: TListItem;
   i, k: integer;
-  s1, s2: string;
+  info: string;
 begin
   Form2.ShowModal;
-  s1 := Form2.Edit1.Text;
-  ListItem := TListControl.Create(FlowPanel1);
-  // ListItem.ItemMain.Arrow1.visible := True;
-  ListItem.ItemMain.TitleMain := s1;
-  ListItem.IsLast := false;
-  // ListItem.Refresh;
-  // ControlList[i] := ListItem;
-
-  ListItem.IsLast := True;
+  info := Form2.Edit1.Text;
+  ListItem := TListItem.Create(info);
+  List.Add('', ListItem);
 
   ButtonAddAfter.Enabled := True;
   ButtonAddBefore.Enabled := True;
 
+  RedrawPanel;
 end;
 
 procedure TForm1.Button4Click(Sender: TObject);
 begin
   List.NextStep;
+  RedrawPanel;
+end;
+
+procedure TForm1.Button5Click(Sender: TObject);
+begin
+  RedrawPanel;
 end;
 
 procedure TForm1.ButtonAddAfterClick(Sender: TObject);

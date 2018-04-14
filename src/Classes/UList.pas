@@ -14,10 +14,13 @@ Type
     First: TListItem;
     ThreadId: Integer;
     FState: TListState;
+    FTempItem: TListItem;
+    FNewItem: TListItem;
 
     procedure _Add();
     Function _Delete(SearchItem: string): boolean;
   Public
+    State: TListState;
     Constructor Create;
     Function Getcount: Integer;
     Function GetFirst: TListItem;
@@ -25,8 +28,11 @@ Type
     Function Delete(SearchItem: string): boolean;
     Function Search(SearchItem: string): TListItem;
     procedure NextStep();
+
   protected
-    property State: TListState read FState write FState;
+    // property State: TListState read FState write FState;
+    property TempItem: TListItem read FTempItem;
+    property NewItem: TListItem read FNewItem;
   End;
 
 implementation
@@ -80,9 +86,18 @@ end;
 
 procedure TList._Add();
 var
-  Temp: TListItem;
   NewItem: TListItem;
   SearchItem: string;
+
+  procedure FuncEnd();
+  begin
+    State:=lsNormal;
+    TLogger.Log('=====Закончили добавление нового элемента в список=====');
+    CritSec.Leave;
+    EndThread(0);
+    exit;
+  end;
+
 Begin
   CritSec.Enter;
 
@@ -92,42 +107,42 @@ Begin
   TLogger.Log('=====Добавление нового элемента в список=====');
   If First = nil then
   begin
-    TLogger.Log('добавление первого элемента в список');
+    TLogger.Log('Список пуст. Добавляем первый элемент');
     TLogger.Log('Указатель First адресуем с новый элемент');
     First := NewItem;
+    NewItem.IsFirst := true;
     SuspendThread(ThreadId);
     TLogger.Log('Увеличиваем счетчик числа элементов');
     inc(Count);
     // result := true;
-    TLogger.Log('=====Закончили добавление нового элемента в список=====');
-    CritSec.Leave;
-    EndThread(0);
-    exit;
+    FuncEnd();
   End;
   TLogger.Log('=====Поиск заданного элемента=====');
-  Temp := Search(SearchItem);
-  If Temp = nil then
+  FTempItem := Search(SearchItem);
+  If TempItem = nil then
   begin
     TLogger.Log('Искомый элемент не найден');
     // result := false;
-    TLogger.Log('=====Закончили добавление нового элемента в список=====');
-    CritSec.Leave;
-    EndThread(0);
-    exit;
+    FuncEnd();
   end;
-  If Temp.GetNext = nil then
+  If TempItem.GetNext = nil then
   begin
+    TempItem.IsAddAfter := true;
     TLogger.Log('Адресное поле next у найденного = null. Добавляем в конец.');
     NewItem.SetNext(nil);
     SuspendThread(ThreadId);
-    NewItem.SetPrev(Temp);
+    TLogger.Log
+      ('В адресной поле "Prev" для нового элемента записываем ссылку на найденного');
+    NewItem.SetPrev(TempItem);
     SuspendThread(ThreadId);
     TLogger.Log
       ('В адресной поле "Next" для найденного элемента записываем ссылку на новый элемент "New" ');
-    Temp.SetNext(NewItem);
+    TempItem.SetNext(NewItem);
     SuspendThread(ThreadId);
     TLogger.Log('Увеличиваем счетчик числа элементов');
-    inc(Count)
+    inc(Count);
+    TempItem.IsAddAfter := false;
+    NewItem.IsLast := true;
     // result := true
   End
   Else
@@ -135,11 +150,11 @@ Begin
     TLogger.Log('Формируем поля нового элемента, в частности:');
     TLogger.Log
       ('в поле next заносится адрес следующего элемента (берется из поля next найденного элемента)');
-    NewItem.SetNext(Temp.GetNext);
+    NewItem.SetNext(TempItem.GetNext);
     SuspendThread(ThreadId);
     TLogger.Log
       ('в поле prev заносится адрес предшествующего элемента, которым является найденный элемент');
-    NewItem.SetPrev(Temp);
+    NewItem.SetPrev(TempItem);
     SuspendThread(ThreadId);
     TLogger.Log
       ('Изменяем адресное поле prev у элемента, который должен следовать за новым, на адрес нового элемента');
@@ -147,12 +162,10 @@ Begin
     SuspendThread(ThreadId);
     TLogger.Log
       ('Изменяем адресное поле next у найденного элемента на адрес нового элемента');
-    Temp.SetNext(NewItem);
+    TempItem.SetNext(NewItem);
     inc(Count)
   End;
-  TLogger.Log('=====Закончили добавление нового элемента в список=====');
-  CritSec.Leave;
-  EndThread(0);
+  FuncEnd();
 end;
 
 Function TList._Delete(SearchItem: string): boolean;
@@ -191,25 +204,23 @@ begin
 end;
 
 Function TList.Search(SearchItem: string): TListItem;
-var
-  Temp: TListItem;
 begin
   result := nil;
   TLogger.Log('Устанавливаем указатель temp в адрес первого элемента в списке');
-  Temp := First;
+  FTempItem := First;
   SuspendThread(ThreadId);
   TLogger.Log('Сравниваем искомый элемент с текущим:');
-  while (Temp <> nil) do
-    if (Temp.GetInfo = SearchItem) then
+  while (FTempItem <> nil) do
+    if (FTempItem.GetInfo = SearchItem) then
     begin
-      TLogger.Log(Temp.GetInfo + ' = ' + SearchItem);
-      result := Temp;
+      TLogger.Log(FTempItem.GetInfo + ' = ' + SearchItem);
+      result := FTempItem;
       break;
     end
     else
     begin
-      TLogger.Log(Temp.GetInfo + ' <> ' + SearchItem);
-      Temp := Temp.GetNext;
+      TLogger.Log(FTempItem.GetInfo + ' <> ' + SearchItem);
+      FTempItem := FTempItem.GetNext;
       SuspendThread(ThreadId);
       TLogger.Log('Переходим к следующему');
     end;

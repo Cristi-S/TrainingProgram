@@ -142,6 +142,7 @@ Begin
     TLogger.Log('Увеличиваем счетчик числа элементов');
     inc(Count);
     TempItem.IsAddAfter := false;
+    TempItem.IsLast:=false;
     NewItem.IsLast := true;
     // result := true
   End

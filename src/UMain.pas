@@ -130,16 +130,12 @@ begin
   PlaceControlItems;
 end;
 
-// Обработчик события MyEvent для объектов, принадлежащих типу TMyClass.
+// Обработчик события ThreadSyspended для объектов, принадлежащих типу TList.
 procedure TForm1.OnThreadSyspended(Sender: TObject);
-var
-  MyObj: TList;
 begin
   if not(Sender is TList) then
     Exit;
-
-  MyObj := Sender as TList;
-  ShowMessage('Событие MyEvent произошло!');
+  RedrawPanel;
 end;
 
 procedure TForm1.Button10Click(Sender: TObject);
@@ -259,7 +255,6 @@ end;
 procedure TForm1.Button4Click(Sender: TObject);
 begin
   List.NextStep;
-  RedrawPanel;
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);

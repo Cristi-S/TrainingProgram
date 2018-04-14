@@ -104,6 +104,7 @@ var
   procedure FuncEnd();
   begin
     State := lsNormal;
+    GenericMyEvent;
     TLogger.Log('=====Закончили добавление нового элемента в список=====');
     CritSec.Leave;
     EndThread(0);
@@ -129,6 +130,7 @@ Begin
     TLogger.Log('Указатель First адресуем с новый элемент');
     First := NewItem;
     NewItem.IsFirst := true;
+    NewItem.IsLast := true;
     Pause();
     TLogger.Log('Увеличиваем счетчик числа элементов');
     inc(Count);
@@ -262,6 +264,7 @@ begin
   ResumeThread(ThreadId);
 end;
 {$ENDREGION}
+{$REGION 'Event'}
 
 procedure TList.DoMyEvent;
 begin
@@ -282,5 +285,7 @@ begin
     DoMyEvent;
   end;
 end;
+
+{$ENDREGION}
 
 end.

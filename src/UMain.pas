@@ -30,6 +30,8 @@ type
     Memo1: TMemo;
     Button9: TButton;
     Button10: TButton;
+    Button1: TButton;
+    Button4: TButton;
     procedure ButtonCreateClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -43,6 +45,8 @@ type
     procedure Button9Click(Sender: TObject);
     procedure Button10Click(Sender: TObject);
     procedure ButtonAddBeforeClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -143,6 +147,22 @@ begin
   ButtonClear.Enabled := True;
 end;
 
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  temp: TListItem;
+begin
+  if List.Getcount = 0 then
+  begin
+    temp := TListItem.Create('item' + IntToStr(List.Getcount));
+    List.add('', temp);
+  end
+  else
+  begin
+    temp := TListItem.Create('item' + IntToStr(List.Getcount));
+    List.add('item' + IntToStr(List.Getcount - 1), temp);
+  end;
+end;
+
 procedure TForm1.Button2Click(Sender: TObject);
 var
   ListItem: TListControl;
@@ -183,6 +203,11 @@ begin
 
 end;
 
+procedure TForm1.Button4Click(Sender: TObject);
+begin
+  List.NextStep;
+end;
+
 procedure TForm1.ButtonAddAfterClick(Sender: TObject);
 var
   ListItem: TListControl;
@@ -190,8 +215,8 @@ var
   s1, s2: string;
 begin
   k := StrToInt(InputBox('Новый элемент',
-    'Введите номер элемента,ПОСЛЕ которого хотите добавить новый элемент:', '1')
-    ) - 1;
+    'Введите номер элемента,ПОСЛЕ которого хотите добавить новый элемент:',
+    '1')) - 1;
 
   ListItem := TListControl.Create(FlowPanel1);
   ListItem.ItemMain.TitleMain := 'new';

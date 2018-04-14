@@ -6,11 +6,14 @@ Uses
   UListItem, SyncObjs, System.Classes, Windows, dialogs;
 
 Type
+  TListState = (lsNormal, lsAddbefore, lsAddafter, lsDelete);
+
   TList = class
   Private
     Count: Integer;
     First: TListItem;
     ThreadId: Integer;
+    FState: TListState;
 
     procedure _Add();
     Function _Delete(SearchItem: string): boolean;
@@ -22,6 +25,8 @@ Type
     Function Delete(SearchItem: string): boolean;
     Function Search(SearchItem: string): TListItem;
     procedure NextStep();
+  protected
+    property State: TListState read FState write FState;
   End;
 
 implementation
@@ -38,8 +43,11 @@ Constructor TList.Create;
 begin
   Count := 0;
   First := nil;
+  State := lsNormal;
   CritSec := TCriticalSection.Create;
 end;
+
+{$REGION 'Public functions'}
 
 Function TList.Getcount: Integer;
 begin
@@ -57,8 +65,18 @@ var
 begin
   _NewItem := NewItem;
   _SearchItem := msg;
+  State := lsAddafter;
   ThreadId := BeginThread(nil, 0, @TList._Add, Self, 0, id);
 end;
+
+Function TList.Delete(SearchItem: string): boolean;
+begin
+  State := lsDelete;
+  _Delete(SearchItem);
+end;
+
+{$ENDREGION}
+{$REGION 'Thread functions'}
 
 procedure TList._Add();
 var
@@ -137,11 +155,6 @@ Begin
   EndThread(0);
 end;
 
-Function TList.Delete(SearchItem: string): boolean;
-begin
-  _Delete(SearchItem);
-end;
-
 Function TList._Delete(SearchItem: string): boolean;
 var
   Temp: TListItem;
@@ -206,5 +219,6 @@ Procedure TList.NextStep();
 begin
   ResumeThread(ThreadId);
 end;
+{$ENDREGION}
 
 end.

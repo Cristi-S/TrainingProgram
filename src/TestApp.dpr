@@ -2,7 +2,7 @@ program TestApp;
 
 uses
   Vcl.Forms,
-  UnitMain in 'C:\Users\Тимур\Documents\Embarcadero\Studio\Projects\Threads\UnitMain.pas' {Form3};
+  UnitTest in 'UnitTest.pas' {Form3};
 
 {$R *.res}
 

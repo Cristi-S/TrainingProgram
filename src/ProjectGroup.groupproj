@@ -9,7 +9,7 @@
         <Projects Include="ItemControl.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="C:\Users\Тимур\Documents\Embarcadero\Studio\Projects\Threads\TestApp.dproj">
+        <Projects Include="TestApp.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -39,13 +39,13 @@
         <MSBuild Projects="ItemControl.dproj" Targets="Make"/>
     </Target>
     <Target Name="TestApp">
-        <MSBuild Projects="C:\Users\Тимур\Documents\Embarcadero\Studio\Projects\Threads\TestApp.dproj"/>
+        <MSBuild Projects="TestApp.dproj"/>
     </Target>
     <Target Name="TestApp:Clean">
-        <MSBuild Projects="C:\Users\Тимур\Documents\Embarcadero\Studio\Projects\Threads\TestApp.dproj" Targets="Clean"/>
+        <MSBuild Projects="TestApp.dproj" Targets="Clean"/>
     </Target>
     <Target Name="TestApp:Make">
-        <MSBuild Projects="C:\Users\Тимур\Documents\Embarcadero\Studio\Projects\Threads\TestApp.dproj" Targets="Make"/>
+        <MSBuild Projects="TestApp.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
         <CallTarget Targets="Training;ItemControl;TestApp"/>

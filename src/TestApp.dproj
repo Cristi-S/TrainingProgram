@@ -99,7 +99,7 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="C:\Users\Тимур\Documents\Embarcadero\Studio\Projects\Threads\UnitMain.pas">
+        <DCCReference Include="UnitTest.pas">
             <Form>Form3</Form>
             <FormType>dfm</FormType>
         </DCCReference>

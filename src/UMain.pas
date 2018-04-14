@@ -49,6 +49,8 @@ type
     procedure Button1Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
+    // Обработчик события MyEvent для объектов, принадлежащих типу TMyClass.
+    procedure OnThreadSyspended(Sender: TObject);
   private
     { Private declarations }
   public
@@ -128,6 +130,18 @@ begin
   PlaceControlItems;
 end;
 
+// Обработчик события MyEvent для объектов, принадлежащих типу TMyClass.
+procedure TForm1.OnThreadSyspended(Sender: TObject);
+var
+  MyObj: TList;
+begin
+  if not(Sender is TList) then
+    Exit;
+
+  MyObj := Sender as TList;
+  ShowMessage('Событие MyEvent произошло!');
+end;
+
 procedure TForm1.Button10Click(Sender: TObject);
 begin
   // ListControl.Items[1].ItemMain.color := clLime;
@@ -147,7 +161,7 @@ begin
   if j > 6 then
   begin
     ShowMessage('Введите число от 1 до 7');
-    exit;
+    Exit;
   end;
   if RadioButton1.Checked = True then
 
@@ -359,6 +373,8 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   List := TList.Create;
+  // Для MyObj1 и MyObj2 назначаем обработчики события MyEvent.
+  List.OnThreadSyspended := OnThreadSyspended;
   ListControl := TList<TListControl>.Create;
 end;
 

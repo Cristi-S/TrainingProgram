@@ -16,7 +16,11 @@ Type
     FState: TListState;
     FTempItem: TListItem;
     FNewItem: TListItem;
-
+    // Поле ссылающееся на обработчик события MyEvent.
+    // Тип TNotifyEvent описан в модуле Clases так: TNotifyEvent = procedure(Sender: TObject) of object;
+    // Фраза  "of object" означает, что в качестве обработчика можно назначить только метод какого-либо
+    // класса, а не произвольную процедуру.
+    FOnThreadSuspended: TNotifyEvent;
     procedure _Add();
     Function _Delete(SearchItem: string): boolean;
   Public
@@ -28,7 +32,15 @@ Type
     Function Delete(SearchItem: string): boolean;
     Function Search(SearchItem: string): TListItem;
     procedure NextStep();
-
+    // Эта процедура проверяет задан ли обработчик события. И, если задан, запускает его.
+    procedure DoMyEvent; dynamic;
+    // Это свойство позволяет назначить обработчик для обработки события MyEvent.
+    property OnThreadSyspended: TNotifyEvent read FOnThreadSuspended
+      write FOnThreadSuspended;
+    // Процедура, которая принимает решение - произошло событие MyEvent или нет.
+    // Таких процедур может быть несколько - везде где может возникнуть событие MyEvent.
+    // Если событие MyEvent произошло, то вызвается процедура DoMyEvent().
+    procedure GenericMyEvent;
   protected
     // property State: TListState read FState write FState;
     property TempItem: TListItem read FTempItem;
@@ -91,11 +103,17 @@ var
 
   procedure FuncEnd();
   begin
-    State:=lsNormal;
+    State := lsNormal;
     TLogger.Log('=====Закончили добавление нового элемента в список=====');
     CritSec.Leave;
     EndThread(0);
     exit;
+  end;
+
+  procedure Pause();
+  begin
+    GenericMyEvent;
+    SuspendThread(ThreadId);
   end;
 
 Begin
@@ -111,7 +129,7 @@ Begin
     TLogger.Log('Указатель First адресуем с новый элемент');
     First := NewItem;
     NewItem.IsFirst := true;
-    SuspendThread(ThreadId);
+    Pause();
     TLogger.Log('Увеличиваем счетчик числа элементов');
     inc(Count);
     // result := true;
@@ -130,19 +148,19 @@ Begin
     TempItem.IsAddAfter := true;
     TLogger.Log('Адресное поле next у найденного = null. Добавляем в конец.');
     NewItem.SetNext(nil);
-    SuspendThread(ThreadId);
+    Pause();
     TLogger.Log
       ('В адресной поле "Prev" для нового элемента записываем ссылку на найденного');
     NewItem.SetPrev(TempItem);
-    SuspendThread(ThreadId);
+    Pause();
     TLogger.Log
       ('В адресной поле "Next" для найденного элемента записываем ссылку на новый элемент "New" ');
     TempItem.SetNext(NewItem);
-    SuspendThread(ThreadId);
+    Pause();
     TLogger.Log('Увеличиваем счетчик числа элементов');
     inc(Count);
     TempItem.IsAddAfter := false;
-    TempItem.IsLast:=false;
+    TempItem.IsLast := false;
     NewItem.IsLast := true;
     // result := true
   End
@@ -152,15 +170,15 @@ Begin
     TLogger.Log
       ('в поле next заносится адрес следующего элемента (берется из поля next найденного элемента)');
     NewItem.SetNext(TempItem.GetNext);
-    SuspendThread(ThreadId);
+    Pause();
     TLogger.Log
       ('в поле prev заносится адрес предшествующего элемента, которым является найденный элемент');
     NewItem.SetPrev(TempItem);
-    SuspendThread(ThreadId);
+    Pause();
     TLogger.Log
       ('Изменяем адресное поле prev у элемента, который должен следовать за новым, на адрес нового элемента');
     NewItem.GetNext.SetPrev(NewItem);
-    SuspendThread(ThreadId);
+    Pause();
     TLogger.Log
       ('Изменяем адресное поле next у найденного элемента на адрес нового элемента');
     TempItem.SetNext(NewItem);
@@ -172,6 +190,12 @@ end;
 Function TList._Delete(SearchItem: string): boolean;
 var
   Temp: TListItem;
+  procedure Pause();
+  begin
+    GenericMyEvent;
+    SuspendThread(ThreadId);
+  end;
+
 begin
   result := false;
   if Count = 0 then
@@ -205,11 +229,17 @@ begin
 end;
 
 Function TList.Search(SearchItem: string): TListItem;
+  procedure Pause();
+  begin
+    GenericMyEvent;
+    SuspendThread(ThreadId);
+  end;
+
 begin
   result := nil;
   TLogger.Log('Устанавливаем указатель temp в адрес первого элемента в списке');
   FTempItem := First;
-  SuspendThread(ThreadId);
+  Pause();
   TLogger.Log('Сравниваем искомый элемент с текущим:');
   while (FTempItem <> nil) do
     if (FTempItem.GetInfo = SearchItem) then
@@ -222,7 +252,7 @@ begin
     begin
       TLogger.Log(FTempItem.GetInfo + ' <> ' + SearchItem);
       FTempItem := FTempItem.GetNext;
-      SuspendThread(ThreadId);
+      Pause();
       TLogger.Log('Переходим к следующему');
     end;
 end;
@@ -232,5 +262,25 @@ begin
   ResumeThread(ThreadId);
 end;
 {$ENDREGION}
+
+procedure TList.DoMyEvent;
+begin
+  // Если обработчик назначен, то запускаем его.
+  if Assigned(FOnThreadSuspended) then
+    FOnThreadSuspended(Self);
+end;
+
+procedure TList.GenericMyEvent;
+var
+  MyEventIsOccurred: boolean;
+begin
+  MyEventIsOccurred := true;
+  // Если верно некоторое условие, которое подтверждает, что событие MyEvent
+  // произошло, то делаем попытку запустить связанный обработчик.
+  if MyEventIsOccurred then
+  begin
+    DoMyEvent;
+  end;
+end;
 
 end.

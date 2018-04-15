@@ -242,31 +242,40 @@ object Form1: TForm1
     TabOrder = 8
     OnClick = Button10Click
   end
-  object Button1: TButton
+  object ButtonAppend: TButton
     Left = 262
     Top = 575
     Width = 75
     Height = 25
-    Caption = 'Button1'
+    Caption = 'Append'
     TabOrder = 9
-    OnClick = Button1Click
+    OnClick = ButtonAppendClick
   end
-  object Button4: TButton
-    Left = 384
+  object ButtonNext: TButton
+    Left = 458
     Top = 575
     Width = 75
     Height = 25
-    Caption = 'Button4'
+    Caption = 'Next'
     TabOrder = 10
-    OnClick = Button4Click
+    OnClick = ButtonNextClick
   end
-  object Button5: TButton
+  object ButtonRefresh: TButton
     Left = 684
     Top = 575
     Width = 75
     Height = 25
-    Caption = 'Button5'
+    Caption = 'Refresh'
     TabOrder = 11
-    OnClick = Button5Click
+    OnClick = ButtonRefreshClick
+  end
+  object ButtonInsert: TButton
+    Left = 347
+    Top = 575
+    Width = 75
+    Height = 25
+    Caption = 'insert'
+    TabOrder = 12
+    OnClick = ButtonInsertClick
   end
 end

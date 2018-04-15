@@ -30,9 +30,10 @@ type
     Memo1: TMemo;
     Button9: TButton;
     Button10: TButton;
-    Button1: TButton;
-    Button4: TButton;
-    Button5: TButton;
+    ButtonAppend: TButton;
+    ButtonNext: TButton;
+    ButtonRefresh: TButton;
+    ButtonInsert: TButton;
     procedure ButtonCreateClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -46,11 +47,12 @@ type
     procedure Button9Click(Sender: TObject);
     procedure Button10Click(Sender: TObject);
     procedure ButtonAddBeforeClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
-    procedure Button4Click(Sender: TObject);
-    procedure Button5Click(Sender: TObject);
+    procedure ButtonAppendClick(Sender: TObject);
+    procedure ButtonNextClick(Sender: TObject);
+    procedure ButtonRefreshClick(Sender: TObject);
     // Обработчик события MyEvent для объектов, принадлежащих типу TMyClass.
     procedure OnThreadSyspended(Sender: TObject);
+    procedure ButtonInsertClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -126,6 +128,7 @@ begin
           ListControlItem.ItemMain.TitleMain := temp.GetInfo;
           ListControlItem.ItemMain.TitleNext := temp.GetNextInfo;
           ListControlItem.ItemMain.TitlePrev := temp.GetPrevInfo;
+
           ListControlItem.IsLast := temp.IsLast;
           ListControlItem.IsFirst := temp.IsFirst;
           ListControlItem.IsAddAfter := temp.IsAddAfter;
@@ -136,10 +139,57 @@ begin
             NewListControlItem.ItemMain.TitleMain := List.NewItem.GetInfo;
             NewListControlItem.ItemMain.TitleNext := List.NewItem.GetNextInfo;
             NewListControlItem.ItemMain.TitlePrev := List.NewItem.GetPrevInfo;
+            NewListControlItem.State := new;
             NewListControlItem.IsLast := List.NewItem.IsLast;
             NewListControlItem.IsFirst := List.NewItem.IsFirst;
+            NewListControlItem.ItemMain.color := clGreen;
+
+            // стрелочки
+            ListControlItem.ItemMain.ArrowRight.visible :=
+              (temp.GetNext = List.NewItem) and (temp.IsLast);
+
+            // стрелочки при добавлении в середину для нового элемента
+            if temp.GetNext <> nil then
+            begin
+              NewListControlItem.ItemMain.ArrowUpRight.visible :=
+                (temp.GetNext = List.NewItem.GetNext);
+              NewListControlItem.ItemMain.ArrowDownRight.visible :=
+                (List.NewItem = temp.GetNext.GetPrev);
+
+              ListControlItem.ItemMain.ArrowDownLeft.visible :=
+                (temp.GetNext = List.NewItem);
+              ListControlItem.ItemMain.ArrowUpLeft.visible :=
+                (temp = List.NewItem.GetPrev);
+
+              // длинные
+              ListControlItem.ItemMain.ArrowLongLeft.visible :=
+                (temp.GetNext <> List.NewItem) and
+                (temp.GetNext.GetPrev = temp);
+              ListControlItem.ItemMain.ArrowLongRight.visible :=
+                (temp.GetNext <> List.NewItem) and (temp.GetNext <> nil);
+
+            end;
+
+            if temp.IsLast then
+            begin
+              NewListControlItem.State := normal;
+              NewListControlItem.IsLast := true;
+            end
+            else
+            begin
+              NewListControlItem.State := new;
+              ListControlItem.State := addAfter;
+            end;
+
             ListControl.Add(NewListControlItem);
           end;
+
+          // закрашивание temp
+          if temp = List.TempItem then
+          begin
+            ListControlItem.ItemMain.color := clBlue;
+          end;
+
           temp := temp.GetNext;
         end;
       end;
@@ -181,7 +231,7 @@ begin
     ShowMessage('Введите число от 1 до 7');
     Exit;
   end;
-  if RadioButton1.Checked = True then
+  if RadioButton1.Checked = true then
 
     for i := 1 to j do
     begin
@@ -205,25 +255,25 @@ begin
       ListItem.ItemMain.TitleNext := s2;
       if i = 1 then
       begin
-        ListItem.IsFirst := True;
+        ListItem.IsFirst := true;
       end;
       ListItem.IsLast := false;
       ListControl.Add(ListItem);
       RedrawPanel();
     end;
-  if RadioButton2.Checked = True then
+  if RadioButton2.Checked = true then
   begin
     ListItem := TListControl.Create(FlowPanel1);
     ListItem.IsLast := false;
     ListControl.Add(ListItem);
   end;
-  ListItem.IsLast := True;
-  ButtonAddAfter.Enabled := True;
-  ButtonAddBefore.Enabled := True;
-  ButtonClear.Enabled := True;
+  ListItem.IsLast := true;
+  ButtonAddAfter.Enabled := true;
+  ButtonAddBefore.Enabled := true;
+  ButtonClear.Enabled := true;
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TForm1.ButtonAppendClick(Sender: TObject);
 var
   temp: TListItem;
 begin
@@ -268,23 +318,42 @@ begin
   ListItem := TListItem.Create(info);
   List.Add('', ListItem);
 
-  ButtonAddAfter.Enabled := True;
-  ButtonAddBefore.Enabled := True;
+  ButtonAddAfter.Enabled := true;
+  ButtonAddBefore.Enabled := true;
 
   RedrawPanel;
 end;
 
-procedure TForm1.Button4Click(Sender: TObject);
+procedure TForm1.ButtonNextClick(Sender: TObject);
 begin
   List.NextStep;
 end;
 
-procedure TForm1.Button5Click(Sender: TObject);
+procedure TForm1.ButtonRefreshClick(Sender: TObject);
 begin
   ButtonClearClick(Sender);
   // FlowPanel1.Components.DestroyComponents;
   { TODO пересмоттреть очистку списка, т.к. панель не очищается }
   PlaceControlItems();
+end;
+
+procedure TForm1.ButtonInsertClick(Sender: TObject);
+var
+  temp: TListItem;
+  searchItem: string;
+begin
+  if List.Getcount = 0 then
+  begin
+    temp := TListItem.Create('item' + IntToStr(List.Getcount));
+    List.Add('', temp);
+  end
+  else
+  begin
+    searchItem := InputBox('Новый элемент',
+      'Введите элемент, после которого добавить новый :', 'item1');
+    temp := TListItem.Create('itemNew');
+    List.Add(searchItem, temp);
+  end;
 end;
 
 procedure TForm1.ButtonAddAfterClick(Sender: TObject);
@@ -305,7 +374,7 @@ begin
   if ListControl[k].IsLast then
   begin
     ListItem.State := normal;
-    ListItem.IsLast := True;
+    ListItem.IsLast := true;
   end
   else
   begin
@@ -336,7 +405,7 @@ begin
   if ListControl[k].IsLast then
   begin
     ListItem.State := normal;
-    ListItem.IsLast := True;
+    ListItem.IsLast := true;
   end
   else
   begin
@@ -376,7 +445,7 @@ procedure TForm1.Button9Click(Sender: TObject);
 begin
   ListControl.Last.ItemMain.color := clRed;
 
-  ListControl.Items[0].ItemMain.ArrowRight.cross.visible := True;
+  ListControl.Items[0].ItemMain.ArrowRight.cross.visible := true;
   RedrawPanel();
 end;
 
@@ -396,19 +465,19 @@ end;
 
 procedure TForm1.RadioButton1Click(Sender: TObject);
 begin
-  if RadioButton1.Checked = True then
+  if RadioButton1.Checked = true then
   begin
     Edit1.ReadOnly := false;
-    ButtonCreate.Enabled := True;
+    ButtonCreate.Enabled := true;
   end;
 end;
 
 procedure TForm1.RadioButton2Click(Sender: TObject);
 begin
-  if RadioButton2.Checked = True then
+  if RadioButton2.Checked = true then
 
   begin
-    Button3.Enabled := True;
+    Button3.Enabled := true;
     Edit1.ReadOnly := false;
   end
 end;

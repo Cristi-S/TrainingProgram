@@ -42,9 +42,10 @@ Type
     // Если событие MyEvent произошло, то вызвается процедура DoMyEvent().
     procedure GenericMyEvent;
     property NewItem: TListItem read FNewItem;
+    property TempItem: TListItem read FTempItem;
   protected
     // property State: TListState read FState write FState;
-    property TempItem: TListItem read FTempItem;
+    // property TempItem: TListItem read FTempItem;
     // property NewItem: TListItem read FNewItem;
   End;
 
@@ -103,15 +104,21 @@ var
   SearchItem: string;
   procedure CLeanListItemsStates;
   var
-    temp: TListItem;
+    temp, last: TListItem;
   begin
     temp := First;
     while temp <> nil do
     begin
       temp.IsAddBefore := false;
       temp.IsAddAfter := false;
+      temp.IsFirst := false;
+      temp.IsLast := false;
+      last:=temp;
       temp := temp.GetNext;
     end;
+
+    First.IsFirst:=true;
+    last.IsLast:=true;
 
     FTempItem := nil;
     FNewItem := nil;
@@ -186,6 +193,7 @@ Begin
   End
   Else
   Begin
+    TempItem.IsAddAfter := True;
     TLogger.Log('Формируем поля нового элемента, в частности:');
     TLogger.Log
       ('в поле next заносится адрес следующего элемента (берется из поля next найденного элемента)');
@@ -272,8 +280,8 @@ begin
     begin
       TLogger.Log(FTempItem.GetInfo + ' <> ' + SearchItem);
       FTempItem := FTempItem.GetNext;
-      Pause();
       TLogger.Log('Переходим к следующему');
+      Pause();
     end;
 end;
 

@@ -97,8 +97,8 @@ begin
   IsFirst := false;
   IsLast := false;
 
-   ItemMain.ArrowLeft.visible := true;
-   ItemMain.ArrowRight.visible := true;
+  ItemMain.ArrowLeft.visible := true;
+  ItemMain.ArrowRight.visible := true;
   // ItemMain.ArrowUpLeft.visible := true;
   // ItemMain.ArrowUpRight.visible := true;
   // ItemMain.ArrowDownLeft.visible := true;

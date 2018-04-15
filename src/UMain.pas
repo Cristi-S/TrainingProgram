@@ -171,9 +171,17 @@ begin
             end;
 
             if temp.IsLast then
-            begin
+            begin                  
+              ListControlItem.IsLast:=False;
               NewListControlItem.State := normal;
-              NewListControlItem.IsLast := true;
+              // NewListControlItem.IsLast := true;
+              ListControlItem.ItemMain.ArrowRight.visible :=
+                (temp.GetNext <> nil);
+
+              ListControlItem.ItemMain.ArrowLeft.visible :=
+              // (temp.GetNext <> List.NewItem) and
+                (List.NewItem.GetPrev <> nil);
+
             end
             else
             begin

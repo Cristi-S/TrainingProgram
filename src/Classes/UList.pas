@@ -3,7 +3,7 @@ unit UList;
 interface
 
 Uses
-  UListItem, SyncObjs, System.Classes, Windows, dialogs;
+  UListItem, SyncObjs, System.Classes, Windows, dialogs, SysUtils;
 
 Type
   TListState = (lsNormal, lsAddbefore, lsAddAfter, lsDelete);
@@ -13,7 +13,7 @@ Type
     Count: Integer;
     First: TListItem;
     ThreadId: Integer;
-    FState: TListState;
+    // FState: TListState;
     FTempItem: TListItem;
     FNewItem: TListItem;
     // Поле ссылающееся на обработчик события MyEvent.
@@ -43,10 +43,6 @@ Type
     procedure GenericMyEvent;
     property NewItem: TListItem read FNewItem;
     property TempItem: TListItem read FTempItem;
-  protected
-    // property State: TListState read FState write FState;
-    // property TempItem: TListItem read FTempItem;
-    // property NewItem: TListItem read FNewItem;
   End;
 
 implementation
@@ -148,6 +144,7 @@ Begin
   SearchItem := _SearchItem;
 
   TLogger.Log('=====Добавление нового элемента в список=====');
+
   If First = nil then
   begin
     TLogger.Log('Список пуст. Добавляем первый элемент');
@@ -195,7 +192,8 @@ Begin
   Else
   Begin
     TempItem.IsAddAfter := true;
-    TLogger.Log('Формируем поля нового элемента, в частности:');
+    TLogger.Log('Формируем поля нового элемента');
+    Pause();
     TLogger.Log
       ('в поле next заносится адрес следующего элемента (берется из поля next найденного элемента)');
     NewItem.SetNext(TempItem.GetNext);
@@ -217,8 +215,41 @@ Begin
 end;
 
 Function TList._Delete(SearchItem: string): boolean;
-var
-  temp: TListItem;
+// var
+// temp: TListItem;
+  procedure CLeanListItemsStates;
+  var
+    temp, last: TListItem;
+  begin
+    temp := First;
+    while temp <> nil do
+    begin
+      temp.IsAddBefore := false;
+      temp.IsAddAfter := false;
+      temp.IsFirst := false;
+      temp.IsLast := false;
+      last := temp;
+      temp := temp.GetNext;
+    end;
+
+    First.IsFirst := true;
+    last.IsLast := true;
+
+    FTempItem := nil;
+    FNewItem := nil;
+  end;
+
+  procedure FuncEnd();
+  begin
+    State := lsNormal;
+    CLeanListItemsStates;
+    GenericMyEvent;
+    TLogger.Log('=====Элемент удален из списка=====');
+    CritSec.Leave;
+    EndThread(0);
+    exit;
+  end;
+
   procedure Pause();
   begin
     GenericMyEvent;
@@ -226,35 +257,77 @@ var
   end;
 
 begin
+  CritSec.Enter;
+  TLogger.Log('=====Удаление элемента из списка=====');
+  TLogger.Log('1. Проверка наличия элементов в списке');
+  TLogger.Log('   count= ' + IntToStr(Count));
   result := false;
   if Count = 0 then
-    exit;
-  temp := Search(SearchItem);
-  If temp = First then
+    FuncEnd;
+
+  TLogger.Log('2. Поиск заданного элемента=====');
+  FTempItem := Search(SearchItem);
+  If TempItem = nil then
+  begin
+    TLogger.Log('Искомый элемент не найден');
+    // result := false;
+    FuncEnd();
+  end;
+  TLogger.Log('Искомый элемент найден, адресуем его указателем pTemp');
+  If FTempItem = First then
   begin
     // удаление единственного эл.
     If First.GetNext = nil then
     begin
+      TLogger.Log('=====Удаление единственного элемента из списка=====');
       result := true;
+      TLogger.Log('Указатель First адресуем в nil');
       First := nil;
+      Pause();
+      TLogger.Log('Уменьшаем количество элементов');
       Count := 0;
-      exit;
-    End;
-    // удаление первого эл.
-    First := temp.GetNext;
-    First.SetPrev(nil);
-    Count := Count - 1;
-    result := true;
-    temp := nil;
-    exit;
+      FuncEnd;
+    End
+    else
+    begin
+      // удаление первого эл.
+      TLogger.Log('=====Удаление первого элемента из списка=====');
+      TLogger.Log
+        ('3. Указатель First адресуем в следующий за удаляемым элементом');
+      First := FTempItem.GetNext;
+      Pause();
+      TLogger.Log
+        ('4. Изменяем адресное поле Prev у элемента следующего после удаляемого');
+      First.SetPrev(nil);
+      Pause();
+      TLogger.Log('5. Уменьшаем количество элементов');
+      Count := Count - 1;
+      result := true;
+      TLogger.Log('6. Обрабатываем удаляемый элемент');
+      FTempItem := nil;
+      FuncEnd;
+    end;
   End;
   // удаление из середины списка
-  temp.GetPrev.SetNext(temp.GetNext);
-  if temp.GetNext <> nil then
-    temp.GetNext.SetPrev(temp.GetPrev);
-  temp := nil;
+  TLogger.Log('=====Удаление элемента из середины списка=====');
+
+  TLogger.Log
+    ('3. Изменяем адресное поле next у элемента, предшествующего удаляемому на адрес элемента, следующего за удаляемым');
+  TempItem.GetPrev.SetNext(FTempItem.GetNext);
+  Pause();
+  TLogger.Log
+    ('4. Изменяем адресное поле prev у следующего за удаляемым элемента на адрес элемента, предшествующего удаляемому');
+  if FTempItem.GetNext <> nil then
+    FTempItem.GetNext.SetPrev(FTempItem.GetPrev);
+  Pause();
+  TLogger.Log('5. Обрабатываем удаляемый элемент');
+  FTempItem := nil;
+  Pause();
+  TLogger.Log('6. Уменьшаем количество элементов');
   Count := Count - 1;
+  Pause();
   result := true;
+  FuncEnd;
 end;
 
 Function TList.Search(SearchItem: string): TListItem;

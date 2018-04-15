@@ -41,6 +41,7 @@ object Form2: TForm2
     Top = 39
     Width = 121
     Height = 24
+    Enabled = False
     ReadOnly = True
     TabOrder = 1
   end

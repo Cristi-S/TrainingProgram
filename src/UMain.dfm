@@ -110,6 +110,7 @@ object Form1: TForm1
         Font.Style = []
         ParentFont = False
         TabOrder = 1
+        OnClick = ButtonDeleteClick
       end
       object ButtonAddAfter: TButton
         Left = 1
@@ -127,7 +128,7 @@ object Form1: TForm1
         TabOrder = 2
         OnClick = ButtonAddAfterClick
       end
-      object Button3: TButton
+      object ButtonAdd: TButton
         Left = 0
         Top = 6
         Width = 239
@@ -142,15 +143,15 @@ object Form1: TForm1
         Font.Style = []
         ParentFont = False
         TabOrder = 3
-        OnClick = Button3Click
+        OnClick = ButtonAddClick
       end
     end
-    object ButtonStop: TButton
+    object ButtonNext: TButton
       Left = 1
       Top = 344
       Width = 239
       Height = 48
-      Caption = #1057#1058#1054#1055
+      Caption = 'Next'
       Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -159,6 +160,7 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 2
+      OnClick = ButtonNextClick
     end
   end
   object Edit1: TEdit
@@ -170,34 +172,15 @@ object Form1: TForm1
     TabOrder = 1
     OnKeyPress = Edit1KeyPress
   end
-  object Button2: TButton
-    Left = 428
-    Top = 300
-    Width = 85
-    Height = 25
-    Caption = 'NextStep()'
-    TabOrder = 2
-    OnClick = Button2Click
-  end
   object ButtonCreate: TButton
-    Left = 684
+    Left = 436
     Top = 300
     Width = 137
     Height = 25
     Caption = #1057#1092#1086#1088#1084#1080#1088#1086#1074#1072#1090#1100
     Enabled = False
-    TabOrder = 3
+    TabOrder = 2
     OnClick = ButtonCreateClick
-  end
-  object ButtonClear: TButton
-    Left = 603
-    Top = 300
-    Width = 75
-    Height = 25
-    Caption = 'Clear'
-    Enabled = False
-    TabOrder = 4
-    OnClick = ButtonClearClick
   end
   object ScrollBox1: TScrollBox
     Left = 260
@@ -205,7 +188,7 @@ object Form1: TForm1
     Width = 813
     Height = 258
     HorzScrollBar.Increment = 1
-    TabOrder = 5
+    TabOrder = 3
     object FlowPanel1: TPanel
       Left = 0
       Top = 0
@@ -219,63 +202,9 @@ object Form1: TForm1
   end
   object Memo1: TMemo
     Left = 262
-    Top = 357
+    Top = 344
     Width = 811
-    Height = 212
-    TabOrder = 6
-  end
-  object Button9: TButton
-    Left = 950
-    Top = 298
-    Width = 121
-    Height = 25
-    Caption = 'SetLastItemColor'
-    TabOrder = 7
-    OnClick = Button9Click
-  end
-  object Button10: TButton
-    Left = 952
-    Top = 326
-    Width = 121
-    Height = 25
-    Caption = 'SetNewItemColor'
-    TabOrder = 8
-    OnClick = Button10Click
-  end
-  object ButtonAppend: TButton
-    Left = 262
-    Top = 575
-    Width = 75
-    Height = 25
-    Caption = 'Append'
-    TabOrder = 9
-    OnClick = ButtonAppendClick
-  end
-  object ButtonNext: TButton
-    Left = 458
-    Top = 575
-    Width = 75
-    Height = 25
-    Caption = 'Next'
-    TabOrder = 10
-    OnClick = ButtonNextClick
-  end
-  object ButtonRefresh: TButton
-    Left = 684
-    Top = 575
-    Width = 75
-    Height = 25
-    Caption = 'Refresh'
-    TabOrder = 11
-    OnClick = ButtonRefreshClick
-  end
-  object ButtonInsert: TButton
-    Left = 347
-    Top = 575
-    Width = 75
-    Height = 25
-    Caption = 'insert'
-    TabOrder = 12
-    OnClick = ButtonInsertClick
+    Height = 225
+    TabOrder = 4
   end
 end

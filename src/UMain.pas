@@ -19,21 +19,13 @@ type
     ButtonAddBefore: TButton;
     ButtonDelete: TButton;
     Edit1: TEdit;
-    Button2: TButton;
     ButtonCreate: TButton;
-    ButtonStop: TButton;
-    ButtonClear: TButton;
+    ButtonNext: TButton;
     Label1: TLabel;
-    Button3: TButton;
+    ButtonAdd: TButton;
     ScrollBox1: TScrollBox;
     FlowPanel1: TPanel;
     Memo1: TMemo;
-    Button9: TButton;
-    Button10: TButton;
-    ButtonAppend: TButton;
-    ButtonNext: TButton;
-    ButtonRefresh: TButton;
-    ButtonInsert: TButton;
     procedure ButtonCreateClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -42,7 +34,7 @@ type
     procedure RadioButton2Click(Sender: TObject);
     procedure Edit1KeyPress(Sender: TObject; var Key: Char);
     procedure ButtonAddAfterClick(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
+    procedure ButtonAddClick(Sender: TObject);
     procedure RedrawPanel();
     procedure Button9Click(Sender: TObject);
     procedure Button10Click(Sender: TObject);
@@ -53,6 +45,7 @@ type
     // Обработчик события MyEvent для объектов, принадлежащих типу TMyClass.
     procedure OnThreadSyspended(Sender: TObject);
     procedure ButtonInsertClick(Sender: TObject);
+    procedure ButtonDeleteClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -68,6 +61,39 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure UpdateButtonState;
+begin
+  with Form1 do
+  begin
+    case List.State of
+      lsNormal:
+        begin
+          ButtonNext.Enabled := false;
+          ButtonAddAfter.Enabled:=true;
+          ButtonAddBefore.Enabled:=true;
+        end;
+      lsAddbefore, lsAddAfter, lsDelete:
+        begin
+          ButtonAddAfter.Enabled:=false;
+          ButtonAddBefore.Enabled:=false;
+          ButtonNext.Enabled := true;
+        end;
+    end;
+    if List.Getcount > 0 then
+    begin
+      ButtonAdd.Enabled := false;
+      ButtonAddAfter.Enabled := true;
+      ButtonAddBefore.Enabled := true;
+    end
+    else
+    begin
+      ButtonAdd.Enabled := true;
+      ButtonAddAfter.Enabled := false;
+      ButtonAddBefore.Enabled := false;
+    end;
+  end;
+end;
 
 procedure PlaceControlItems();
 var
@@ -167,12 +193,11 @@ begin
                 (temp.GetNext.GetPrev = temp);
               ListControlItem.ItemMain.ArrowLongRight.visible :=
                 (temp.GetNext <> List.NewItem) and (temp.GetNext <> nil);
-
             end;
 
             if temp.IsLast then
-            begin                  
-              ListControlItem.IsLast:=False;
+            begin
+              ListControlItem.IsLast := false;
               NewListControlItem.State := normal;
               // NewListControlItem.IsLast := true;
               ListControlItem.ItemMain.ArrowRight.visible :=
@@ -181,7 +206,6 @@ begin
               ListControlItem.ItemMain.ArrowLeft.visible :=
               // (temp.GetNext <> List.NewItem) and
                 (List.NewItem.GetPrev <> nil);
-
             end
             else
             begin
@@ -205,9 +229,9 @@ begin
       begin
 
       end;
-
   end;
   PlaceControlItems;
+  UpdateButtonState;
 end;
 
 // Обработчик события ThreadSyspended для объектов, принадлежащих типу TList.
@@ -278,7 +302,15 @@ begin
   ListItem.IsLast := true;
   ButtonAddAfter.Enabled := true;
   ButtonAddBefore.Enabled := true;
-  ButtonClear.Enabled := true;
+end;
+
+procedure TForm1.ButtonDeleteClick(Sender: TObject);
+var
+  searchItem: string;
+begin
+  searchItem := InputBox('Удаление',
+    'Введите элемент, который нужно удалить :', 'item1');
+  List.Delete(searchItem);
 end;
 
 procedure TForm1.ButtonAppendClick(Sender: TObject);
@@ -315,7 +347,7 @@ begin
   ListControl[1].Refresh;
 end;
 
-procedure TForm1.Button3Click(Sender: TObject);
+procedure TForm1.ButtonAddClick(Sender: TObject);
 var
   ListItem: TListItem;
   i, k: integer;
@@ -325,11 +357,6 @@ begin
   info := Form2.Edit1.Text;
   ListItem := TListItem.Create(info);
   List.Add('', ListItem);
-
-  ButtonAddAfter.Enabled := true;
-  ButtonAddBefore.Enabled := true;
-
-  RedrawPanel;
 end;
 
 procedure TForm1.ButtonNextClick(Sender: TObject);
@@ -366,33 +393,17 @@ end;
 
 procedure TForm1.ButtonAddAfterClick(Sender: TObject);
 var
-  ListItem: TListControl;
-  i, k: integer;
-  s1, s2: string;
+  ListItem: TListItem;
+  searchItem: string;
+  info: string;
 begin
-  k := StrToInt(InputBox('Новый элемент',
-    'Введите номер элемента,ПОСЛЕ которого хотите добавить новый элемент:',
-    '1')) - 1;
-
-  ListItem := TListControl.Create(FlowPanel1);
-  ListItem.ItemMain.TitleMain := 'new';
-  ListItem.ItemMain.TitleNext := 'nul';
-  ListItem.ItemMain.TitlePrev := 'nul';
-
-  if ListControl[k].IsLast then
-  begin
-    ListItem.State := normal;
-    ListItem.IsLast := true;
-  end
-  else
-  begin
-    ListItem.State := new;
-    ListControl[k].State := addAfter;
-  end;
-
-  ListControl.Insert(k + 1, ListItem);
-
-  RedrawPanel();
+  if List.Getcount <> 0 then
+    Form2.ShowModal;
+  info := Form2.Edit1.Text;
+  ListItem := TListItem.Create(info);
+  searchItem := InputBox('Добавление после заданного',
+    'Введите элемент, после которого добавить новый :', 'item1');
+  List.Add(searchItem, ListItem);
 end;
 
 procedure TForm1.ButtonAddBeforeClick(Sender: TObject);
@@ -469,6 +480,7 @@ begin
   // Для MyObj1 и MyObj2 назначаем обработчики события MyEvent.
   List.OnThreadSyspended := OnThreadSyspended;
   ListControl := TList<TListControl>.Create;
+  UpdateButtonState;
 end;
 
 procedure TForm1.RadioButton1Click(Sender: TObject);
@@ -485,9 +497,10 @@ begin
   if RadioButton2.Checked = true then
 
   begin
-    Button3.Enabled := true;
+    ButtonAdd.Enabled := true;
     Edit1.ReadOnly := false;
-  end
+  end;
+  UpdateButtonState;
 end;
 
 end.

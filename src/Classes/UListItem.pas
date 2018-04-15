@@ -37,7 +37,7 @@ begin
   Next := nil;
   Prev := nil;
   FIsFirst := false;
-  FIsLast := false;
+  FIsLast := true;
   FIsAddBefore := false;
   FIsAddAfter := false;
 end;

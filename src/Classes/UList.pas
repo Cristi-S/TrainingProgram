@@ -6,7 +6,7 @@ Uses
   UListItem, SyncObjs, System.Classes, Windows, dialogs;
 
 Type
-  TListState = (lsNormal, lsAddbefore, lsAddafter, lsDelete);
+  TListState = (lsNormal, lsAddbefore, lsAddAfter, lsDelete);
 
   TList = class
   Private
@@ -41,10 +41,11 @@ Type
     // Таких процедур может быть несколько - везде где может возникнуть событие MyEvent.
     // Если событие MyEvent произошло, то вызвается процедура DoMyEvent().
     procedure GenericMyEvent;
+    property NewItem: TListItem read FNewItem;
   protected
     // property State: TListState read FState write FState;
     property TempItem: TListItem read FTempItem;
-    property NewItem: TListItem read FNewItem;
+    // property NewItem: TListItem read FNewItem;
   End;
 
 implementation
@@ -83,7 +84,7 @@ var
 begin
   _NewItem := NewItem;
   _SearchItem := msg;
-  State := lsAddafter;
+  State := lsAddAfter;
   ThreadId := BeginThread(nil, 0, @TList._Add, Self, 0, id);
 end;
 
@@ -100,10 +101,26 @@ procedure TList._Add();
 var
   NewItem: TListItem;
   SearchItem: string;
+  procedure CLeanListItemsStates;
+  var
+    temp: TListItem;
+  begin
+    temp := First;
+    while temp <> nil do
+    begin
+      temp.IsAddBefore := false;
+      temp.IsAddAfter := false;
+      temp := temp.GetNext;
+    end;
+
+    FTempItem := nil;
+    FNewItem := nil;
+  end;
 
   procedure FuncEnd();
   begin
     State := lsNormal;
+    CLeanListItemsStates;
     GenericMyEvent;
     TLogger.Log('=====Закончили добавление нового элемента в список=====');
     CritSec.Leave;
@@ -129,8 +146,8 @@ Begin
     TLogger.Log('Список пуст. Добавляем первый элемент');
     TLogger.Log('Указатель First адресуем с новый элемент');
     First := NewItem;
-    NewItem.IsFirst := true;
-    NewItem.IsLast := true;
+    NewItem.IsFirst := True;
+    NewItem.IsLast := True;
     Pause();
     TLogger.Log('Увеличиваем счетчик числа элементов');
     inc(Count);
@@ -138,6 +155,7 @@ Begin
     FuncEnd();
   End;
   TLogger.Log('=====Поиск заданного элемента=====');
+  FNewItem := NewItem;
   FTempItem := Search(SearchItem);
   If TempItem = nil then
   begin
@@ -147,7 +165,7 @@ Begin
   end;
   If TempItem.GetNext = nil then
   begin
-    TempItem.IsAddAfter := true;
+    TempItem.IsAddAfter := True;
     TLogger.Log('Адресное поле next у найденного = null. Добавляем в конец.');
     NewItem.SetNext(nil);
     Pause();
@@ -158,12 +176,12 @@ Begin
     TLogger.Log
       ('В адресной поле "Next" для найденного элемента записываем ссылку на новый элемент "New" ');
     TempItem.SetNext(NewItem);
+    TempItem.IsAddAfter := false;
+    TempItem.IsLast := false;
+    NewItem.IsLast := True;
     Pause();
     TLogger.Log('Увеличиваем счетчик числа элементов');
     inc(Count);
-    TempItem.IsAddAfter := false;
-    TempItem.IsLast := false;
-    NewItem.IsLast := true;
     // result := true
   End
   Else
@@ -191,7 +209,7 @@ end;
 
 Function TList._Delete(SearchItem: string): boolean;
 var
-  Temp: TListItem;
+  temp: TListItem;
   procedure Pause();
   begin
     GenericMyEvent;
@@ -202,32 +220,32 @@ begin
   result := false;
   if Count = 0 then
     exit;
-  Temp := Search(SearchItem);
-  If Temp = First then
+  temp := Search(SearchItem);
+  If temp = First then
   begin
     // удаление единственного эл.
     If First.GetNext = nil then
     begin
-      result := true;
+      result := True;
       First := nil;
       Count := 0;
       exit;
     End;
     // удаление первого эл.
-    First := Temp.GetNext;
+    First := temp.GetNext;
     First.SetPrev(nil);
     Count := Count - 1;
-    result := true;
-    Temp := nil;
+    result := True;
+    temp := nil;
     exit;
   End;
   // удаление из середины списка
-  Temp.GetPrev.SetNext(Temp.GetNext);
-  if Temp.GetNext <> nil then
-    Temp.GetNext.SetPrev(Temp.GetPrev);
-  Temp := nil;
+  temp.GetPrev.SetNext(temp.GetNext);
+  if temp.GetNext <> nil then
+    temp.GetNext.SetPrev(temp.GetPrev);
+  temp := nil;
   Count := Count - 1;
-  result := true;
+  result := True;
 end;
 
 Function TList.Search(SearchItem: string): TListItem;
@@ -277,7 +295,7 @@ procedure TList.GenericMyEvent;
 var
   MyEventIsOccurred: boolean;
 begin
-  MyEventIsOccurred := true;
+  MyEventIsOccurred := True;
   // Если верно некоторое условие, которое подтверждает, что событие MyEvent
   // произошло, то делаем попытку запустить связанный обработчик.
   if MyEventIsOccurred then

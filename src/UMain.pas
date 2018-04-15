@@ -67,35 +67,35 @@ implementation
 
 {$R *.dfm}
 
-procedure TForm1.RedrawPanel();
+procedure PlaceControlItems();
 var
+  i: integer;
   width: integer;
-  temp: TListItem;
-  ListControlItem: TListControl;
-
-  procedure PlaceControlItems();
-  var
-    i: integer;
+begin
+  width := 0;
+  for i := 0 to ListControl.Count - 1 do
   begin
-    width := 0;
-    for i := 0 to ListControl.Count - 1 do
-    begin
-      ListControl.Items[i].Left := width;
-      ListControl[i].Refresh;
-      if (i = 0) and (ListControl.Items[i].State = new) then
-        width := 0
-      else if ListControl.Items[i].State = addAfter then
-        width := width + ListControl.Items[i].width -
-          (ListControl.Items[i].ItemWidth + ListControl.Items[i].ArrowWidth)
-      else
-        width := width + ListControl.Items[i].width;
-
-    end;
+    ListControl.Items[i].Left := width;
+    ListControl[i].Refresh;
+    if (i = 0) and (ListControl.Items[i].State = new) then
+      width := 0
+    else if ListControl.Items[i].State = addAfter then
+      width := width + ListControl.Items[i].width -
+        (ListControl.Items[i].ItemWidth + ListControl.Items[i].ArrowWidth)
+    else
+      width := width + ListControl.Items[i].width;
 
   end;
 
+end;
+
+procedure TForm1.RedrawPanel();
+var
+  temp: TListItem;
+  ListControlItem, NewListControlItem: TListControl;
+
 begin
-  ListControl.Clear;
+  ButtonClearClick(Self);
   case List.State of
     lsNormal:
       begin
@@ -117,9 +117,31 @@ begin
       begin
 
       end;
-    lsAddafter:
+    lsAddAfter:
       begin
-
+        temp := List.GetFirst;
+        while temp <> nil do
+        begin
+          ListControlItem := TListControl.Create(FlowPanel1);
+          ListControlItem.ItemMain.TitleMain := temp.GetInfo;
+          ListControlItem.ItemMain.TitleNext := temp.GetNextInfo;
+          ListControlItem.ItemMain.TitlePrev := temp.GetPrevInfo;
+          ListControlItem.IsLast := temp.IsLast;
+          ListControlItem.IsFirst := temp.IsFirst;
+          ListControlItem.IsAddAfter := temp.IsAddAfter;
+          ListControl.Add(ListControlItem);
+          if temp.IsAddAfter then
+          begin
+            NewListControlItem := TListControl.Create(FlowPanel1);
+            NewListControlItem.ItemMain.TitleMain := List.NewItem.GetInfo;
+            NewListControlItem.ItemMain.TitleNext := List.NewItem.GetNextInfo;
+            NewListControlItem.ItemMain.TitlePrev := List.NewItem.GetPrevInfo;
+            NewListControlItem.IsLast := List.NewItem.IsLast;
+            NewListControlItem.IsFirst := List.NewItem.IsFirst;
+            ListControl.Add(NewListControlItem);
+          end;
+          temp := temp.GetNext;
+        end;
       end;
     lsDelete:
       begin
@@ -259,7 +281,10 @@ end;
 
 procedure TForm1.Button5Click(Sender: TObject);
 begin
-  RedrawPanel;
+  ButtonClearClick(Sender);
+  // FlowPanel1.Components.DestroyComponents;
+  { TODO пересмоттреть очистку списка, т.к. панель не очищается }
+  PlaceControlItems();
 end;
 
 procedure TForm1.ButtonAddAfterClick(Sender: TObject);
@@ -337,15 +362,11 @@ procedure TForm1.ButtonClearClick(Sender: TObject);
 var
   i: integer;
 begin
-  // count := 0;
-  // for i := 1 to Length(ControlList) do
-  // if ControlList[i]= null then
-  // Inc(count);
+  for i := 1 to FlowPanel1.ComponentCount do
+    FlowPanel1.Controls[0].DisposeOf;
 
   for i := 1 to ListControl.Count do
   begin
-
-    FlowPanel1.Controls[0].DisposeOf;
     ListControl.Delete(0);
   end;
 

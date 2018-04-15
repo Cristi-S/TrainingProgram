@@ -97,19 +97,19 @@ begin
   IsFirst := false;
   IsLast := false;
 
-  ItemMain.ArrowLeft.visible := true;
-  ItemMain.ArrowRight.visible := true;
-  ItemMain.ArrowUpLeft.visible := true;
-  ItemMain.ArrowUpRight.visible := true;
-  ItemMain.ArrowDownLeft.visible := true;
-  ItemMain.ArrowDownRight.visible := true;
-
-  ItemMain.ArrowLongLeft.visible := true;
-  ItemMain.ArrowLongRight.visible := true;
+   ItemMain.ArrowLeft.visible := true;
+   ItemMain.ArrowRight.visible := true;
+  // ItemMain.ArrowUpLeft.visible := true;
+  // ItemMain.ArrowUpRight.visible := true;
+  // ItemMain.ArrowDownLeft.visible := true;
+  // ItemMain.ArrowDownRight.visible := true;
+  //
+  // ItemMain.ArrowLongLeft.visible := true;
+  // ItemMain.ArrowLongRight.visible := true;
 
   ItemMain.ArrowLongLeft.style := psDash;
   ItemMain.ArrowLongRight.style := psDash;
-  ItemMain.ArrowLongLeft.cross.visible := true;
+  // ItemMain.ArrowLongLeft.cross.visible := true;
 
   Parent := TWinControl(AOwner);
 end;
@@ -422,8 +422,8 @@ begin
         DrawArrow(Canvas, MainItemPoints[3].x, MainItemPoints[3].y,
           RightItemPoints[1].x, RightItemPoints[1].y, ItemMain.ArrowUpRight);
         // рисуем стрелочки по диогонали от правого элемента к новому
-        DrawArrow(Canvas, MainItemPoints[4].x, MainItemPoints[4].y,
-          RightItemPoints[2].x, RightItemPoints[2].y, ItemMain.ArrowDownRight);
+        DrawArrow(Canvas, RightItemPoints[2].x, RightItemPoints[2].y,
+          MainItemPoints[4].x, MainItemPoints[4].y, ItemMain.ArrowDownRight);
 
         aWidth := ItemLeft + ItemWidth + ArrowWidth;
         aHeight := ItemTop + ItemHeigth * 2;

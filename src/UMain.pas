@@ -72,13 +72,13 @@ begin
       lsNormal:
         begin
           ButtonNext.Enabled := false;
-          ButtonAddAfter.Enabled:=true;
-          ButtonAddBefore.Enabled:=true;
+          ButtonAddAfter.Enabled := true;
+          ButtonAddBefore.Enabled := true;
         end;
       lsAddbefore, lsAddAfter, lsDelete:
         begin
-          ButtonAddAfter.Enabled:=false;
-          ButtonAddBefore.Enabled:=false;
+          ButtonAddAfter.Enabled := false;
+          ButtonAddBefore.Enabled := false;
           ButtonNext.Enabled := true;
         end;
     end;
@@ -87,12 +87,14 @@ begin
       ButtonAdd.Enabled := false;
       ButtonAddAfter.Enabled := true;
       ButtonAddBefore.Enabled := true;
+      ButtonDelete.Enabled := true;
     end
     else
     begin
       ButtonAdd.Enabled := true;
       ButtonAddAfter.Enabled := false;
       ButtonAddBefore.Enabled := false;
+      ButtonDelete.Enabled := false;
     end;
   end;
 end;
@@ -113,7 +115,9 @@ begin
       width := width + ListControl.Items[i].width -
         (ListControl.Items[i].ItemWidth + ListControl.Items[i].ArrowWidth)
     else
-      width := width + ListControl.Items[i].width - (ListControl.Items[i].ItemWidth + ListControl.Items[i].ArrowWidth + Round(1/5*ListControl.Items[i].ItemWidth));
+      width := width + ListControl.Items[i].width -
+        (ListControl.Items[i].ItemWidth + ListControl.Items[i].ArrowWidth +
+        Round(1 / 5 * ListControl.Items[i].ItemWidth));
 
   end;
 
@@ -229,7 +233,32 @@ begin
       end;
     lsDelete:
       begin
+        temp := List.GetFirst;
+        while temp <> nil do
+        begin
+          ListControlItem := TListControl.Create(FlowPanel1);
+          ListControlItem.ItemMain.TitleMain := temp.GetInfo;
+          ListControlItem.ItemMain.TitleNext := temp.GetNextInfo;
+          ListControlItem.ItemMain.TitlePrev := temp.GetPrevInfo;
+          ListControlItem.IsLast := temp.IsLast;
+          ListControlItem.IsFirst := temp.IsFirst;
 
+          ListControl.Add(ListControlItem);
+
+          
+          // закрашивание удяляемого
+          if temp.IsDelete then
+          begin
+            ListControlItem.ItemMain.color := clRed;
+          end;
+          // закрашивание temp
+          if temp = List.TempItem then
+          begin
+            ListControlItem.ItemMain.color := clBlue;
+          end;
+
+          temp := temp.GetNext;
+        end;
       end;
   end;
   PlaceControlItems;
@@ -254,53 +283,66 @@ end;
 
 procedure TForm1.ButtonCreateClick(Sender: TObject);
 var
-  ListItem: TListControl;
+  ListItem: TListItem;
   i, j, k: integer;
   s1, s2: string;
 
 begin
-  j := StrToInt(Edit1.Text);
-  if j > 6 then
-  begin
-    ShowMessage('Введите число от 1 до 7');
-    Exit;
-  end;
+  // j := StrToInt(Edit1.Text);
+  // if j > 6 then
+  // begin
+  // ShowMessage('Введите число от 1 до 7');
+  // Exit;
+  // end;
   if RadioButton1.Checked = true then
-
-    for i := 1 to j do
+    for i := 0 to 3 do
     begin
-      k := StrToInt(InputBox('Новый элемент',
-        'Введите номер элемента,ПОСЛЕ которого хотите добавить новый элемент:',
-        '1'));
-      Unit2.Form2.Edit2.Text := IntToStr(k);
-
-      s2 := Form2.Edit2.Text;
-      Form2.ShowModal;
-      s1 := Form2.Edit1.Text;
-      ListItem := TListControl.Create(FlowPanel1);
-      if i = 1 then
+      if i = 0 then
       begin
-
-        ListItem.Top := 0;
-        ListItem.Left := 0;
-      end;
-
-      ListItem.ItemMain.TitleMain := s1;
-      ListItem.ItemMain.TitleNext := s2;
-      if i = 1 then
+        ListItem := TListItem.Create('item' + IntToStr(i));
+        List.Add('item', ListItem);
+      end
+      else
       begin
-        ListItem.IsFirst := true;
+        ListItem := TListItem.Create('item' + IntToStr(i));
+        List.Add('item' + IntToStr(i), ListItem);
       end;
-      ListItem.IsLast := false;
-      ListControl.Add(ListItem);
-      RedrawPanel();
     end;
-  if RadioButton2.Checked = true then
-  begin
-    ListItem := TListControl.Create(FlowPanel1);
-    ListItem.IsLast := false;
-    ListControl.Add(ListItem);
-  end;
+
+  // for i := 1 to j do
+  // begin
+  // k := StrToInt(InputBox('Новый элемент',
+  // 'Введите номер элемента,ПОСЛЕ которого хотите добавить новый элемент:',
+  // '1'));
+  // Unit2.Form2.Edit2.Text := IntToStr(k);
+  //
+  // s2 := Form2.Edit2.Text;
+  // Form2.ShowModal;
+  // s1 := Form2.Edit1.Text;
+  // ListItem := TListControl.Create(FlowPanel1);
+  // if i = 1 then
+  // begin
+  //
+  // ListItem.Top := 0;
+  // ListItem.Left := 0;
+  // end;
+  //
+  // ListItem.ItemMain.TitleMain := s1;
+  // ListItem.ItemMain.TitleNext := s2;
+  // if i = 1 then
+  // begin
+  // ListItem.IsFirst := true;
+  // end;
+  // ListItem.IsLast := false;
+  // ListControl.Add(ListItem);
+  // RedrawPanel();
+  // end;
+  // if RadioButton2.Checked = true then
+  // begin
+  // ListItem := TListControl.Create(FlowPanel1);
+  // ListItem.IsLast := false;
+  // ListControl.Add(ListItem);
+  // end;
   ListItem.IsLast := true;
   ButtonAddAfter.Enabled := true;
   ButtonAddBefore.Enabled := true;
@@ -333,8 +375,8 @@ end;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  ListControl.Items[1].ItemMain.ArrowRightPolygon.visible:=true;
-  ListControl.Items[1].ItemMain.ArrowLeftPolygon.visible:=true;
+  ListControl.Items[1].ItemMain.ArrowRightPolygon.visible := true;
+  ListControl.Items[1].ItemMain.ArrowLeftPolygon.visible := true;
   ListControl.Items[1].Refresh;
 end;
 

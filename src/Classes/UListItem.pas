@@ -13,6 +13,8 @@ Type
     FIsAddBefore: boolean;
     FIsAddAfter: boolean;
   Public
+    IsDelete : Boolean;
+
     Constructor Create(sInfo: string);
     Function GetInfo: string;
     Function GetPrevInfo: string;

@@ -22,7 +22,7 @@ Type
     // класса, а не произвольную процедуру.
     FOnThreadSuspended: TNotifyEvent;
     procedure _Add();
-    Function _Delete(SearchItem: string): boolean;
+    Function _Delete(): boolean;
   Public
     State: TListState;
     Constructor Create;
@@ -86,9 +86,13 @@ begin
 end;
 
 Function TList.Delete(SearchItem: string): boolean;
+var
+  id: longword;
 begin
   State := lsDelete;
-  _Delete(SearchItem);
+  _SearchItem := SearchItem;
+  ThreadId := BeginThread(nil, 0, @TList._Delete, Self, 0, id);
+//  _Delete(SearchItem);
 end;
 
 {$ENDREGION}
@@ -214,7 +218,7 @@ Begin
   FuncEnd();
 end;
 
-Function TList._Delete(SearchItem: string): boolean;
+Function TList._Delete(): boolean;
 // var
 // temp: TListItem;
   procedure CLeanListItemsStates;
@@ -228,6 +232,7 @@ Function TList._Delete(SearchItem: string): boolean;
       temp.IsAddAfter := false;
       temp.IsFirst := false;
       temp.IsLast := false;
+      temp.IsDelete:=false;
       last := temp;
       temp := temp.GetNext;
     end;
@@ -265,8 +270,8 @@ begin
   if Count = 0 then
     FuncEnd;
 
-  TLogger.Log('2. Поиск заданного элемента=====');
-  FTempItem := Search(SearchItem);
+  TLogger.Log('2. Поиск заданного элемента');
+  FTempItem := Search(_SearchItem);
   If TempItem = nil then
   begin
     TLogger.Log('Искомый элемент не найден');
@@ -274,6 +279,9 @@ begin
     FuncEnd();
   end;
   TLogger.Log('Искомый элемент найден, адресуем его указателем pTemp');
+
+  FTempItem.IsDelete:=true;
+
   If FTempItem = First then
   begin
     // удаление единственного эл.

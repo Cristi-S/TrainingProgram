@@ -38,7 +38,7 @@ type
     ArrowLeftPolygon: TArrow;
   End;
 
-  TItemState = (normal, addAfter, addBefore, new);
+  TItemState = (normal, addAfter, addBefore, new, del);
 
   TListControl = class(TGraphicControl)
   const
@@ -413,19 +413,25 @@ begin
             ArrowWidth, ItemTop - Round(1 / 2 * ArrowWidth)),
 
             Point(ItemLeft + Round((4 / 5 * ItemWidth)) + ItemWidth + 3 *
-            ArrowWidth, ItemTop),
+            ArrowWidth, ItemTop - Round(1 / 2 * ArrowWidth) +
+            Round(1 / 2 * ArrowWidth)),
 
             ItemMain.ArrowRightPolygon);
 
           DrawArrowPolygon(Canvas,
-            Point(ItemLeft + 2*ItemWidth + 2*ArrowWidth + round(1/5*ItemWidth), ItemTop + ItemHeigth),
-            Point(ItemLeft + 2*ItemWidth + 2*ArrowWidth + round(1/5*ItemWidth), ItemTop + ItemHeigth + Round(1/2*ArrowWidth)),
-            Point(ItemLeft + Round(4/5*ItemWidth), ItemTop + ItemHeigth + Round(1/2*ArrowWidth)),
-            Point(ItemLeft + Round(4/5*ItemWidth), ItemTop + ItemHeigth),
+            Point(ItemLeft + 2 * ItemWidth + 2 * ArrowWidth +
+            Round(1 / 5 * ItemWidth), ItemTop + ItemHeigth),
+            Point(ItemLeft + 2 * ItemWidth + 2 * ArrowWidth +
+            Round(1 / 5 * ItemWidth), ItemTop + ItemHeigth +
+            Round(1 / 2 * ArrowWidth)),
+            Point(ItemLeft + Round(4 / 5 * ItemWidth),
+            ItemTop + ItemHeigth + Round(1 / 2 * ArrowWidth)),
+            Point(ItemLeft + Round(4 / 5 * ItemWidth), ItemTop + ItemHeigth),
             ItemMain.ArrowLeftPolygon);
         end;
 
-        aWidth := ItemLeft + ItemWidth + ArrowWidth + ItemWidth + ArrowWidth + Round(1/5*ItemWidth);
+        aWidth := ItemLeft + ItemWidth + ArrowWidth + ItemWidth + ArrowWidth +
+          Round(1 / 5 * ItemWidth);
       end;
     addAfter:
       begin

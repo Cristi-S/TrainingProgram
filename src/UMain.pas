@@ -111,16 +111,20 @@ begin
     ListControl[i].Refresh;
     if (i = 0) and (ListControl.Items[i].State = new) then
       width := 0
-    else if ListControl.Items[i].State = addAfter then
-      width := width + ListControl.Items[i].width -
-        (ListControl.Items[i].ItemWidth + ListControl.Items[i].ArrowWidth)
     else
-      width := width + ListControl.Items[i].width -
-        (ListControl.Items[i].ItemWidth + ListControl.Items[i].ArrowWidth +
-        Round(1 / 5 * ListControl.Items[i].ItemWidth) +  Round(ListControl.Items[i].ArrowHeadWidth/2));
-
+      case ListControl.Items[i].State of
+        addAfter:
+          width := width + ListControl.Items[i].width -
+            (ListControl.Items[i].ItemWidth + ListControl.Items[i].ArrowWidth);
+        normal:
+          width := width + ListControl.Items[i].width -
+            (ListControl.Items[i].ItemWidth + ListControl.Items[i].ArrowWidth +
+            Round(1 / 5 * ListControl.Items[i].ItemWidth) +
+            Round(ListControl.Items[i].ArrowHeadWidth / 2));
+        new:
+          width := width + ListControl.Items[i].width;
+      end;
   end;
-
 end;
 
 procedure TForm1.RedrawPanel();
@@ -245,7 +249,6 @@ begin
 
           ListControl.Add(ListControlItem);
 
-          
           // закрашивание удяляемого
           if temp.IsDelete then
           begin

@@ -344,10 +344,9 @@ var
   MainItemPoints: array [1 .. 4] of TPoint;
   LeftItemPoints: array [1 .. 4] of TPoint;
   RightItemPoints: array [1 .. 4] of TPoint;
-  ArrowRightPolygonPoints: array [1 .. 4] of TPoint;
   aHeight, aWidth: integer;
   p: TPoint; // произвольная коодината для облегчения жизни
-  x, y: integer;
+  x, y, PolygonArrowHeight: integer;
   Arrow: TArrow;
 begin
   aWidth := Width;
@@ -376,38 +375,31 @@ begin
             MainItemPoints[4].y, MainItemPoints[4].x, MainItemPoints[4].y,
             ItemMain.ArrowLeft);
 
+          PolygonArrowHeight := Round((1 / 5 * ItemWidth));
           // рисуем длинные стрелки отображаемые при удалении элемента
           DrawArrowPolygon(Canvas,
-
-            Point(ItemLeft + Round((4 / 5 * ItemWidth)), ItemTop),
-
-            Point(ItemLeft + Round((4 / 5 * ItemWidth)),
-            ItemTop - Round(1 / 5 * ItemWidth)),
-
-            Point(ItemLeft + Round((4 / 5 * ItemWidth)) + ItemWidth + 2 *
-            ArrowWidth + Round(2 / 5 * ItemWidth),
-            ItemTop - Round(1 / 5 * ItemWidth)),
-
-            Point(ItemLeft + Round((4 / 5 * ItemWidth)) + ItemWidth + 2 *
-            ArrowWidth + Round(2 / 5 * ItemWidth), ItemTop),
-
-            ItemMain.ArrowRightPolygon);
+            Point(ItemLeft + ItemWidth - PolygonArrowHeight, ItemTop),
+            Point(ItemLeft + ItemWidth - PolygonArrowHeight,
+            ItemTop - PolygonArrowHeight),
+            Point(ItemLeft + 2 * ItemWidth + 2 * ArrowWidth +
+            PolygonArrowHeight, ItemTop - PolygonArrowHeight),
+            Point(ItemLeft + 2 * ItemWidth + 2 * ArrowWidth +
+            PolygonArrowHeight, ItemTop), ItemMain.ArrowRightPolygon);
 
           DrawArrowPolygon(Canvas,
             Point(ItemLeft + 2 * ItemWidth + 2 * ArrowWidth +
-            Round(1 / 5 * ItemWidth), ItemTop + ItemHeigth),
+            PolygonArrowHeight, ItemTop + ItemHeigth),
             Point(ItemLeft + 2 * ItemWidth + 2 * ArrowWidth +
-            Round(1 / 5 * ItemWidth), ItemTop + ItemHeigth +
-            Round(1 / 5 * ItemWidth)),
-            Point(ItemLeft + Round(4 / 5 * ItemWidth),
-            ItemTop + ItemHeigth + Round(1 / 5 * ItemWidth)),
-            Point(ItemLeft + Round(4 / 5 * ItemWidth), ItemTop + ItemHeigth),
-            ItemMain.ArrowLeftPolygon);
+            PolygonArrowHeight, ItemTop + ItemHeigth + PolygonArrowHeight),
+            Point(ItemLeft + ItemWidth - PolygonArrowHeight,
+            ItemTop + ItemHeigth + PolygonArrowHeight),
+            Point(ItemLeft + ItemWidth - PolygonArrowHeight,
+            ItemTop + ItemHeigth), ItemMain.ArrowLeftPolygon);
         end;
 
-        aWidth := ItemLeft + ItemWidth + ArrowWidth + ItemWidth + ArrowWidth +
-          Round(1 / 5 * ItemWidth)+Round(1 / 2 * ArrowHeadWidth);
-        aHeight := ItemTop + ItemHeigth + Round(1 / 5 * ItemWidth)+1;
+        aWidth := ItemLeft + 2 * ItemWidth + 2 * ArrowWidth + PolygonArrowHeight
+          + Round(ArrowHeadWidth / 2);
+        aHeight := ItemTop + ItemHeigth + PolygonArrowHeight + 1;
       end;
     addAfter:
       begin

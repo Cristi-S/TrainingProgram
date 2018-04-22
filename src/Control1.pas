@@ -45,6 +45,7 @@ type
     FirstWidth = 80; // ширина элемента First
     FirstHeight = 40; // высота элемента First
     ArrowWidth = 50; // стандартная длина стрелочки
+    ArrowHeadWidth = 14; // ширина треугольника у стрелочки
     ItemHeigth = 60; // высота элемента
     ItemWidth = 100; // ширина элемента
   private
@@ -101,17 +102,9 @@ begin
 
   ItemMain.ArrowLeft.visible := true;
   ItemMain.ArrowRight.visible := true;
-  // ItemMain.ArrowUpLeft.visible := true;
-  // ItemMain.ArrowUpRight.visible := true;
-  // ItemMain.ArrowDownLeft.visible := true;
-  // ItemMain.ArrowDownRight.visible := true;
-  //
-  // ItemMain.ArrowLongLeft.visible := true;
-  // ItemMain.ArrowLongRight.visible := true;
 
   ItemMain.ArrowLongLeft.style := psDash;
   ItemMain.ArrowLongRight.style := psDash;
-  // ItemMain.ArrowLongLeft.cross.visible := true;
 
   ItemMain.ArrowRightPolygon.visible := false;
   ItemMain.ArrowLeftPolygon.visible := false;
@@ -121,17 +114,6 @@ end;
 
 procedure TListControl.SetPaddings;
 begin
-  // if IsFirst and _IsAddBefore then
-  // begin
-  // ItemLeft := ItemWidth + ArrowWidth;
-  // exit;
-  // end;
-  //
-  // if _IsAddBefore then
-  // begin
-  // ItemLeft := ItemWidth + ArrowWidth;
-  // end;
-
   if IsFirst then
   begin
     ItemLeft := FirstWidth + 20;
@@ -275,9 +257,6 @@ end;
 
 procedure DrawArrowPolygon(Canvas: TCanvas; p1, p2, p3, p4: TPoint;
   Arrow: TArrow);
-var
-  last: integer;
-  I: integer;
 begin
   if not Arrow.visible then
     exit;
@@ -285,11 +264,7 @@ begin
   // рисуем линии
   Canvas.MoveTo(p1.x, p1.y);
   Canvas.LineTo(p2.x, p2.y);
-
-  Canvas.MoveTo(p2.x, p2.y);
   Canvas.LineTo(p3.x, p3.y);
-
-  Canvas.MoveTo(p3.x, p3.y);
   DrawArrow(Canvas, p3.x, p3.y, p4.x, p4.y, Arrow);
 end;
 {$ENDREGION}
@@ -407,14 +382,14 @@ begin
             Point(ItemLeft + Round((4 / 5 * ItemWidth)), ItemTop),
 
             Point(ItemLeft + Round((4 / 5 * ItemWidth)),
-            ItemTop - Round(1 / 2 * ArrowWidth)),
+            ItemTop - Round(1 / 5 * ItemWidth)),
 
-            Point(ItemLeft + Round((4 / 5 * ItemWidth)) + ItemWidth + 3 *
-            ArrowWidth, ItemTop - Round(1 / 2 * ArrowWidth)),
+            Point(ItemLeft + Round((4 / 5 * ItemWidth)) + ItemWidth + 2 *
+            ArrowWidth + Round(2 / 5 * ItemWidth),
+            ItemTop - Round(1 / 5 * ItemWidth)),
 
-            Point(ItemLeft + Round((4 / 5 * ItemWidth)) + ItemWidth + 3 *
-            ArrowWidth, ItemTop - Round(1 / 2 * ArrowWidth) +
-            Round(1 / 2 * ArrowWidth)),
+            Point(ItemLeft + Round((4 / 5 * ItemWidth)) + ItemWidth + 2 *
+            ArrowWidth + Round(2 / 5 * ItemWidth), ItemTop),
 
             ItemMain.ArrowRightPolygon);
 
@@ -423,15 +398,16 @@ begin
             Round(1 / 5 * ItemWidth), ItemTop + ItemHeigth),
             Point(ItemLeft + 2 * ItemWidth + 2 * ArrowWidth +
             Round(1 / 5 * ItemWidth), ItemTop + ItemHeigth +
-            Round(1 / 2 * ArrowWidth)),
+            Round(1 / 5 * ItemWidth)),
             Point(ItemLeft + Round(4 / 5 * ItemWidth),
-            ItemTop + ItemHeigth + Round(1 / 2 * ArrowWidth)),
+            ItemTop + ItemHeigth + Round(1 / 5 * ItemWidth)),
             Point(ItemLeft + Round(4 / 5 * ItemWidth), ItemTop + ItemHeigth),
             ItemMain.ArrowLeftPolygon);
         end;
 
         aWidth := ItemLeft + ItemWidth + ArrowWidth + ItemWidth + ArrowWidth +
-          Round(1 / 5 * ItemWidth);
+          Round(1 / 5 * ItemWidth)+Round(1 / 2 * ArrowHeadWidth);
+        aHeight := ItemTop + ItemHeigth + Round(1 / 5 * ItemWidth)+1;
       end;
     addAfter:
       begin

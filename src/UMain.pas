@@ -117,7 +117,7 @@ begin
     else
       width := width + ListControl.Items[i].width -
         (ListControl.Items[i].ItemWidth + ListControl.Items[i].ArrowWidth +
-        Round(1 / 5 * ListControl.Items[i].ItemWidth));
+        Round(1 / 5 * ListControl.Items[i].ItemWidth) +  Round(ListControl.Items[i].ArrowHeadWidth/2));
 
   end;
 

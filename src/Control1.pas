@@ -38,7 +38,7 @@ type
     ArrowLeftPolygon: TArrow;
   End;
 
-  TItemState = (normal, addAfter, addBefore, new, del);
+  TItemState = (normal, addAfter, addBefore, new);
 
   TListControl = class(TGraphicControl)
   const
@@ -102,7 +102,6 @@ begin
 
   ItemMain.ArrowLeft.visible := true;
   ItemMain.ArrowRight.visible := true;
-
   ItemMain.ArrowLongLeft.style := psDash;
   ItemMain.ArrowLongRight.style := psDash;
 

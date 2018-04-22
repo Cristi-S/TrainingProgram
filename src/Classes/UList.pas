@@ -21,6 +21,7 @@ Type
     // Фраза  "of object" означает, что в качестве обработчика можно назначить только метод какого-либо
     // класса, а не произвольную процедуру.
     FOnThreadSuspended: TNotifyEvent;
+    FDeleteItem: TListItem;
     procedure _Add();
     Function _Delete(): boolean;
   Public
@@ -43,6 +44,7 @@ Type
     procedure GenericMyEvent;
     property NewItem: TListItem read FNewItem;
     property TempItem: TListItem read FTempItem;
+    property DeleteItem: TListItem read FDeleteItem;
   End;
 
 implementation
@@ -240,6 +242,7 @@ Function TList._Delete(): boolean;
     First.IsFirst := true;
     last.IsLast := true;
 
+    FDeleteItem:=nil;
     FTempItem := nil;
     FNewItem := nil;
   end;
@@ -281,6 +284,7 @@ begin
   TLogger.Log('Искомый элемент найден, адресуем его указателем pTemp');
 
   FTempItem.IsDelete:=true;
+  FDeleteItem:= FTempItem;
 
   If FTempItem = First then
   begin

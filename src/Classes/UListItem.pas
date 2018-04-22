@@ -12,9 +12,8 @@ Type
     FIsLast: boolean;
     FIsAddBefore: boolean;
     FIsAddAfter: boolean;
+    FIsDelete: boolean;
   Public
-    IsDelete : Boolean;
-
     Constructor Create(sInfo: string);
     Function GetInfo: string;
     Function GetPrevInfo: string;
@@ -29,6 +28,7 @@ Type
     property IsLast: boolean read FIsLast write FIsLast;
     property IsAddBefore: boolean read FIsAddBefore write FIsAddBefore;
     property IsAddAfter: boolean read FIsAddAfter write FIsAddAfter;
+    property IsDelete: boolean read FIsDelete write FIsDelete;
   End;
 
 implementation

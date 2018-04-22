@@ -26,9 +26,7 @@ type
     ScrollBox1: TScrollBox;
     FlowPanel1: TPanel;
     Memo1: TMemo;
-    Button1: TButton;
     procedure ButtonCreateClick(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ButtonClearClick(Sender: TObject);
     procedure RadioButton1Click(Sender: TObject);
@@ -37,8 +35,6 @@ type
     procedure ButtonAddAfterClick(Sender: TObject);
     procedure ButtonAddClick(Sender: TObject);
     procedure RedrawPanel();
-    procedure Button9Click(Sender: TObject);
-    procedure Button10Click(Sender: TObject);
     procedure ButtonAddBeforeClick(Sender: TObject);
     procedure ButtonAppendClick(Sender: TObject);
     procedure ButtonNextClick(Sender: TObject);
@@ -47,7 +43,6 @@ type
     procedure OnThreadSyspended(Sender: TObject);
     procedure ButtonInsertClick(Sender: TObject);
     procedure ButtonDeleteClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -99,7 +94,7 @@ begin
   end;
 end;
 
-procedure PlaceControlItems();
+procedure ReplaceControlItems();
 var
   i: integer;
   width: integer;
@@ -209,12 +204,10 @@ begin
             begin
               ListControlItem.IsLast := false;
               NewListControlItem.State := normal;
-              // NewListControlItem.IsLast := true;
               ListControlItem.ItemMain.ArrowRight.visible :=
                 (temp.GetNext <> nil);
 
               ListControlItem.ItemMain.ArrowLeft.visible :=
-              // (temp.GetNext <> List.NewItem) and
                 (List.NewItem.GetPrev <> nil);
             end
             else
@@ -260,11 +253,47 @@ begin
             ListControlItem.ItemMain.color := clBlue;
           end;
 
-          temp := temp.GetNext;
+          // непосредственно визуализация удаления элемента
+          if Assigned(List.DeleteItem) then
+          begin
+            //длинная стрелочка вперед + крестик
+            if (List.DeleteItem.GetPrev = temp) and
+              (temp.GetNext <> List.DeleteItem) then
+            begin
+              ListControlItem.ItemMain.ArrowRightPolygon.visible := true;
+              ListControlItem.ItemMain.ArrowRight.cross.visible := true;
+            end;
+
+            //длинная стрелочка назад
+            if (List.DeleteItem.GetNext = temp.GetNext) and
+              (temp.GetNext <> List.DeleteItem) and (temp <> List.DeleteItem)
+              and (temp.GetNext.GetPrev = temp) then
+            begin
+              ListControlItem.ItemMain.ArrowLeftPolygon.visible := true;
+              // ListControlItem.ItemMain.ArrowRight.cross.visible:=true;
+            end;
+
+            if (temp = List.DeleteItem) and (List.DeleteItem.GetNext.GetPrev = List.DeleteItem.GetPrev) then
+            begin
+              ListControlItem.ItemMain.ArrowLeft.cross.visible := true;  
+            end;
+            
+            
+          end;
+
+          if Assigned(List.DeleteItem) then
+          begin
+            if List.DeleteItem.GetPrev = temp then
+              temp := List.DeleteItem
+            else
+              temp := temp.GetNext;
+          end
+          else
+            temp := temp.GetNext;
         end;
       end;
   end;
-  PlaceControlItems;
+  ReplaceControlItems;
   UpdateButtonState;
 end;
 
@@ -276,14 +305,6 @@ begin
   RedrawPanel;
 end;
 
-procedure TForm1.Button10Click(Sender: TObject);
-begin
-  // ListControl.Items[1].ItemMain.color := clLime;
-  RedrawPanel();
-  // ListControl.Items[1-1].Refresh;
-
-end;
-
 procedure TForm1.ButtonCreateClick(Sender: TObject);
 var
   ListItem: TListItem;
@@ -291,12 +312,6 @@ var
   s1, s2: string;
 
 begin
-  // j := StrToInt(Edit1.Text);
-  // if j > 6 then
-  // begin
-  // ShowMessage('Введите число от 1 до 7');
-  // Exit;
-  // end;
   if RadioButton1.Checked = true then
     for i := 0 to 3 do
     begin
@@ -312,40 +327,6 @@ begin
       end;
     end;
 
-  // for i := 1 to j do
-  // begin
-  // k := StrToInt(InputBox('Новый элемент',
-  // 'Введите номер элемента,ПОСЛЕ которого хотите добавить новый элемент:',
-  // '1'));
-  // Unit2.Form2.Edit2.Text := IntToStr(k);
-  //
-  // s2 := Form2.Edit2.Text;
-  // Form2.ShowModal;
-  // s1 := Form2.Edit1.Text;
-  // ListItem := TListControl.Create(FlowPanel1);
-  // if i = 1 then
-  // begin
-  //
-  // ListItem.Top := 0;
-  // ListItem.Left := 0;
-  // end;
-  //
-  // ListItem.ItemMain.TitleMain := s1;
-  // ListItem.ItemMain.TitleNext := s2;
-  // if i = 1 then
-  // begin
-  // ListItem.IsFirst := true;
-  // end;
-  // ListItem.IsLast := false;
-  // ListControl.Add(ListItem);
-  // RedrawPanel();
-  // end;
-  // if RadioButton2.Checked = true then
-  // begin
-  // ListItem := TListControl.Create(FlowPanel1);
-  // ListItem.IsLast := false;
-  // ListControl.Add(ListItem);
-  // end;
   ListItem.IsLast := true;
   ButtonAddAfter.Enabled := true;
   ButtonAddBefore.Enabled := true;
@@ -376,31 +357,6 @@ begin
   end;
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);
-begin
-  ListControl.Items[1].ItemMain.ArrowRightPolygon.visible := true;
-  ListControl.Items[1].ItemMain.ArrowLeftPolygon.visible := true;
-  ListControl.Items[1].Refresh;
-end;
-
-procedure TForm1.Button2Click(Sender: TObject);
-var
-  ListItem: TListControl;
-begin
-  // if ControlList[1].AddAfterStep > 4 then
-  // begin
-  // ListItem := TControl1.Create(FlowPanel1);
-  // ListItem.IsLast := False;
-  // // ListItem.Refresh;
-  //
-  // ControlList[i] := ListItem;
-  // end
-  // else
-  // Inc(ListControl[1].AddAfterStep);
-
-  ListControl[1].Refresh;
-end;
-
 procedure TForm1.ButtonAddClick(Sender: TObject);
 var
   ListItem: TListItem;
@@ -423,7 +379,7 @@ begin
   ButtonClearClick(Sender);
   // FlowPanel1.Components.DestroyComponents;
   { TODO пересмоттреть очистку списка, т.к. панель не очищается }
-  PlaceControlItems();
+  ReplaceControlItems();
 end;
 
 procedure TForm1.ButtonInsertClick(Sender: TObject);
@@ -512,14 +468,6 @@ begin
     ListControl.Delete(0);
   end;
 
-end;
-
-procedure TForm1.Button9Click(Sender: TObject);
-begin
-  ListControl.Last.ItemMain.color := clRed;
-
-  ListControl.Items[0].ItemMain.ArrowRight.cross.visible := true;
-  RedrawPanel();
 end;
 
 procedure TForm1.Edit1KeyPress(Sender: TObject; var Key: Char);

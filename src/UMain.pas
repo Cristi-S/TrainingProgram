@@ -26,6 +26,7 @@ type
     ScrollBox1: TScrollBox;
     FlowPanel1: TPanel;
     Memo1: TMemo;
+    Button1: TButton;
     procedure ButtonCreateClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -46,6 +47,7 @@ type
     procedure OnThreadSyspended(Sender: TObject);
     procedure ButtonInsertClick(Sender: TObject);
     procedure ButtonDeleteClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -111,7 +113,7 @@ begin
       width := width + ListControl.Items[i].width -
         (ListControl.Items[i].ItemWidth + ListControl.Items[i].ArrowWidth)
     else
-      width := width + ListControl.Items[i].width;
+      width := width + ListControl.Items[i].width - (ListControl.Items[i].ItemWidth + ListControl.Items[i].ArrowWidth + Round(1/5*ListControl.Items[i].ItemWidth));
 
   end;
 
@@ -327,6 +329,13 @@ begin
     temp := TListItem.Create('item' + IntToStr(List.Getcount));
     List.Add('item' + IntToStr(List.Getcount - 1), temp);
   end;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  ListControl.Items[1].ItemMain.ArrowRightPolygon.visible:=true;
+  ListControl.Items[1].ItemMain.ArrowLeftPolygon.visible:=true;
+  ListControl.Items[1].Refresh;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);

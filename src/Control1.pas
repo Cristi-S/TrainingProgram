@@ -34,6 +34,8 @@ type
     ArrowLongLeft: TArrow;
     ArrowDownRight: TArrow;
     ArrowLongRight: TArrow;
+    ArrowRightPolygon: TArrow;
+    ArrowLeftPolygon: TArrow;
   End;
 
   TItemState = (normal, addAfter, addBefore, new);
@@ -110,6 +112,9 @@ begin
   ItemMain.ArrowLongLeft.style := psDash;
   ItemMain.ArrowLongRight.style := psDash;
   // ItemMain.ArrowLongLeft.cross.visible := true;
+
+  ItemMain.ArrowRightPolygon.visible := false;
+  ItemMain.ArrowLeftPolygon.visible := false;
 
   Parent := TWinControl(AOwner);
 end;
@@ -268,6 +273,25 @@ begin
 
 end;
 
+procedure DrawArrowPolygon(Canvas: TCanvas; p1, p2, p3, p4: TPoint;
+  Arrow: TArrow);
+var
+  last: integer;
+  I: integer;
+begin
+  if not Arrow.visible then
+    exit;
+
+  // рисуем линии
+  Canvas.MoveTo(p1.x, p1.y);
+  Canvas.LineTo(p2.x, p2.y);
+
+  Canvas.MoveTo(p2.x, p2.y);
+  Canvas.LineTo(p3.x, p3.y);
+
+  Canvas.MoveTo(p3.x, p3.y);
+  DrawArrow(Canvas, p3.x, p3.y, p4.x, p4.y, Arrow);
+end;
 {$ENDREGION}
 {$REGION 'рисование самого элемента'}
 
@@ -345,6 +369,7 @@ var
   MainItemPoints: array [1 .. 4] of TPoint;
   LeftItemPoints: array [1 .. 4] of TPoint;
   RightItemPoints: array [1 .. 4] of TPoint;
+  ArrowRightPolygonPoints: array [1 .. 4] of TPoint;
   aHeight, aWidth: integer;
   p: TPoint; // произвольная коодината для облегчения жизни
   x, y: integer;
@@ -363,6 +388,7 @@ begin
   case State of
     normal, addBefore:
       begin
+        // рисуем сам элемент
         DrawListItem(Canvas, Point(ItemLeft, ItemTop), ItemWidth, ItemHeigth,
           ItemMain, MainItemPoints);
         if not IsLast then
@@ -374,9 +400,32 @@ begin
           DrawArrow(Canvas, MainItemPoints[4].x + ArrowWidth,
             MainItemPoints[4].y, MainItemPoints[4].x, MainItemPoints[4].y,
             ItemMain.ArrowLeft);
+
+          // рисуем длинные стрелки отображаемые при удалении элемента
+          DrawArrowPolygon(Canvas,
+
+            Point(ItemLeft + Round((4 / 5 * ItemWidth)), ItemTop),
+
+            Point(ItemLeft + Round((4 / 5 * ItemWidth)),
+            ItemTop - Round(1 / 2 * ArrowWidth)),
+
+            Point(ItemLeft + Round((4 / 5 * ItemWidth)) + ItemWidth + 3 *
+            ArrowWidth, ItemTop - Round(1 / 2 * ArrowWidth)),
+
+            Point(ItemLeft + Round((4 / 5 * ItemWidth)) + ItemWidth + 3 *
+            ArrowWidth, ItemTop),
+
+            ItemMain.ArrowRightPolygon);
+
+          DrawArrowPolygon(Canvas,
+            Point(ItemLeft + 2*ItemWidth + 2*ArrowWidth + round(1/5*ItemWidth), ItemTop + ItemHeigth),
+            Point(ItemLeft + 2*ItemWidth + 2*ArrowWidth + round(1/5*ItemWidth), ItemTop + ItemHeigth + Round(1/2*ArrowWidth)),
+            Point(ItemLeft + Round(4/5*ItemWidth), ItemTop + ItemHeigth + Round(1/2*ArrowWidth)),
+            Point(ItemLeft + Round(4/5*ItemWidth), ItemTop + ItemHeigth),
+            ItemMain.ArrowLeftPolygon);
         end;
 
-        aWidth := ItemLeft + ItemWidth + ArrowWidth;
+        aWidth := ItemLeft + ItemWidth + ArrowWidth + ItemWidth + ArrowWidth + Round(1/5*ItemWidth);
       end;
     addAfter:
       begin

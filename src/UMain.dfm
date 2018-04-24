@@ -205,6 +205,7 @@ object Form1: TForm1
     Top = 344
     Width = 811
     Height = 225
+    ScrollBars = ssVertical
     TabOrder = 4
   end
 end

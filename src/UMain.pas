@@ -67,30 +67,34 @@ begin
     case List.State of
       lsNormal:
         begin
+          if List.Getcount > 0 then
+          begin
+            ButtonAdd.Enabled := false;
+            ButtonAddAfter.Enabled := true;
+            ButtonAddBefore.Enabled := true;
+            //удалять первый элемент пока нельзя
+            if List.Getcount > 1 then
+              ButtonDelete.Enabled := true
+            else
+              ButtonDelete.Enabled := false;
+          end
+          else
+          begin
+            ButtonAdd.Enabled := true;
+            ButtonAddAfter.Enabled := false;
+            ButtonAddBefore.Enabled := false;
+            ButtonDelete.Enabled := false;
+          end;
           ButtonNext.Enabled := false;
-          ButtonAddAfter.Enabled := true;
-          ButtonAddBefore.Enabled := true;
         end;
       lsAddbefore, lsAddAfter, lsDelete:
         begin
+          ButtonAdd.Enabled := false;
           ButtonAddAfter.Enabled := false;
           ButtonAddBefore.Enabled := false;
+          ButtonDelete.Enabled := false;
           ButtonNext.Enabled := true;
         end;
-    end;
-    if List.Getcount > 0 then
-    begin
-      ButtonAdd.Enabled := false;
-      ButtonAddAfter.Enabled := true;
-      ButtonAddBefore.Enabled := true;
-      ButtonDelete.Enabled := true;
-    end
-    else
-    begin
-      ButtonAdd.Enabled := true;
-      ButtonAddAfter.Enabled := false;
-      ButtonAddBefore.Enabled := false;
-      ButtonDelete.Enabled := false;
     end;
   end;
 end;
@@ -241,7 +245,7 @@ begin
           ListControlItem.ItemMain.TitleMain := temp.GetInfo;
           ListControlItem.ItemMain.TitleNext := temp.GetNextInfo;
           ListControlItem.ItemMain.TitlePrev := temp.GetPrevInfo;
-          ListControlItem.ItemMain.ArrowHeader.visible:= temp.IsFirst;
+          ListControlItem.ItemMain.ArrowHeader.visible := temp.IsFirst;
           ListControlItem.IsLast := temp.IsLast;
           ListControlItem.IsFirst := temp.IsFirst;
 
@@ -356,6 +360,7 @@ begin
   ButtonAddBefore.Enabled := true;
 end;
 
+// удаление
 procedure TForm1.ButtonDeleteClick(Sender: TObject);
 var
   searchItem: string;
@@ -381,6 +386,7 @@ begin
   end;
 end;
 
+// добавление первого элемента в список
 procedure TForm1.ButtonAddClick(Sender: TObject);
 var
   ListItem: TListItem;
@@ -393,6 +399,7 @@ begin
   List.Add('', ListItem);
 end;
 
+// возобновление работы
 procedure TForm1.ButtonNextClick(Sender: TObject);
 begin
   List.NextStep;
@@ -425,6 +432,7 @@ begin
   end;
 end;
 
+// добавление после
 procedure TForm1.ButtonAddAfterClick(Sender: TObject);
 var
   ListItem: TListItem;
@@ -440,6 +448,7 @@ begin
   List.Add(searchItem, ListItem);
 end;
 
+// добавление перед
 procedure TForm1.ButtonAddBeforeClick(Sender: TObject);
 var
   ListItem: TListControl;
@@ -500,10 +509,11 @@ begin
     Key := #0;
 end;
 
+// обработчик создания формы
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   List := TList.Create;
-  // Для MyObj1 и MyObj2 назначаем обработчики события MyEvent.
+  // Для OnThreadSyspended назначаем обработчики события ThreadSyspended.
   List.OnThreadSyspended := OnThreadSyspended;
   ListControl := TList<TListControl>.Create;
   UpdateButtonState;

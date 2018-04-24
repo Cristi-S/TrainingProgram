@@ -59,6 +59,7 @@ implementation
 
 {$R *.dfm}
 
+// обновляем состояние кнопок
 procedure UpdateButtonState;
 begin
   with Form1 do
@@ -94,6 +95,7 @@ begin
   end;
 end;
 
+// перемещает все контролы в ряд по порядку
 procedure ReplaceControlItems();
 var
   i: integer;
@@ -122,11 +124,11 @@ begin
   end;
 end;
 
+// перерисовывает панель с компонентами, предварительно ее очищая
 procedure TForm1.RedrawPanel();
 var
   temp: TListItem;
   ListControlItem, NewListControlItem: TListControl;
-
 begin
   ButtonClearClick(Self);
   case List.State of
@@ -141,6 +143,7 @@ begin
           ListControlItem.ItemMain.TitlePrev := temp.GetPrevInfo;
           ListControlItem.IsLast := temp.IsLast;
           ListControlItem.IsFirst := temp.IsFirst;
+          ListControlItem.ItemMain.ArrowHeader.visible := temp.IsFirst;
 
           ListControl.Add(ListControlItem);
           temp := temp.GetNext;
@@ -159,6 +162,7 @@ begin
           ListControlItem.ItemMain.TitleMain := temp.GetInfo;
           ListControlItem.ItemMain.TitleNext := temp.GetNextInfo;
           ListControlItem.ItemMain.TitlePrev := temp.GetPrevInfo;
+          ListControlItem.ItemMain.ArrowHeader.visible := temp.IsFirst;
 
           ListControlItem.IsLast := temp.IsLast;
           ListControlItem.IsFirst := temp.IsFirst;
@@ -237,6 +241,7 @@ begin
           ListControlItem.ItemMain.TitleMain := temp.GetInfo;
           ListControlItem.ItemMain.TitleNext := temp.GetNextInfo;
           ListControlItem.ItemMain.TitlePrev := temp.GetPrevInfo;
+          ListControlItem.ItemMain.ArrowHeader.visible:= temp.IsFirst;
           ListControlItem.IsLast := temp.IsLast;
           ListControlItem.IsFirst := temp.IsFirst;
 
@@ -256,31 +261,50 @@ begin
           // непосредственно визуализация удаления элемента
           if Assigned(List.DeleteItem) then
           begin
-            //длинная стрелочка вперед + крестик
-            if (List.DeleteItem.GetPrev = temp) and
-              (temp.GetNext <> List.DeleteItem) then
+            // если удаляем с начала списка (первый элемент)
+            if List.DeleteItem = List.GetFirst then
             begin
-              ListControlItem.ItemMain.ArrowRightPolygon.visible := true;
-              ListControlItem.ItemMain.ArrowRight.cross.visible := true;
+              if temp = List.DeleteItem then
+                if temp.GetNext.GetPrev <> temp then
+                  ListControlItem.ItemMain.ArrowLeft.cross.visible := true;
             end;
-
-            //длинная стрелочка назад
-            if (List.DeleteItem.GetNext = temp.GetNext) and
-              (temp.GetNext <> List.DeleteItem) and (temp <> List.DeleteItem)
-              and (temp.GetNext.GetPrev = temp) then
+            // если удаляем с конца (последний элеменет)
+            if List.DeleteItem.GetNext = nil then
             begin
-              ListControlItem.ItemMain.ArrowLeftPolygon.visible := true;
-              // ListControlItem.ItemMain.ArrowRight.cross.visible:=true;
-            end;
-
-            if (temp = List.DeleteItem) and (List.DeleteItem.GetNext.GetPrev = List.DeleteItem.GetPrev) then
+              // крестик вправо
+              if (List.DeleteItem.GetPrev = temp) and
+                (temp.GetNext <> List.DeleteItem) then
+              begin
+                ListControlItem.ItemMain.ArrowRight.cross.visible := true;
+              end;
+            end
+            else
+            // удаление из середины
             begin
-              ListControlItem.ItemMain.ArrowLeft.cross.visible := true;  
+              // длинная стрелочка вперед + крестик
+              if (List.DeleteItem.GetPrev = temp) and
+                (temp.GetNext <> List.DeleteItem) then
+              begin
+                ListControlItem.ItemMain.ArrowRightPolygon.visible := true;
+                ListControlItem.ItemMain.ArrowRight.cross.visible := true;
+              end;
+              // длинная стрелочка назад
+              if (List.DeleteItem.GetNext = temp.GetNext) and
+                (temp.GetNext <> List.DeleteItem) and (temp <> List.DeleteItem)
+                and (temp.GetNext.GetPrev = temp) then
+              begin
+                ListControlItem.ItemMain.ArrowLeftPolygon.visible := true;
+              end;
+              // крестик
+              if (temp = List.DeleteItem) and
+                (List.DeleteItem.GetNext.GetPrev = List.DeleteItem.GetPrev) then
+              begin
+                ListControlItem.ItemMain.ArrowLeft.cross.visible := true;
+              end;
             end;
-            
-            
           end;
 
+          // обработка прохода по списку с учетом удаляемного элемента
           if Assigned(List.DeleteItem) then
           begin
             if List.DeleteItem.GetPrev = temp then

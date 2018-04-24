@@ -36,6 +36,7 @@ type
     ArrowLongRight: TArrow;
     ArrowRightPolygon: TArrow;
     ArrowLeftPolygon: TArrow;
+    ArrowHeader: TArrow;
   End;
 
   TItemState = (normal, addAfter, addBefore, new);
@@ -254,17 +255,23 @@ begin
 
 end;
 
-procedure DrawArrowPolygon(Canvas: TCanvas; p1, p2, p3, p4: TPoint;
+procedure DrawArrowPolygon(Canvas: TCanvas; points: Array Of TPoint;
   Arrow: TArrow);
+var
+  I, last: integer;
 begin
   if not Arrow.visible then
     exit;
 
   // рисуем линии
-  Canvas.MoveTo(p1.x, p1.y);
-  Canvas.LineTo(p2.x, p2.y);
-  Canvas.LineTo(p3.x, p3.y);
-  DrawArrow(Canvas, p3.x, p3.y, p4.x, p4.y, Arrow);
+  Canvas.MoveTo(points[0].x, points[0].y);
+  for I := 0 to Length(points) - 1 do
+  begin
+    Canvas.LineTo(points[I].x, points[I].y);
+  end;
+  last := High(points);
+  DrawArrow(Canvas, points[last - 1].x, points[last - 1].y, points[last].x,
+    points[last].y, Arrow);
 end;
 {$ENDREGION}
 {$REGION 'рисование самого элемента'}
@@ -377,23 +384,23 @@ begin
           PolygonArrowHeight := Round((1 / 5 * ItemWidth));
           // рисуем длинные стрелки отображаемые при удалении элемента
           DrawArrowPolygon(Canvas,
-            Point(ItemLeft + ItemWidth - PolygonArrowHeight, ItemTop),
+            [Point(ItemLeft + ItemWidth - PolygonArrowHeight, ItemTop),
             Point(ItemLeft + ItemWidth - PolygonArrowHeight,
             ItemTop - PolygonArrowHeight),
             Point(ItemLeft + 2 * ItemWidth + 2 * ArrowWidth +
             PolygonArrowHeight, ItemTop - PolygonArrowHeight),
             Point(ItemLeft + 2 * ItemWidth + 2 * ArrowWidth +
-            PolygonArrowHeight, ItemTop), ItemMain.ArrowRightPolygon);
+            PolygonArrowHeight, ItemTop)], ItemMain.ArrowRightPolygon);
 
           DrawArrowPolygon(Canvas,
-            Point(ItemLeft + 2 * ItemWidth + 2 * ArrowWidth +
+            [Point(ItemLeft + 2 * ItemWidth + 2 * ArrowWidth +
             PolygonArrowHeight, ItemTop + ItemHeigth),
             Point(ItemLeft + 2 * ItemWidth + 2 * ArrowWidth +
             PolygonArrowHeight, ItemTop + ItemHeigth + PolygonArrowHeight),
             Point(ItemLeft + ItemWidth - PolygonArrowHeight,
             ItemTop + ItemHeigth + PolygonArrowHeight),
             Point(ItemLeft + ItemWidth - PolygonArrowHeight,
-            ItemTop + ItemHeigth), ItemMain.ArrowLeftPolygon);
+            ItemTop + ItemHeigth)], ItemMain.ArrowLeftPolygon);
         end;
 
         aWidth := ItemLeft + 2 * ItemWidth + 2 * ArrowWidth + PolygonArrowHeight
@@ -467,17 +474,19 @@ begin
       0 + Round((FirstHeight - y) / 2), 'First');
     Canvas.Pen.Width := 2;
 
-    Canvas.MoveTo(0 + Round(FirstWidth / 2), FirstHeight);
+    // Canvas.MoveTo(0 + Round(FirstWidth / 2), FirstHeight);
 
     p := Point(0 + Round(FirstWidth / 2),
       ItemTop + Round(ItemHeigth * 1 / 3 + ((ItemHeigth * 2 / 3 - ItemHeigth * 1
       / 3 - y) / 2)));
+    DrawArrowPolygon(Canvas, [Point(p.x, FirstHeight), p, Point(ItemLeft, p.y)],
+      ItemMain.ArrowHeader);
 
-    Canvas.LineTo(p.x, p.y);
-    Canvas.Pen.Width := 1;
-    Arrow.visible := true;
-    Arrow.color := clBlack;
-    DrawArrow(Canvas, p.x, p.y, ItemLeft, p.y, Arrow);
+    // Canvas.LineTo(p.x, p.y);
+    // Canvas.Pen.Width := 1;
+    // ItemMain.ArrowHeader.visible := true;
+    // ItemMain.ArrowHeader.color := clBlack;
+    // DrawArrow(Canvas, p.x, p.y, ItemLeft, p.y, Arrow);
   end;
 
   Width := aWidth;

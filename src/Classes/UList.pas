@@ -94,7 +94,7 @@ begin
   State := lsDelete;
   _SearchItem := SearchItem;
   ThreadId := BeginThread(nil, 0, @TList._Delete, Self, 0, id);
-//  _Delete(SearchItem);
+  // _Delete(SearchItem);
 end;
 
 {$ENDREGION}
@@ -104,6 +104,7 @@ procedure TList._Add();
 var
   NewItem: TListItem;
   SearchItem: string;
+{$REGION 'вложенные функции для добавления'}
   procedure CLeanListItemsStates;
   var
     temp, last: TListItem;
@@ -142,6 +143,7 @@ var
     GenericMyEvent;
     SuspendThread(ThreadId);
   end;
+{$ENDREGION}
 
 Begin
   CritSec.Enter;
@@ -223,6 +225,7 @@ end;
 Function TList._Delete(): boolean;
 // var
 // temp: TListItem;
+{$REGION 'вложенные функции для удаления'}
   procedure CLeanListItemsStates;
   var
     temp, last: TListItem;
@@ -234,7 +237,7 @@ Function TList._Delete(): boolean;
       temp.IsAddAfter := false;
       temp.IsFirst := false;
       temp.IsLast := false;
-      temp.IsDelete:=false;
+      temp.IsDelete := false;
       last := temp;
       temp := temp.GetNext;
     end;
@@ -242,7 +245,7 @@ Function TList._Delete(): boolean;
     First.IsFirst := true;
     last.IsLast := true;
 
-    FDeleteItem:=nil;
+    FDeleteItem := nil;
     FTempItem := nil;
     FNewItem := nil;
   end;
@@ -263,6 +266,7 @@ Function TList._Delete(): boolean;
     GenericMyEvent;
     SuspendThread(ThreadId);
   end;
+{$ENDREGION}
 
 begin
   CritSec.Enter;
@@ -283,8 +287,8 @@ begin
   end;
   TLogger.Log('Искомый элемент найден, адресуем его указателем pTemp');
 
-  FTempItem.IsDelete:=true;
-  FDeleteItem:= FTempItem;
+  FTempItem.IsDelete := true;
+  FDeleteItem := FTempItem;
 
   If FTempItem = First then
   begin
@@ -305,12 +309,13 @@ begin
       // удаление первого эл.
       TLogger.Log('=====Удаление первого элемента из списка=====');
       TLogger.Log
-        ('3. Указатель First адресуем в следующий за удаляемым элементом');
-      First := FTempItem.GetNext;
+        ('3. Изменяем адресное поле Prev у элемента следующего после удаляемого');
+      First.GetNext.SetPrev(nil);
       Pause();
       TLogger.Log
-        ('4. Изменяем адресное поле Prev у элемента следующего после удаляемого');
-      First.SetPrev(nil);
+        ('4. Указатель First адресуем в следующий за удаляемым элементом');
+      First := FTempItem.GetNext;
+      CLeanListItemsStates;
       Pause();
       TLogger.Log('5. Уменьшаем количество элементов');
       Count := Count - 1;
@@ -327,17 +332,17 @@ begin
     ('3. Изменяем адресное поле next у элемента, предшествующего удаляемому на адрес элемента, следующего за удаляемым');
   TempItem.GetPrev.SetNext(FTempItem.GetNext);
   Pause();
-  TLogger.Log
-    ('4. Изменяем адресное поле prev у следующего за удаляемым элемента на адрес элемента, предшествующего удаляемому');
   if FTempItem.GetNext <> nil then
+  begin
+    TLogger.Log
+      ('4. Изменяем адресное поле prev у следующего за удаляемым элемента на адрес элемента, предшествующего удаляемому');
     FTempItem.GetNext.SetPrev(FTempItem.GetPrev);
+  end;
   Pause();
   TLogger.Log('5. Обрабатываем удаляемый элемент');
   FTempItem := nil;
   Pause();
-  TLogger.Log('6. Уменьшаем количество элементов');
   Count := Count - 1;
-  Pause();
   result := true;
   FuncEnd;
 end;

@@ -5,7 +5,7 @@ uses
   UMain in 'UMain.pas' {Form1},
   UList in 'Classes\UList.pas',
   UListItem in 'Classes\UListItem.pas',
-  Unit2 in 'Unit2.pas' {Form2},
+  UnitNewItem in 'UnitNewItem.pas' {Form2},
   Control1 in 'Control1.pas',
   Logger in 'Logger.pas';
 

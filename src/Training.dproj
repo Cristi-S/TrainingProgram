@@ -105,7 +105,7 @@
         </DCCReference>
         <DCCReference Include="Classes\UList.pas"/>
         <DCCReference Include="Classes\UListItem.pas"/>
-        <DCCReference Include="Unit2.pas">
+        <DCCReference Include="UnitNewItem.pas">
             <Form>Form2</Form>
             <FormType>dfm</FormType>
         </DCCReference>

@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, System.Generics.Collections,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Control1, Vcl.ExtCtrls,
-  UList, UListItem, Unit2;
+  UList, UListItem, UnitNewItem, Math;
 
 type
   TForm1 = class(TForm)
@@ -59,6 +59,8 @@ implementation
 
 {$R *.dfm}
 
+uses Logger;
+
 // обновляем состояние кнопок
 procedure UpdateButtonState;
 begin
@@ -72,7 +74,11 @@ begin
             ButtonAdd.Enabled := false;
             ButtonAddAfter.Enabled := true;
             ButtonAddBefore.Enabled := true;
-            //удалять первый элемент пока нельзя
+            RadioButton1.Enabled := false;
+            ButtonCreate.Enabled := false;
+            RadioButton2.Enabled := false;
+            Edit1.Enabled := false;
+            // удалять первый элемент пока нельзя
             if List.Getcount > 1 then
               ButtonDelete.Enabled := true
             else
@@ -84,6 +90,10 @@ begin
             ButtonAddAfter.Enabled := false;
             ButtonAddBefore.Enabled := false;
             ButtonDelete.Enabled := false;
+            RadioButton1.Enabled := true;
+            RadioButton2.Enabled := true;
+            ButtonCreate.Enabled := true;
+            Edit1.Enabled := true;
           end;
           ButtonNext.Enabled := false;
         end;
@@ -336,28 +346,36 @@ end;
 procedure TForm1.ButtonCreateClick(Sender: TObject);
 var
   ListItem: TListItem;
-  i, j, k: integer;
-  s1, s2: string;
-
+  i, Count: integer;
 begin
+  // переводим режим программы в обычный - без управления потоком
+  List.Mode := lmNormal;
+  // выключаем логгирование
+  Logger.Enabled := false;
+
+  Count := Min(3, StrToInt(Edit1.Text));
+
   if RadioButton1.Checked = true then
-    for i := 0 to 3 do
+    for i := 0 to Count do
     begin
       if i = 0 then
       begin
         ListItem := TListItem.Create('item' + IntToStr(i));
         List.Add('item', ListItem);
+        WaitForSingleObject(List.ThreadId, INFINITE);
       end
       else
       begin
         ListItem := TListItem.Create('item' + IntToStr(i));
-        List.Add('item' + IntToStr(i), ListItem);
+        List.Add('item' + IntToStr(i - 1), ListItem);
+        WaitForSingleObject(List.ThreadId, INFINITE);
       end;
     end;
-
-  ListItem.IsLast := true;
-  ButtonAddAfter.Enabled := true;
-  ButtonAddBefore.Enabled := true;
+  // перерисовываем панель
+  RedrawPanel();
+  // возвращаем программу в режим управления
+  Logger.Enabled := true;
+  List.Mode := lmControl;
 end;
 
 // удаление
@@ -390,7 +408,6 @@ end;
 procedure TForm1.ButtonAddClick(Sender: TObject);
 var
   ListItem: TListItem;
-  i, k: integer;
   info: string;
 begin
   Form2.ShowModal;
@@ -452,8 +469,7 @@ end;
 procedure TForm1.ButtonAddBeforeClick(Sender: TObject);
 var
   ListItem: TListControl;
-  i, k: integer;
-  s1, s2: string;
+  k: integer;
 begin
   k := StrToInt(InputBox('Новый элемент',
     'Введите номер элемента,ПОСЛЕ которого хотите добавить новый элемент:',
@@ -505,7 +521,7 @@ end;
 
 procedure TForm1.Edit1KeyPress(Sender: TObject; var Key: Char);
 begin
-  If not(Key in ['0' .. '9', #8]) then
+  If not CharInSet(Key, ['0' .. '9', #8]) then
     Key := #0;
 end;
 

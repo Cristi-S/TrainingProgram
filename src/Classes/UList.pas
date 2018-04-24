@@ -7,12 +7,13 @@ Uses
 
 Type
   TListState = (lsNormal, lsAddbefore, lsAddAfter, lsDelete);
+  TListMode = (lmControl, lmNormal, lmDemo);
 
   TList = class
   Private
     Count: Integer;
     First: TListItem;
-    ThreadId: Integer;
+    // ThreadId: Integer;
     // FState: TListState;
     FTempItem: TListItem;
     FNewItem: TListItem;
@@ -24,8 +25,11 @@ Type
     FDeleteItem: TListItem;
     procedure _Add();
     Function _Delete(): boolean;
+    procedure Pause();
   Public
+    ThreadId: Integer;
     State: TListState;
+    Mode: TListMode;
     Constructor Create;
     Function Getcount: Integer;
     Function GetFirst: TListItem;
@@ -61,6 +65,7 @@ Constructor TList.Create;
 begin
   Count := 0;
   First := nil;
+  Mode := lmControl;
   State := lsNormal;
   CritSec := TCriticalSection.Create;
 end;
@@ -131,17 +136,12 @@ var
   begin
     State := lsNormal;
     CLeanListItemsStates;
-    GenericMyEvent;
     TLogger.Log('=====Закончили добавление нового элемента в список=====');
+    if Mode <> lmNormal then
+      GenericMyEvent;
     CritSec.Leave;
     EndThread(0);
     exit;
-  end;
-
-  procedure Pause();
-  begin
-    GenericMyEvent;
-    SuspendThread(ThreadId);
   end;
 {$ENDREGION}
 
@@ -260,12 +260,6 @@ Function TList._Delete(): boolean;
     EndThread(0);
     exit;
   end;
-
-  procedure Pause();
-  begin
-    GenericMyEvent;
-    SuspendThread(ThreadId);
-  end;
 {$ENDREGION}
 
 begin
@@ -351,12 +345,6 @@ begin
 end;
 
 Function TList.Search(SearchItem: string): TListItem;
-  procedure Pause();
-  begin
-    GenericMyEvent;
-    SuspendThread(ThreadId);
-  end;
-
 begin
   result := nil;
   TLogger.Log('Устанавливаем указатель temp в адрес первого элемента в списке');
@@ -377,6 +365,22 @@ begin
       TLogger.Log('Переходим к следующему');
       Pause();
     end;
+end;
+
+procedure TList.Pause();
+begin
+  case Mode of
+    lmControl:
+      begin
+        GenericMyEvent;
+        SuspendThread(ThreadId);
+      end;
+    lmNormal:
+      ;
+    lmDemo:
+      ;
+  end;
+
 end;
 
 Procedure TList.NextStep();

@@ -174,6 +174,27 @@ begin
       end;
     lsAddbefore:
       begin
+        // если добавление перед первым
+        if Assigned(List.SearchItem) then
+        begin
+          if List.SearchItem.GetPrev = nil then
+          begin
+            NewListControlItem := TListControl.Create(FlowPanel1);
+            NewListControlItem.ItemMain.TitleMain := List.NewItem.GetInfo;
+            NewListControlItem.ItemMain.TitleNext := List.NewItem.GetNextInfo;
+            NewListControlItem.ItemMain.TitlePrev := List.NewItem.GetPrevInfo;
+            NewListControlItem.State := new;
+            NewListControlItem.ItemMain.color := clGreen;
+
+            NewListControlItem.ItemMain.ArrowUpRight.visible:= List.NewItem.GetNext <> nil;
+            NewListControlItem.ItemMain.ArrowDownRight.visible:= List.SearchItem.GetPrev = List.NewItem;
+
+
+            ListControl.Add(NewListControlItem);
+          end;
+
+        end;
+
         temp := List.GetFirst;
         while temp <> nil do
         begin
@@ -188,6 +209,7 @@ begin
           ListControlItem.IsAddBefore := temp.IsAddBefore;
           ListControl.Add(ListControlItem);
 
+          // добавление в середину перед заданным
           next := temp.GetNext;
           if Assigned(next) then
             if temp.GetNext.IsAddBefore then
@@ -452,11 +474,11 @@ end;
 // удаление
 procedure TForm1.ButtonDeleteClick(Sender: TObject);
 var
-  searchItem: string;
+  SearchItem: string;
 begin
-  searchItem := InputBox('Удаление',
+  SearchItem := InputBox('Удаление',
     'Введите элемент, который нужно удалить :', 'item1');
-  List.Delete(searchItem);
+  List.Delete(SearchItem);
 end;
 
 procedure TForm1.ButtonAppendClick(Sender: TObject);
@@ -504,7 +526,7 @@ end;
 procedure TForm1.ButtonInsertClick(Sender: TObject);
 var
   temp: TListItem;
-  searchItem: string;
+  SearchItem: string;
 begin
   if List.Getcount = 0 then
   begin
@@ -513,10 +535,10 @@ begin
   end
   else
   begin
-    searchItem := InputBox('Новый элемент',
+    SearchItem := InputBox('Новый элемент',
       'Введите элемент, после которого добавить новый :', 'item1');
     temp := TListItem.Create('itemNew');
-    List.addAfter(searchItem, temp);
+    List.addAfter(SearchItem, temp);
   end;
 end;
 
@@ -524,32 +546,32 @@ end;
 procedure TForm1.ButtonAddAfterClick(Sender: TObject);
 var
   ListItem: TListItem;
-  searchItem: string;
+  SearchItem: string;
   info: string;
 begin
   if List.Getcount <> 0 then
     Form2.ShowModal;
   info := Form2.Edit1.Text;
   ListItem := TListItem.Create(info);
-  searchItem := InputBox('Добавление после заданного',
+  SearchItem := InputBox('Добавление после заданного',
     'Введите элемент, после которого добавить новый :', 'item1');
-  List.addAfter(searchItem, ListItem);
+  List.addAfter(SearchItem, ListItem);
 end;
 
 // добавление перед
 procedure TForm1.ButtonAddBeforeClick(Sender: TObject);
 var
   ListItem: TListItem;
-  searchItem: string;
+  SearchItem: string;
   info: string;
 begin
   if List.Getcount <> 0 then
     Form2.ShowModal;
   info := Form2.Edit1.Text;
   ListItem := TListItem.Create(info);
-  searchItem := InputBox('Добавление перед заданным',
+  SearchItem := InputBox('Добавление перед заданным',
     'Введите элемент, перед которым добавить новый :', 'item1');
-  List.AddBefore(searchItem, ListItem);
+  List.AddBefore(SearchItem, ListItem);
 end;
 
 procedure TForm1.ButtonClearClick(Sender: TObject);

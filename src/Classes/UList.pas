@@ -23,6 +23,7 @@ Type
     // класса, а не произвольную процедуру.
     FOnThreadSuspended: TNotifyEvent;
     FDeleteItem: TListItem;
+    FSearchItem: TListItem;
     procedure _AddAfter();
     procedure _AddBefore();
     Function _Delete(): boolean;
@@ -51,6 +52,7 @@ Type
     property NewItem: TListItem read FNewItem;
     property TempItem: TListItem read FTempItem;
     property DeleteItem: TListItem read FDeleteItem;
+    property SearchItem: TListItem read FSearchItem;
   End;
 
 implementation
@@ -290,6 +292,7 @@ Begin
     // result := false;
     FuncEnd();
   end;
+  FSearchItem:= FTempItem;
   If TempItem.GetPrev = nil then
   begin
     TempItem.IsAddBefore := true;

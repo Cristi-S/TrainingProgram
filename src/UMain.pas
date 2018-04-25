@@ -353,7 +353,7 @@ begin
   // выключаем логгирование
   Logger.Enabled := false;
 
-  Count := Min(3, StrToInt(Edit1.Text));
+  Count := Min(3, StrToInt(Edit1.Text) - 1);
 
   if RadioButton1.Checked = true then
     for i := 0 to Count do

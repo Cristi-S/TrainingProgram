@@ -141,7 +141,7 @@ end;
 // перерисовывает панель с компонентами, предварительно ее очищая
 procedure TForm1.RedrawPanel();
 var
-  temp: TListItem;
+  temp, next: TListItem;
   ListControlItem, NewListControlItem: TListControl;
 begin
   ButtonClearClick(Self);
@@ -165,7 +165,69 @@ begin
       end;
     lsAddbefore:
       begin
+        temp := List.GetFirst;
+        while temp <> nil do
+        begin
+          ListControlItem := TListControl.Create(FlowPanel1);
+          ListControlItem.ItemMain.TitleMain := temp.GetInfo;
+          ListControlItem.ItemMain.TitleNext := temp.GetNextInfo;
+          ListControlItem.ItemMain.TitlePrev := temp.GetPrevInfo;
+          ListControlItem.ItemMain.ArrowHeader.visible := temp.IsFirst;
 
+          ListControlItem.IsLast := temp.IsLast;
+          ListControlItem.IsFirst := temp.IsFirst;
+          ListControlItem.IsAddBefore := temp.IsAddBefore;
+          ListControl.Add(ListControlItem);
+
+          next := temp.GetNext;
+          if Assigned(next) then
+            if temp.GetNext.IsAddBefore then
+            begin
+              NewListControlItem := TListControl.Create(FlowPanel1);
+              NewListControlItem.ItemMain.TitleMain := List.NewItem.GetInfo;
+              NewListControlItem.ItemMain.TitleNext := List.NewItem.GetNextInfo;
+              NewListControlItem.ItemMain.TitlePrev := List.NewItem.GetPrevInfo;
+              NewListControlItem.State := new;
+              NewListControlItem.ItemMain.color := clGreen;
+
+              // стрелочки
+              ListControlItem.ItemMain.ArrowRight.visible :=
+                (temp.GetNext = List.NewItem) and (temp.IsLast);
+
+              // стрелочки при добавлении в середину для нового элемента
+              if temp.GetNext <> nil then
+              begin
+                NewListControlItem.ItemMain.ArrowUpRight.visible :=
+                  (temp.GetNext = List.NewItem.GetNext);
+                NewListControlItem.ItemMain.ArrowDownRight.visible :=
+                  (List.NewItem = temp.GetNext.GetPrev);
+
+                ListControlItem.ItemMain.ArrowDownLeft.visible :=
+                  (temp.GetNext = List.NewItem);
+                ListControlItem.ItemMain.ArrowUpLeft.visible :=
+                  (temp = List.NewItem.GetPrev);
+
+                // длинные
+                ListControlItem.ItemMain.ArrowLongLeft.visible :=
+                  (temp.GetNext <> List.NewItem) and
+                  (temp.GetNext.GetPrev = temp);
+                ListControlItem.ItemMain.ArrowLongRight.visible :=
+                  (temp.GetNext <> List.NewItem) and (temp.GetNext <> nil);
+              end;
+
+              NewListControlItem.State := new;
+              ListControlItem.State := addAfter;
+              ListControl.Add(NewListControlItem);
+            end;
+
+          // закрашивание temp
+          if temp = List.TempItem then
+          begin
+            ListControlItem.ItemMain.color := clBlue;
+          end;
+
+          temp := temp.GetNext;
+        end;
       end;
     lsAddAfter:
       begin
@@ -361,13 +423,13 @@ begin
       if i = 0 then
       begin
         ListItem := TListItem.Create('item' + IntToStr(i));
-        List.AddAfter('item', ListItem);
+        List.addAfter('item', ListItem);
         WaitForSingleObject(List.ThreadId, INFINITE);
       end
       else
       begin
         ListItem := TListItem.Create('item' + IntToStr(i));
-        List.AddAfter('item' + IntToStr(i - 1), ListItem);
+        List.addAfter('item' + IntToStr(i - 1), ListItem);
         WaitForSingleObject(List.ThreadId, INFINITE);
       end;
     end;
@@ -395,12 +457,12 @@ begin
   if List.Getcount = 0 then
   begin
     temp := TListItem.Create('item' + IntToStr(List.Getcount));
-    List.AddAfter('', temp);
+    List.addAfter('', temp);
   end
   else
   begin
     temp := TListItem.Create('item' + IntToStr(List.Getcount));
-    List.AddAfter('item' + IntToStr(List.Getcount - 1), temp);
+    List.addAfter('item' + IntToStr(List.Getcount - 1), temp);
   end;
 end;
 
@@ -413,7 +475,7 @@ begin
   Form2.ShowModal;
   info := Form2.Edit1.Text;
   ListItem := TListItem.Create(info);
-  List.AddAfter('', ListItem);
+  List.addAfter('', ListItem);
 end;
 
 // возобновление работы
@@ -438,14 +500,14 @@ begin
   if List.Getcount = 0 then
   begin
     temp := TListItem.Create('item' + IntToStr(List.Getcount));
-    List.AddAfter('', temp);
+    List.addAfter('', temp);
   end
   else
   begin
     searchItem := InputBox('Новый элемент',
       'Введите элемент, после которого добавить новый :', 'item1');
     temp := TListItem.Create('itemNew');
-    List.AddAfter(searchItem, temp);
+    List.addAfter(searchItem, temp);
   end;
 end;
 
@@ -462,47 +524,23 @@ begin
   ListItem := TListItem.Create(info);
   searchItem := InputBox('Добавление после заданного',
     'Введите элемент, после которого добавить новый :', 'item1');
-  List.AddAfter(searchItem, ListItem);
+  List.addAfter(searchItem, ListItem);
 end;
 
 // добавление перед
 procedure TForm1.ButtonAddBeforeClick(Sender: TObject);
 var
-  ListItem: TListControl;
-  k: integer;
+  ListItem: TListItem;
+  searchItem: string;
+  info: string;
 begin
-  k := StrToInt(InputBox('Новый элемент',
-    'Введите номер элемента,ПОСЛЕ которого хотите добавить новый элемент:',
-    '1')) - 1;
-
-  ListItem := TListControl.Create(FlowPanel1);
-  ListItem.ItemMain.TitleMain := 'new';
-  ListItem.ItemMain.TitleNext := 'nul';
-  ListItem.ItemMain.TitlePrev := 'nul';
-
-  if ListControl[k].IsLast then
-  begin
-    ListItem.State := normal;
-    ListItem.IsLast := true;
-  end
-  else
-  begin
-    ListItem.State := new;
-    ListControl[k].State := addBefore;
-  end;
-
-  if k > 0 then
-  begin
-    ListControl[k - 1].State := addAfter;
-  end
-  else
-  begin
-    ListControl.Items[k].PaddingLeft := ListControl.Items[k].PaddingLeft +
-      ListControl.Items[k].ArrowWidth;
-  end;
-
-  ListControl.Insert(k, ListItem);
-  RedrawPanel();
+  if List.Getcount <> 0 then
+    Form2.ShowModal;
+  info := Form2.Edit1.Text;
+  ListItem := TListItem.Create(info);
+  searchItem := InputBox('Добавление перед заданным',
+    'Введите элемент, перед которым добавить новый :', 'item1');
+  List.AddBefore(searchItem, ListItem);
 end;
 
 procedure TForm1.ButtonClearClick(Sender: TObject);

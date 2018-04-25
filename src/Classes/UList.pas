@@ -100,7 +100,7 @@ var
 begin
   _NewItem := NewItem;
   _SearchItem := SearchItem;
-  State := lsAddAfter;
+  State := lsAddbefore;
   ThreadId := BeginThread(nil, 0, @TList._AddBefore, Self, 0, id);
 end;
 
@@ -317,7 +317,7 @@ Begin
   Else
   Begin
     TempItem.IsAddBefore := true;
-    TLogger.Log('3.	Формируем поля нового элемента, в частности: ');
+    TLogger.Log('2.	Формируем поля нового элемента, в частности: ');
     Pause();
     TLogger.Log('•	в поле next заносится адрес заданного элемента');
     NewItem.SetNext(TempItem);
@@ -327,13 +327,13 @@ Begin
     NewItem.SetPrev(TempItem.GetPrev);
     Pause();
     TLogger.Log
-      ('4.	Изменяем адресное поле prev у заданного элемента на адрес нового элемента');
+      ('3.	Изменяем адресное поле prev у заданного элемента на адрес нового элемента');
     TempItem.SetPrev(NewItem);
     Pause();
     TLogger.Log
-      ('5.	Изменяем адресное поле next у предшествующего элемента на адрес нового элемента');
+      ('4.	Изменяем адресное поле next у предшествующего элемента на адрес нового элемента');
     NewItem.GetPrev.SetNext(NewItem);
-    TLogger.Log('6.	Увеличиваем количество элементов');
+    TLogger.Log('5.	Увеличиваем количество элементов');
     inc(Count)
   End;
   FuncEnd();

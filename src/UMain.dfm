@@ -168,7 +168,6 @@ object Form1: TForm1
     Top = 300
     Width = 96
     Height = 24
-    ReadOnly = True
     TabOrder = 1
     OnKeyPress = Edit1KeyPress
   end

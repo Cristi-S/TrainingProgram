@@ -86,14 +86,23 @@ begin
           end
           else
           begin
-            ButtonAdd.Enabled := true;
+            ButtonAdd.Enabled := RadioButton2.Checked;
             ButtonAddAfter.Enabled := false;
             ButtonAddBefore.Enabled := false;
             ButtonDelete.Enabled := false;
             RadioButton1.Enabled := true;
             RadioButton2.Enabled := true;
-            ButtonCreate.Enabled := true;
-            Edit1.Enabled := true;
+
+            if RadioButton1.Checked then
+            begin
+              ButtonCreate.Enabled := true;
+              Edit1.Enabled := true;
+            end
+            else
+            begin
+              ButtonCreate.Enabled := false;
+              Edit1.Enabled := false;
+            end;
           end;
           ButtonNext.Enabled := false;
         end;
@@ -575,21 +584,11 @@ end;
 
 procedure TForm1.RadioButton1Click(Sender: TObject);
 begin
-  if RadioButton1.Checked = true then
-  begin
-    Edit1.ReadOnly := false;
-    ButtonCreate.Enabled := true;
-  end;
+  UpdateButtonState;
 end;
 
 procedure TForm1.RadioButton2Click(Sender: TObject);
 begin
-  if RadioButton2.Checked = true then
-
-  begin
-    ButtonAdd.Enabled := true;
-    Edit1.ReadOnly := false;
-  end;
   UpdateButtonState;
 end;
 

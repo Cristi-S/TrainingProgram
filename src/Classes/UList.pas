@@ -23,7 +23,8 @@ Type
     // класса, а не произвольную процедуру.
     FOnThreadSuspended: TNotifyEvent;
     FDeleteItem: TListItem;
-    procedure _Add();
+    procedure _AddAfter();
+    procedure _AddBefore();
     Function _Delete(): boolean;
     procedure Pause();
   Public
@@ -33,7 +34,8 @@ Type
     Constructor Create;
     Function Getcount: Integer;
     Function GetFirst: TListItem;
-    Function Add(msg: string; NewItem: TListItem): boolean;
+    Function AddAfter(SearchItem: string; NewItem: TListItem): boolean;
+    Function AddBefore(SearchItem: string; NewItem: TListItem): boolean;
     Function Delete(SearchItem: string): boolean;
     Function Search(SearchItem: string): TListItem;
     procedure NextStep();
@@ -82,14 +84,24 @@ begin
   result := First;
 end;
 
-function TList.Add(msg: string; NewItem: TListItem): boolean;
+function TList.AddAfter(SearchItem: string; NewItem: TListItem): boolean;
 var
   id: longword;
 begin
   _NewItem := NewItem;
-  _SearchItem := msg;
+  _SearchItem := SearchItem;
   State := lsAddAfter;
-  ThreadId := BeginThread(nil, 0, @TList._Add, Self, 0, id);
+  ThreadId := BeginThread(nil, 0, @TList._AddAfter, Self, 0, id);
+end;
+
+function TList.AddBefore(SearchItem: string; NewItem: TListItem): boolean;
+var
+  id: longword;
+begin
+  _NewItem := NewItem;
+  _SearchItem := SearchItem;
+  State := lsAddAfter;
+  ThreadId := BeginThread(nil, 0, @TList._AddBefore, Self, 0, id);
 end;
 
 Function TList.Delete(SearchItem: string): boolean;
@@ -105,7 +117,7 @@ end;
 {$ENDREGION}
 {$REGION 'Thread functions'}
 
-procedure TList._Add();
+procedure TList._AddAfter();
 var
   NewItem: TListItem;
   SearchItem: string;
@@ -217,6 +229,111 @@ Begin
     TLogger.Log
       ('Изменяем адресное поле next у найденного элемента на адрес нового элемента');
     TempItem.SetNext(NewItem);
+    inc(Count)
+  End;
+  FuncEnd();
+end;
+
+procedure TList._AddBefore();
+var
+  NewItem: TListItem;
+  SearchItem: string;
+{$REGION 'вложенные функции для добавления'}
+  procedure CLeanListItemsStates;
+  var
+    temp, last: TListItem;
+  begin
+    temp := First;
+    while temp <> nil do
+    begin
+      temp.IsAddBefore := false;
+      temp.IsAddAfter := false;
+      temp.IsFirst := false;
+      temp.IsLast := false;
+      last := temp;
+      temp := temp.GetNext;
+    end;
+
+    First.IsFirst := true;
+    last.IsLast := true;
+
+    FTempItem := nil;
+    FNewItem := nil;
+  end;
+
+  procedure FuncEnd();
+  begin
+    State := lsNormal;
+    CLeanListItemsStates;
+    TLogger.Log('=====Закончили добавление нового элемента в список=====');
+    if Mode <> lmNormal then
+      GenericMyEvent;
+    CritSec.Leave;
+    EndThread(0);
+    exit;
+  end;
+{$ENDREGION}
+
+Begin
+  CritSec.Enter;
+
+  NewItem := _NewItem;
+  SearchItem := _SearchItem;
+
+  TLogger.Log('=====Добавление нового элемента в список=====');
+  TLogger.Log('1.	Поиск заданного элемента ');
+  FNewItem := NewItem;
+  FTempItem := Search(SearchItem);
+  If TempItem = nil then
+  begin
+    TLogger.Log('•	Искомый элемент не найден');
+    // result := false;
+    FuncEnd();
+  end;
+  If TempItem.GetPrev = nil then
+  begin
+    TempItem.IsAddBefore := true;
+    TLogger.Log
+      ('Адресное поле prev у найденного = null. Добавляем перед первым.');
+    NewItem.SetPrev(nil);
+    Pause();
+    TLogger.Log
+      ('В адресное поле "Prev" для найденного элемента записываем ссылку нового');
+    TempItem.SetPrev(NewItem);
+    Pause();
+    TLogger.Log
+      ('В адресное поле "Next" для нового элемента записываем ссылку найденнлшл элемента "Temp" ');
+    NewItem.SetNext(TempItem);
+    TLogger.Log('Изменяем указатель "First"');
+    First := NewItem;
+
+    // TempItem.IsAddBefore := false;
+    // TempItem.IsLast := false;
+    Pause();
+    TLogger.Log('Увеличиваем счетчик числа элементов');
+    inc(Count);
+    // result := true
+  End
+  Else
+  Begin
+    TempItem.IsAddBefore := true;
+    TLogger.Log('3.	Формируем поля нового элемента, в частности: ');
+    Pause();
+    TLogger.Log('•	в поле next заносится адрес заданного элемента');
+    NewItem.SetNext(TempItem);
+    Pause();
+    TLogger.Log
+      ('•	в поле prev заносится адрес предшествующего элемента (берется из поля prev найденного элемента)');
+    NewItem.SetPrev(TempItem.GetPrev);
+    Pause();
+    TLogger.Log
+      ('4.	Изменяем адресное поле prev у заданного элемента на адрес нового элемента');
+    TempItem.SetPrev(NewItem);
+    Pause();
+    TLogger.Log
+      ('5.	Изменяем адресное поле next у предшествующего элемента на адрес нового элемента');
+    NewItem.GetPrev.SetNext(NewItem);
+    TLogger.Log('6.	Увеличиваем количество элементов');
     inc(Count)
   End;
   FuncEnd();

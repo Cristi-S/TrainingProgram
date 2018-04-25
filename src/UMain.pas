@@ -361,13 +361,13 @@ begin
       if i = 0 then
       begin
         ListItem := TListItem.Create('item' + IntToStr(i));
-        List.Add('item', ListItem);
+        List.AddAfter('item', ListItem);
         WaitForSingleObject(List.ThreadId, INFINITE);
       end
       else
       begin
         ListItem := TListItem.Create('item' + IntToStr(i));
-        List.Add('item' + IntToStr(i - 1), ListItem);
+        List.AddAfter('item' + IntToStr(i - 1), ListItem);
         WaitForSingleObject(List.ThreadId, INFINITE);
       end;
     end;
@@ -395,12 +395,12 @@ begin
   if List.Getcount = 0 then
   begin
     temp := TListItem.Create('item' + IntToStr(List.Getcount));
-    List.Add('', temp);
+    List.AddAfter('', temp);
   end
   else
   begin
     temp := TListItem.Create('item' + IntToStr(List.Getcount));
-    List.Add('item' + IntToStr(List.Getcount - 1), temp);
+    List.AddAfter('item' + IntToStr(List.Getcount - 1), temp);
   end;
 end;
 
@@ -413,7 +413,7 @@ begin
   Form2.ShowModal;
   info := Form2.Edit1.Text;
   ListItem := TListItem.Create(info);
-  List.Add('', ListItem);
+  List.AddAfter('', ListItem);
 end;
 
 // возобновление работы
@@ -438,14 +438,14 @@ begin
   if List.Getcount = 0 then
   begin
     temp := TListItem.Create('item' + IntToStr(List.Getcount));
-    List.Add('', temp);
+    List.AddAfter('', temp);
   end
   else
   begin
     searchItem := InputBox('Новый элемент',
       'Введите элемент, после которого добавить новый :', 'item1');
     temp := TListItem.Create('itemNew');
-    List.Add(searchItem, temp);
+    List.AddAfter(searchItem, temp);
   end;
 end;
 
@@ -462,7 +462,7 @@ begin
   ListItem := TListItem.Create(info);
   searchItem := InputBox('Добавление после заданного',
     'Введите элемент, после которого добавить новый :', 'item1');
-  List.Add(searchItem, ListItem);
+  List.AddAfter(searchItem, ListItem);
 end;
 
 // добавление перед

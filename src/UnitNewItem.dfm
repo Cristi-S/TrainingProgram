@@ -11,7 +11,7 @@ object Form2: TForm2
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poMainFormCenter
   PixelsPerInch = 120
   TextHeight = 16
   object Label1: TLabel

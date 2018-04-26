@@ -292,7 +292,7 @@ Begin
     // result := false;
     FuncEnd();
   end;
-  FSearchItem:= FTempItem;
+  FSearchItem := FTempItem;
   If TempItem.GetPrev = nil then
   begin
     TempItem.IsAddBefore := true;
@@ -307,14 +307,12 @@ Begin
     TLogger.Log
       ('В адресное поле "Next" для нового элемента записываем ссылку найденнлшл элемента "Temp" ');
     NewItem.SetNext(TempItem);
-    TLogger.Log('Изменяем указатель "First"');
-    First := NewItem;
-
-    // TempItem.IsAddBefore := false;
-    // TempItem.IsLast := false;
     Pause();
+    TLogger.Log('Изменяем указатель "First"');
     TLogger.Log('Увеличиваем счетчик числа элементов');
     inc(Count);
+    First := NewItem;
+    FuncEnd();
     // result := true
   End
   Else

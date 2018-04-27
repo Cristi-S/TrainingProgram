@@ -202,7 +202,7 @@ Begin
   TLogger.Log('Выделение памяти для нового элемента');
   Pause();
   TLogger.Log('Заполнение информационного поля:' + NewItem.GetInfo);
-//  Pause();
+  // Pause();
   If TempItem.GetNext = nil then
   begin
     TempItem.IsAddAfter := true;
@@ -211,7 +211,7 @@ Begin
     TLogger.Log('Изменение левой ссылки у правого соседа');
     NewItem.SetPrev(TempItem);
     Pause();
-    TLogger.Log('Изменения поля ссылки на правого соседа');
+    TLogger.Log('Изменение поля ссылки на правого соседа');
     TempItem.SetNext(NewItem);
 
     TempItem.IsAddAfter := false;
@@ -230,7 +230,7 @@ Begin
     TLogger.Log('Заполнение поля ссылки на правого соседа');
     NewItem.SetNext(TempItem.GetNext);
     Pause();
-    TLogger.Log('Изменение поля ссылки на левого соседа');
+    TLogger.Log('Заполнение поля ссылки на левого соседа');
     NewItem.SetPrev(TempItem);
     Pause();
     TLogger.Log('Изменение левой ссылки у правого соседа');
@@ -274,7 +274,8 @@ var
   begin
     State := lsNormal;
     CLeanListItemsStates;
-    TLogger.Log('=====Закончили добавление нового элемента в список=====');
+    TLogger.DisableCouner;
+    TLogger.Log('');
     if Mode <> lmNormal then
       GenericMyEvent;
     CritSec.Leave;
@@ -288,35 +289,39 @@ Begin
 
   NewItem := _NewItem;
   SearchItem := _SearchItem;
+  TLogger.EnableCouner;
 
-  TLogger.Log('=====Добавление нового элемента в список=====');
-  TLogger.Log('1.	Поиск заданного элемента ');
+  TLogger.Log('Добавление ключа ' + NewItem.GetInfo + ' перед ключом ' +
+    SearchItem);
+  Pause();
+  TLogger.Log('Проверка списка на пустоту: список содержит элементы');
+  Pause();
+  TLogger.Log('Поиск элемента с ключом ' + SearchItem);
+  Pause();
   FNewItem := NewItem;
   FTempItem := Search(SearchItem);
   If TempItem = nil then
   begin
-    TLogger.Log('•	Искомый элемент не найден');
+    TLogger.Log('Искомый элемент не найден');
     // result := false;
     FuncEnd();
   end;
+  TLogger.Log('Выделение памяти для нового элемента');
+  Pause();
+  TLogger.Log('Заполнение информационного поля:' + NewItem.GetInfo);
+  Pause();
   FSearchItem := FTempItem;
   If TempItem.GetPrev = nil then
   begin
     TempItem.IsAddBefore := true;
-    TLogger.Log
-      ('Адресное поле prev у найденного = null. Добавляем перед первым.');
     NewItem.SetPrev(nil);
     Pause();
-    TLogger.Log
-      ('В адресное поле "Prev" для найденного элемента записываем ссылку нового');
+    TLogger.Log('Изменение левой ссылки у правого соседа');
     TempItem.SetPrev(NewItem);
     Pause();
-    TLogger.Log
-      ('В адресное поле "Next" для нового элемента записываем ссылку найденнлшл элемента "Temp" ');
+    TLogger.Log('Заполнение поля ссылки на правого соседа');
     NewItem.SetNext(TempItem);
     Pause();
-    TLogger.Log('Изменяем указатель "First"');
-    TLogger.Log('Увеличиваем счетчик числа элементов');
     inc(Count);
     First := NewItem;
     FuncEnd();
@@ -325,23 +330,17 @@ Begin
   Else
   Begin
     TempItem.IsAddBefore := true;
-    TLogger.Log('2.	Формируем поля нового элемента, в частности: ');
-    Pause();
-    TLogger.Log('•	в поле next заносится адрес заданного элемента');
+    TLogger.Log('Заполнение поля ссылки на правого соседа');
     NewItem.SetNext(TempItem);
     Pause();
-    TLogger.Log
-      ('•	в поле prev заносится адрес предшествующего элемента (берется из поля prev найденного элемента)');
+    TLogger.Log('Заполнение поля ссылки на левого соседа');
     NewItem.SetPrev(TempItem.GetPrev);
     Pause();
-    TLogger.Log
-      ('3.	Изменяем адресное поле prev у заданного элемента на адрес нового элемента');
+    TLogger.Log('Изменение левой ссылки у правого соседа');
     TempItem.SetPrev(NewItem);
     Pause();
-    TLogger.Log
-      ('4.	Изменяем адресное поле next у предшествующего элемента на адрес нового элемента');
+    TLogger.Log('Изменение правой ссылки у левого соседа');
     NewItem.GetPrev.SetNext(NewItem);
-    TLogger.Log('5.	Увеличиваем количество элементов');
     inc(Count)
   End;
   FuncEnd();
@@ -473,7 +472,8 @@ Function TList.Search(SearchItem: string): TListItem;
 begin
   result := nil;
   FTempItem := First;
-  while (FTempItem <> nil) do begin
+  while (FTempItem <> nil) do
+  begin
     Pause();
     if (FTempItem.GetInfo = SearchItem) then
     begin
@@ -487,7 +487,7 @@ begin
       TLogger.Log('Сравнение ключей ' + FTempItem.GetInfo + ' и ' + SearchItem +
         ' не равны - переход к следующему элементу');
       FTempItem := FTempItem.GetNext;
-//      Pause();
+      // Pause();
     end;
   end;
 end;
@@ -508,7 +508,7 @@ begin
 
 end;
 
-Procedure TList.NextStep();
+procedure TList.NextStep();
 begin
   ResumeThread(ThreadId);
 end;

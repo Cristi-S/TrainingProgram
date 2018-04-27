@@ -52,7 +52,7 @@ end;
 Function TListItem.GetNextInfo: string;
 begin
   if Assigned(Next) then
-    result := 'ýë. ' + Next.Info
+    result := Next.ToString()
   else
     result := 'nul';
 end;
@@ -60,7 +60,7 @@ end;
 Function TListItem.GetPrevInfo: string;
 begin
   if Assigned(Prev) then
-    result := 'ýë. ' + Prev.Info
+    result := Prev.ToString
   else
     result := 'nul';
 end;
@@ -92,7 +92,7 @@ end;
 
 function TListItem.ToString(): string;
 begin
-  result := 'Ýë.' + Info;
+  result := 'ÀÄÐ[' + Info+']';
 end;
 
 end.

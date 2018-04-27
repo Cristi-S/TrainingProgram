@@ -3,16 +3,18 @@ unit Logger;
 interface
 
 uses
-  Winapi.Windows;
+  Winapi.Windows, SysUtils;
 
 Type
   TLogger = class
-  public
     class procedure Log(sText: string; iHierarchy: integer = 0);
+    class procedure EnableCouner();
+    class procedure DisableCouner();
   end;
 
 var
   Enabled: boolean = True;
+  counter: integer = 0;
 
 implementation
 
@@ -21,9 +23,18 @@ uses UMain;
 class procedure TLogger.Log(sText: string; iHierarchy: integer = 0);
 var
   sHierarchy: string;
+  sCounter: string;
 begin
   if Enabled then
   begin
+    if counter > 0 then
+    begin
+      sCounter := IntToStr(counter) + '. ';
+      Inc(counter);
+    end
+    else
+      sCounter := '';
+
     case iHierarchy of
       0:
         begin
@@ -38,8 +49,18 @@ begin
           sHierarchy := chr(VK_TAB) + chr(VK_TAB);
         end;
     end;
-    Form1.Memo1.Lines.Add(sHierarchy + sText);
+    Form1.Memo1.Lines.Add(sCounter + sHierarchy + sText);
   end;
+end;
+
+class procedure TLogger.EnableCouner();
+begin
+  counter := 1;
+end;
+
+class procedure TLogger.DisableCouner();
+begin
+  counter := 0;
 end;
 
 end.

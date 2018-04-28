@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, System.Generics.Collections,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Control1, Vcl.ExtCtrls,
-  UList, UListItem, UnitNewItem, Math;
+  UList, UListItem, UnitNewItem, Math, UAnwer, UQuestions;
 
 type
   TForm1 = class(TForm)
@@ -445,7 +445,7 @@ var
   new, last: integer;
 begin
   // переводим режим программы в обычный - без управления потоком
-  List.Mode := lmNormal;
+  List.Mode := omNormal;
   // выключаем логгирование
   Logger.Enabled := false;
 
@@ -458,18 +458,18 @@ begin
     begin
       if i = 0 then
       begin
-        new:= Random(80)+20;
+        new := Random(80) + 20;
         ListItem := TListItem.Create(new.ToString);
         List.addAfter('item', ListItem);
-        last:= new;
+        last := new;
         WaitForSingleObject(List.ThreadId, INFINITE);
       end
       else
       begin
-        new:= Random(80)+20;
+        new := Random(80) + 20;
         ListItem := TListItem.Create(new.ToString);
         List.addAfter(last.ToString, ListItem);
-        last:= new;
+        last := new;
         WaitForSingleObject(List.ThreadId, INFINITE);
       end;
     end;
@@ -477,7 +477,7 @@ begin
   RedrawPanel();
   // возвращаем программу в режим управления
   Logger.Enabled := true;
-  List.Mode := lmControl;
+  List.Mode := omControl;
 end;
 
 // удаление
@@ -520,7 +520,40 @@ end;
 
 // возобновление работы
 procedure TForm1.ButtonNextClick(Sender: TObject);
+var
+  i: integer;
 begin
+  case List.Mode of
+    omControl:
+      begin
+        case List.State of
+          lsAddbefore, lsAddAfter:
+            begin
+              FormAnswer.Load;
+              FormAnswer.ShowModal;
+              if FormAnswer.ModalResult = mrOk then
+              begin
+                for i := 1 to 4 do
+                  if (TRadioButton(FormAnswer.FindComponent('RadioButton' +
+                    IntToStr(i))).Checked) then
+                    if FormAnswer.rIndex = i then
+                      ShowMessage('верный ответ!')
+                    else
+                      ShowMessage('НЕверный ответ!')
+
+              end;
+            end;
+        end;
+      end;
+    omNormal:
+      begin
+
+      end;
+    omDemo:
+      begin
+
+      end;
+  end;
   List.NextStep;
 end;
 
@@ -610,7 +643,10 @@ begin
   // Для OnThreadSyspended назначаем обработчики события ThreadSyspended.
   List.OnThreadSyspended := OnThreadSyspended;
   ListControl := TList<TListControl>.Create;
+  QuestionsInitialize();
   UpdateButtonState;
+
+  List.Mode := omControl;
 end;
 
 procedure TForm1.RadioButton1Click(Sender: TObject);

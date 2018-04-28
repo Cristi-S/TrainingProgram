@@ -103,6 +103,11 @@
         </DCCReference>
         <DCCReference Include="Control1.pas"/>
         <DCCReference Include="Logger.pas"/>
+        <DCCReference Include="UQuestions.pas"/>
+        <DCCReference Include="UAnwer.pas">
+            <Form>FormAnswer</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

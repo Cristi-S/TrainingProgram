@@ -7,7 +7,9 @@ uses
   UListItem in 'Classes\UListItem.pas',
   UnitNewItem in 'UnitNewItem.pas' {Form2},
   Control1 in 'Control1.pas',
-  Logger in 'Logger.pas';
+  Logger in 'Logger.pas',
+  UQuestions in 'UQuestions.pas',
+  UAnwer in 'UAnwer.pas' {FormAnswer};
 
 {$R *.res}
 
@@ -17,5 +19,6 @@ begin
   Application.CreateForm(TForm1, Form1);
   Application.CreateForm(TForm2, Form2);
   Application.CreateForm(TForm2, Form2);
+  Application.CreateForm(TFormAnswer, FormAnswer);
   Application.Run;
 end.

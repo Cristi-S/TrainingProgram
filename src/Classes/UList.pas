@@ -3,11 +3,11 @@ unit UList;
 interface
 
 Uses
-  UListItem, SyncObjs, System.Classes, Windows, dialogs, SysUtils;
+  UListItem, SyncObjs, System.Classes, Windows, dialogs, SysUtils, UQuestions;
 
 Type
   TListState = (lsNormal, lsAddbefore, lsAddAfter, lsDelete);
-  TListMode = (lmControl, lmNormal, lmDemo);
+  TOperatingMode = (omControl, omNormal, omDemo);
 
   TList = class
   Private
@@ -29,9 +29,10 @@ Type
     Function _Delete(): boolean;
     procedure Pause();
   Public
+    QuestionKey: Integer;
     ThreadId: Integer;
     State: TListState;
-    Mode: TListMode;
+    Mode: TOperatingMode;
     Constructor Create;
     Function Getcount: Integer;
     Function GetFirst: TListItem;
@@ -69,7 +70,7 @@ Constructor TList.Create;
 begin
   Count := 0;
   First := nil;
-  Mode := lmControl;
+  Mode := omDemo;
   State := lsNormal;
   CritSec := TCriticalSection.Create;
 end;
@@ -152,7 +153,7 @@ var
     CLeanListItemsStates;
     TLogger.DisableCouner;
     TLogger.Log('');
-    if Mode <> lmNormal then
+    if Mode <> omNormal then
       GenericMyEvent;
     CritSec.Leave;
     EndThread(0);
@@ -167,6 +168,7 @@ Begin
   SearchItem := _SearchItem;
   TLogger.EnableCouner;
 
+  QuestionKey := 1;
   if Count = 0 then
     TLogger.Log('Добавление ключа ' + NewItem.GetInfo)
   else
@@ -176,9 +178,14 @@ Begin
   If First = nil then
   begin
     TLogger.Log('Проверка списка на пустоту: список пуст');
+    QuestionKey := 2;
     Pause();
     TLogger.Log('Выделение памяти для нового элемента');
+    QuestionKey := 3;
+    Pause();
     TLogger.Log('Заполнение информационного поля: ' + NewItem.GetInfo);
+    QuestionKey := 4;
+    Pause();
     First := NewItem;
     NewItem.IsFirst := true;
     NewItem.IsLast := true;
@@ -188,8 +195,10 @@ Begin
     FuncEnd();
   End;
   TLogger.Log('Проверка списка на пустоту: список содержит элементы');
+  QuestionKey := 2;
   Pause();
   TLogger.Log('Поиск элемента с ключом ' + SearchItem);
+  QuestionKey := 5;
   Pause();
   FNewItem := NewItem;
   FTempItem := Search(SearchItem);
@@ -200,8 +209,10 @@ Begin
     FuncEnd();
   end;
   TLogger.Log('Выделение памяти для нового элемента');
+  QuestionKey := 3;
   Pause();
   TLogger.Log('Заполнение информационного поля:' + NewItem.GetInfo);
+  QuestionKey := 4;
   // Pause();
   If TempItem.GetNext = nil then
   begin
@@ -209,9 +220,11 @@ Begin
     Pause();
     NewItem.SetNext(nil);
     TLogger.Log('Изменение левой ссылки у правого соседа');
+    QuestionKey := 9;
     NewItem.SetPrev(TempItem);
     Pause();
-    TLogger.Log('Изменение поля ссылки на правого соседа');
+    TLogger.Log('Заполнение поля ссылки на правого соседа');
+    QuestionKey := 7;
     TempItem.SetNext(NewItem);
 
     TempItem.IsAddAfter := false;
@@ -229,15 +242,19 @@ Begin
     // Pause();
     TLogger.Log('Заполнение поля ссылки на правого соседа');
     NewItem.SetNext(TempItem.GetNext);
+    QuestionKey := 7;
     Pause();
     TLogger.Log('Заполнение поля ссылки на левого соседа');
     NewItem.SetPrev(TempItem);
+    QuestionKey := 8;
     Pause();
     TLogger.Log('Изменение левой ссылки у правого соседа');
     NewItem.GetNext.SetPrev(NewItem);
+    QuestionKey := 9;
     Pause();
     TLogger.Log('Изменение правой ссылки у левого соседа');
     TempItem.SetNext(NewItem);
+    QuestionKey := 10;
     inc(Count)
   End;
   FuncEnd();
@@ -276,7 +293,7 @@ var
     CLeanListItemsStates;
     TLogger.DisableCouner;
     TLogger.Log('');
-    if Mode <> lmNormal then
+    if Mode <> omNormal then
       GenericMyEvent;
     CritSec.Leave;
     EndThread(0);
@@ -495,14 +512,14 @@ end;
 procedure TList.Pause();
 begin
   case Mode of
-    lmControl:
+    omControl:
       begin
         GenericMyEvent;
         SuspendThread(ThreadId);
       end;
-    lmNormal:
+    omNormal:
       ;
-    lmDemo:
+    omDemo:
       ;
   end;
 

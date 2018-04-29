@@ -206,7 +206,7 @@ Begin
   FTempItem := Search(SearchItem);
   If TempItem = nil then
   begin
-    TLogger.Log('Искомый элемент не найден');
+    TLogger.Append(' - искомый элемент не найден');
     // result := false;
     FuncEnd();
   end;
@@ -222,22 +222,22 @@ Begin
     TLogger.Log('Заполнение информационного поля:' + NewItem.GetInfo);
 
     NewItem.SetNext(nil);
-    TLogger.Log('Изменение левой ссылки у правого соседа');
+
     QuestionKey := 9;
+    Pause();
+    TLogger.Log('Изменение левой ссылки у правого соседа');
 
     NewItem.SetPrev(TempItem);
+
+    QuestionKey := 7;
     Pause();
     TLogger.Log('Заполнение поля ссылки на правого соседа');
-    QuestionKey := 7;
-    TempItem.SetNext(NewItem);
 
+    TempItem.SetNext(NewItem);
     TempItem.IsAddAfter := false;
     TempItem.IsLast := false;
     NewItem.IsLast := true;
-    Pause();
-    TLogger.Log('Увеличиваем счетчик числа элементов');
     inc(Count);
-    // result := true
   End
   Else
   Begin
@@ -502,7 +502,7 @@ begin
     Logger.Enabled := false;
   while (FTempItem <> nil) do
   begin
-    //в управляющем режиме вылючаем приостановку потока
+    // в управляющем режиме вылючаем приостановку потока
     if Mode <> omControl then
       Pause();
     if (FTempItem.GetInfo = SearchItem) then
@@ -521,6 +521,9 @@ begin
     end;
   end;
   Logger.Enabled := oldLogerState;
+  if Mode = omControl then
+    if Assigned(result) then
+      TLogger.Append(' - найдено место для вставки');
 end;
 
 procedure TList.Pause();

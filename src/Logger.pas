@@ -8,6 +8,7 @@ uses
 Type
   TLogger = class
     class procedure Log(sText: string; iHierarchy: integer = 0);
+    class procedure Append(sText: string);
     class procedure EnableCouner();
     class procedure DisableCouner();
   end;
@@ -50,6 +51,14 @@ begin
         end;
     end;
     Form1.Memo1.Lines.Add(sCounter + sHierarchy + sText);
+  end;
+end;
+
+class procedure TLogger.Append(sText: string);
+begin
+  if Enabled then
+  begin
+    Form1.Memo1.Lines.Text:= Form1.Memo1.Lines.Text + ' '+ sText;
   end;
 end;
 

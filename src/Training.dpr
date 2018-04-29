@@ -6,12 +6,12 @@ uses
   UList in 'Classes\UList.pas',
   UListItem in 'Classes\UListItem.pas',
   UnitNewItem in 'UnitNewItem.pas' {Form2},
-  Control1 in 'Control1.pas',
-  Logger in 'Logger.pas',
-  UQuestions in 'UQuestions.pas',
-  UAnwer in 'UAnwer.pas' {FormAnswer},
+  Control1 in 'Controls\Control1.pas',
+  Logger in 'Utilites\Logger.pas',
+  UQuestions in 'Statistics\UQuestions.pas',
+  UAnwer in 'Statistics\UAnwer.pas' {FormAnswer},
   UEnum in 'Enum\UEnum.pas',
-  URedrawing in 'URedrawing.pas';
+  UDriver in 'UDriver.pas';
 
 {$R *.res}
 

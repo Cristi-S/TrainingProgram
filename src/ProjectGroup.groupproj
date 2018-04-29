@@ -6,7 +6,7 @@
         <Projects Include="Training.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="ItemControl.dproj">
+        <Projects Include="Controls\ItemControl.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -27,13 +27,13 @@
         <MSBuild Projects="Training.dproj" Targets="Make"/>
     </Target>
     <Target Name="ItemControl">
-        <MSBuild Projects="ItemControl.dproj"/>
+        <MSBuild Projects="Controls\ItemControl.dproj"/>
     </Target>
     <Target Name="ItemControl:Clean">
-        <MSBuild Projects="ItemControl.dproj" Targets="Clean"/>
+        <MSBuild Projects="Controls\ItemControl.dproj" Targets="Clean"/>
     </Target>
     <Target Name="ItemControl:Make">
-        <MSBuild Projects="ItemControl.dproj" Targets="Make"/>
+        <MSBuild Projects="Controls\ItemControl.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
         <CallTarget Targets="Training;ItemControl"/>

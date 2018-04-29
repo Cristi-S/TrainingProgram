@@ -58,8 +58,6 @@ object Form1: TForm1
       Color = clWindow
       ParentBackground = False
       TabOrder = 0
-      ExplicitLeft = -3
-      ExplicitTop = 168
     end
   end
   object Memo1: TMemo

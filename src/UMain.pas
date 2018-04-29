@@ -28,12 +28,9 @@ type
     ButtonNext: TButton;
     procedure ButtonCreateClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-//    procedure ButtonClearClick(Sender: TObject);
     procedure Edit1KeyPress(Sender: TObject; var Key: Char);
     procedure ButtonAddAfterClick(Sender: TObject);
     procedure ButtonAddClick(Sender: TObject);
-//    procedure RedrawPanel();
-//    procedure UpdateButtonState(Sender: TObject = nil);
     procedure ButtonAddBeforeClick(Sender: TObject);
     procedure ButtonNextClick(Sender: TObject);
     // Обработчик события MyEvent для объектов, принадлежащих типу TMyClass.
@@ -56,9 +53,9 @@ implementation
 
 {$R *.dfm}
 
-uses Logger, URedrawing;
+uses Logger, UDriver;
 
-// Обработчик события ThreadSyspended для объектов, принадлежащих типу TList.
+// Обработчик события ThreadSyspended  - когда отсановили поток
 procedure TForm1.OnThreadSyspended(Sender: TObject);
 begin
   if not(Sender is TList) then

@@ -189,7 +189,6 @@ Begin
     First := NewItem;
     NewItem.IsFirst := true;
     NewItem.IsLast := true;
-    Pause();
     inc(Count);
     // result := true;
     FuncEnd();

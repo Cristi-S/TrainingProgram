@@ -10,7 +10,8 @@ uses
   Logger in 'Logger.pas',
   UQuestions in 'UQuestions.pas',
   UAnwer in 'UAnwer.pas' {FormAnswer},
-  UEnum in 'Enum\UEnum.pas';
+  UEnum in 'Enum\UEnum.pas',
+  URedrawing in 'URedrawing.pas';
 
 {$R *.res}
 

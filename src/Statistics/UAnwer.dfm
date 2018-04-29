@@ -12,6 +12,7 @@ object FormAnswer: TFormAnswer
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  OnClose = FormClose
   PixelsPerInch = 120
   TextHeight = 16
   object RadioGroup1: TRadioGroup
@@ -54,13 +55,13 @@ object FormAnswer: TFormAnswer
     Caption = 'RadioButton1'
     TabOrder = 4
   end
-  object Button1: TButton
+  object ButtonOk: TButton
     Left = 488
     Top = 255
     Width = 75
     Height = 25
     Caption = #1054#1090#1074#1077#1090#1080#1090#1100
-    ModalResult = 1
     TabOrder = 5
+    OnClick = ButtonOkClick
   end
 end

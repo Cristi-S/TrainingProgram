@@ -86,26 +86,27 @@ begin
 
   Count := Min(3, StrToInt(Edit1.Text) - 1);
 
-  if RadioButton1.Checked = true then
-    for i := 0 to Count do
+  for i := 0 to Count do
+  begin
+    if i = 0 then
     begin
-      if i = 0 then
-      begin
-        new := Random(80) + 20;
-        ListItem := TListItem.Create(new.ToString);
-        List.addAfter('item', ListItem);
-        last := new;
-        WaitForSingleObject(List.ThreadId, INFINITE);
-      end
-      else
-      begin
-        new := Random(80) + 20;
-        ListItem := TListItem.Create(new.ToString);
-        List.addAfter(last.ToString, ListItem);
-        last := new;
-        WaitForSingleObject(List.ThreadId, INFINITE);
-      end;
+      new := Random(80) + 20;
+      ListItem := TListItem.Create(new.ToString);
+      List.addAfter('item', ListItem);
+      last := new;
+      //ждем остановки потока
+      WaitForSingleObject(List.ThreadId, INFINITE);
+    end
+    else
+    begin
+      new := Random(80) + 20;
+      ListItem := TListItem.Create(new.ToString);
+      List.addAfter(last.ToString, ListItem);
+      last := new;
+      //ждем остановки потока
+      WaitForSingleObject(List.ThreadId, INFINITE);
     end;
+  end;
   // перерисовываем панель
   RedrawPanel();
   // возвращаем программу в режим управления
@@ -137,38 +138,12 @@ end;
 
 // возобновление работы
 procedure TFormMain.ButtonNextClick(Sender: TObject);
-var
-  i: integer;
 begin
   case List.Mode of
     omControl:
       begin
-        case List.State of
-          lsAddbefore, lsAddAfter:
-            if List.QuestionKey > 1 then // пропускаем первый шаг
-            begin
-              FormAnswer.Load;
-              FormAnswer.ShowModal;
-              if FormAnswer.ModalResult = mrOk then
-              begin
-                for i := 1 to 4 do
-                  if (TRadioButton(FormAnswer.FindComponent('RadioButton' +
-                    IntToStr(i))).Checked) then
-                    if FormAnswer.rIndex = i then
-                      ShowMessage('верный ответ!')
-                    else
-                      ShowMessage('НЕверный ответ!')
-              end;
-            end;
-        end;
-      end;
-    omNormal:
-      begin
-
-      end;
-    omDemo:
-      begin
-
+        FormAnswer.Load;
+        FormAnswer.ShowModal;
       end;
   end;
   List.NextStep;
@@ -217,14 +192,14 @@ end;
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   List := TList.Create;
-  // Для OnThreadSyspended назначаем обработчики события ThreadSyspended.
+  // подписываемся на событие ThreadSyspended
   List.OnThreadSyspended := OnThreadSyspended;
   ListControl := TList<TListControl>.Create;
   QuestionsInitialize();
   UpdateButtonState;
 
-  // List.Mode := omControl;
-  List.Mode := omDemo;
+  List.Mode := omControl;
+  // List.Mode := omDemo;
 end;
 
 end.

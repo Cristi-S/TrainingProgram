@@ -11,6 +11,7 @@ object FormAnswer: TFormAnswer
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poMainFormCenter
   PixelsPerInch = 120
   TextHeight = 16
   object RadioGroup1: TRadioGroup

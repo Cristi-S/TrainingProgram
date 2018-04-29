@@ -14,6 +14,7 @@ type
     Edit2: TEdit;
     Label2: TLabel;
     BitBtn1: TBitBtn;
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
   public
@@ -28,5 +29,12 @@ implementation
 {$R *.dfm}
 
 uses UMain;
+
+procedure TForm2.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = #13 then
+    BitBtn1.Click;
+
+end;
 
 end.

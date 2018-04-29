@@ -98,7 +98,7 @@ object Form1: TForm1
         Font.Style = []
         ParentFont = False
         TabOrder = 0
-        OnClick = RadioButton2Click
+        OnClick = UpdateButtonState
       end
       object RadioButton1: TRadioButton
         Left = 32
@@ -114,7 +114,7 @@ object Form1: TForm1
         Font.Style = []
         ParentFont = False
         TabOrder = 1
-        OnClick = RadioButton1Click
+        OnClick = UpdateButtonState
       end
     end
     object Panel3: TPanel

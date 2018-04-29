@@ -12,6 +12,7 @@ object Form2: TForm2
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  OnKeyPress = FormKeyPress
   PixelsPerInch = 120
   TextHeight = 16
   object Label1: TLabel
@@ -35,6 +36,7 @@ object Form2: TForm2
     Height = 24
     TabOrder = 0
     Text = '2'
+    OnKeyPress = FormKeyPress
   end
   object Edit2: TEdit
     Left = 200
@@ -44,6 +46,7 @@ object Form2: TForm2
     Enabled = False
     ReadOnly = True
     TabOrder = 1
+    OnKeyPress = FormKeyPress
   end
   object BitBtn1: TBitBtn
     Left = 336

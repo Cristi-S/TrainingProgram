@@ -29,19 +29,15 @@ type
     procedure ButtonCreateClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ButtonClearClick(Sender: TObject);
-    procedure RadioButton1Click(Sender: TObject);
-    procedure RadioButton2Click(Sender: TObject);
     procedure Edit1KeyPress(Sender: TObject; var Key: Char);
     procedure ButtonAddAfterClick(Sender: TObject);
     procedure ButtonAddClick(Sender: TObject);
     procedure RedrawPanel();
+    procedure UpdateButtonState(Sender: TObject = nil);
     procedure ButtonAddBeforeClick(Sender: TObject);
-    procedure ButtonAppendClick(Sender: TObject);
     procedure ButtonNextClick(Sender: TObject);
-    procedure ButtonRefreshClick(Sender: TObject);
     // Обработчик события MyEvent для объектов, принадлежащих типу TMyClass.
     procedure OnThreadSyspended(Sender: TObject);
-    procedure ButtonInsertClick(Sender: TObject);
     procedure ButtonDeleteClick(Sender: TObject);
   private
     { Private declarations }
@@ -61,60 +57,59 @@ implementation
 
 uses Logger;
 
-// обновляем состояние кнопок
-procedure UpdateButtonState;
-begin
-  with Form1 do
-  begin
-    case List.State of
-      lsNormal:
-        begin
-          if List.Getcount > 0 then
-          begin
-            ButtonAdd.Enabled := false;
-            ButtonAddAfter.Enabled := true;
-            ButtonAddBefore.Enabled := true;
-            RadioButton1.Enabled := false;
-            ButtonCreate.Enabled := false;
-            RadioButton2.Enabled := false;
-            Edit1.Enabled := false;
-            // удалять первый элемент пока нельзя
-            if List.Getcount > 1 then
-              ButtonDelete.Enabled := true
-            else
-              ButtonDelete.Enabled := false;
-          end
-          else
-          begin
-            ButtonAdd.Enabled := RadioButton2.Checked;
-            ButtonAddAfter.Enabled := false;
-            ButtonAddBefore.Enabled := false;
-            ButtonDelete.Enabled := false;
-            RadioButton1.Enabled := true;
-            RadioButton2.Enabled := true;
+{$REGION 'отрисовка'}
 
-            if RadioButton1.Checked then
-            begin
-              ButtonCreate.Enabled := true;
-              Edit1.Enabled := true;
-            end
-            else
-            begin
-              ButtonCreate.Enabled := false;
-              Edit1.Enabled := false;
-            end;
-          end;
-          ButtonNext.Enabled := false;
-        end;
-      lsAddbefore, lsAddAfter, lsDelete:
+// обновляем состояние кнопок
+procedure TForm1.UpdateButtonState(Sender: TObject = nil);
+begin
+  case List.State of
+    lsNormal:
+      begin
+        if List.Getcount > 0 then
         begin
           ButtonAdd.Enabled := false;
+          ButtonAddAfter.Enabled := true;
+          ButtonAddBefore.Enabled := true;
+          RadioButton1.Enabled := false;
+          ButtonCreate.Enabled := false;
+          RadioButton2.Enabled := false;
+          Edit1.Enabled := false;
+          // удалять первый элемент пока нельзя
+          if List.Getcount > 1 then
+            ButtonDelete.Enabled := true
+          else
+            ButtonDelete.Enabled := false;
+        end
+        else
+        begin
+          ButtonAdd.Enabled := RadioButton2.Checked;
           ButtonAddAfter.Enabled := false;
           ButtonAddBefore.Enabled := false;
           ButtonDelete.Enabled := false;
-          ButtonNext.Enabled := true;
+          RadioButton1.Enabled := true;
+          RadioButton2.Enabled := true;
+
+          if RadioButton1.Checked then
+          begin
+            ButtonCreate.Enabled := true;
+            Edit1.Enabled := true;
+          end
+          else
+          begin
+            ButtonCreate.Enabled := false;
+            Edit1.Enabled := false;
+          end;
         end;
-    end;
+        ButtonNext.Enabled := false;
+      end;
+    lsAddbefore, lsAddAfter, lsDelete:
+      begin
+        ButtonAdd.Enabled := false;
+        ButtonAddAfter.Enabled := false;
+        ButtonAddBefore.Enabled := false;
+        ButtonDelete.Enabled := false;
+        ButtonNext.Enabled := true;
+      end;
   end;
 end;
 
@@ -430,6 +425,22 @@ begin
   UpdateButtonState;
 end;
 
+// удаляет все компоненты в Panel
+procedure TForm1.ButtonClearClick(Sender: TObject);
+var
+  i: integer;
+begin
+  for i := 1 to FlowPanel1.ComponentCount do
+    FlowPanel1.Controls[0].DisposeOf;
+
+  for i := 1 to ListControl.Count do
+  begin
+    ListControl.Delete(0);
+  end;
+
+end;
+{$ENDREGION}
+
 // Обработчик события ThreadSyspended для объектов, принадлежащих типу TList.
 procedure TForm1.OnThreadSyspended(Sender: TObject);
 begin
@@ -438,6 +449,7 @@ begin
   RedrawPanel;
 end;
 
+// статичное формирование списка
 procedure TForm1.ButtonCreateClick(Sender: TObject);
 var
   ListItem: TListItem;
@@ -492,22 +504,6 @@ begin
   List.Delete(SearchItem);
 end;
 
-procedure TForm1.ButtonAppendClick(Sender: TObject);
-var
-  temp: TListItem;
-begin
-  if List.Getcount = 0 then
-  begin
-    temp := TListItem.Create('item' + IntToStr(List.Getcount));
-    List.addAfter('', temp);
-  end
-  else
-  begin
-    temp := TListItem.Create('item' + IntToStr(List.Getcount));
-    List.addAfter('item' + IntToStr(List.Getcount - 1), temp);
-  end;
-end;
-
 // добавление первого элемента в список
 procedure TForm1.ButtonAddClick(Sender: TObject);
 var
@@ -530,7 +526,7 @@ begin
       begin
         case List.State of
           lsAddbefore, lsAddAfter:
-            if List.QuestionKey > 1 then //пропускаем первый шаг
+            if List.QuestionKey > 1 then // пропускаем первый шаг
             begin
               FormAnswer.Load;
               FormAnswer.ShowModal;
@@ -557,33 +553,6 @@ begin
       end;
   end;
   List.NextStep;
-end;
-
-procedure TForm1.ButtonRefreshClick(Sender: TObject);
-begin
-  ButtonClearClick(Sender);
-  // FlowPanel1.Components.DestroyComponents;
-  { TODO пересмоттреть очистку списка, т.к. панель не очищается }
-  ReplaceControlItems();
-end;
-
-procedure TForm1.ButtonInsertClick(Sender: TObject);
-var
-  temp: TListItem;
-  SearchItem: string;
-begin
-  if List.Getcount = 0 then
-  begin
-    temp := TListItem.Create('item' + IntToStr(List.Getcount));
-    List.addAfter('', temp);
-  end
-  else
-  begin
-    SearchItem := InputBox('Новый элемент',
-      'Введите элемент, после которого добавить новый :', 'item1');
-    temp := TListItem.Create('itemNew');
-    List.addAfter(SearchItem, temp);
-  end;
 end;
 
 // добавление после
@@ -618,20 +587,7 @@ begin
   List.AddBefore(SearchItem, ListItem);
 end;
 
-procedure TForm1.ButtonClearClick(Sender: TObject);
-var
-  i: integer;
-begin
-  for i := 1 to FlowPanel1.ComponentCount do
-    FlowPanel1.Controls[0].DisposeOf;
-
-  for i := 1 to ListControl.Count do
-  begin
-    ListControl.Delete(0);
-  end;
-
-end;
-
+// маска для ввода чисел
 procedure TForm1.Edit1KeyPress(Sender: TObject; var Key: Char);
 begin
   If not CharInSet(Key, ['0' .. '9', #8]) then
@@ -648,18 +604,8 @@ begin
   QuestionsInitialize();
   UpdateButtonState;
 
-  //List.Mode := omControl;
-  List.Mode := omDemo;
-end;
-
-procedure TForm1.RadioButton1Click(Sender: TObject);
-begin
-  UpdateButtonState;
-end;
-
-procedure TForm1.RadioButton2Click(Sender: TObject);
-begin
-  UpdateButtonState;
+  List.Mode := omControl;
+  // List.Mode := omDemo;
 end;
 
 end.

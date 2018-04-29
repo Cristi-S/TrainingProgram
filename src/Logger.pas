@@ -55,10 +55,14 @@ begin
 end;
 
 class procedure TLogger.Append(sText: string);
+var
+  str: string;
 begin
   if Enabled then
   begin
-    Form1.Memo1.Lines.Text:= Form1.Memo1.Lines.Text + ' '+ sText;
+    str := Form1.Memo1.Lines.Text;
+    str := Trim(str);
+    Form1.Memo1.Lines.Text := str + ' ' + sText;
   end;
 end;
 

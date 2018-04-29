@@ -648,7 +648,8 @@ begin
   QuestionsInitialize();
   UpdateButtonState;
 
-  List.Mode := omControl;
+  //List.Mode := omControl;
+  List.Mode := omDemo;
 end;
 
 procedure TForm1.RadioButton1Click(Sender: TObject);

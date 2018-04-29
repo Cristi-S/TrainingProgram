@@ -244,21 +244,27 @@ Begin
     TempItem.IsAddAfter := true;
     // TLogger.Log('Формируем поля нового элемента');
     // Pause();
-    TLogger.Log('Заполнение поля ссылки на правого соседа');
-    NewItem.SetNext(TempItem.GetNext);
     QuestionKey := 7;
+    Pause();
+    TLogger.Log('Заполнение поля ссылки на правого соседа');
+
+    NewItem.SetNext(TempItem.GetNext);
+
+    QuestionKey := 8;
     Pause();
     TLogger.Log('Заполнение поля ссылки на левого соседа');
     NewItem.SetPrev(TempItem);
-    QuestionKey := 8;
+
+    QuestionKey := 9;
     Pause();
     TLogger.Log('Изменение левой ссылки у правого соседа');
     NewItem.GetNext.SetPrev(NewItem);
-    QuestionKey := 9;
+
+    QuestionKey := 10;
     Pause();
     TLogger.Log('Изменение правой ссылки у левого соседа');
     TempItem.SetNext(NewItem);
-    QuestionKey := 10;
+
     inc(Count)
   End;
   FuncEnd();

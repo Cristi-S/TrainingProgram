@@ -95,7 +95,7 @@ begin
   end;
 end;
 
-//процедура для поддержки RedrawPanel()
+// процедура для поддержки RedrawPanel()
 procedure TemplateControlCreate(var item: TListControl; temp: TListItem;
   State: TItemState = normal; iColor: integer = clBlack);
 begin

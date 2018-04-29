@@ -178,6 +178,7 @@ Begin
   else
     TLogger.Log('Добавление ключа ' + NewItem.GetInfo + ' после ключа ' +
       SearchItem);
+  // добавление первого элемента
   If First = nil then
   begin
     QuestionKey := 2;
@@ -197,79 +198,84 @@ Begin
     inc(Count);
     // result := true;
     FuncEnd();
-  End;
-  QuestionKey := 2;
-  Pause();
-  TLogger.Log('Проверка списка на пустоту: список содержит элементы');
-
-  QuestionKey := 5;
-  Pause();
-  TLogger.Log('Поиск элемента с ключом ' + SearchItem);
-
-  FNewItem := NewItem;
-  FTempItem := Search(SearchItem);
-  If TempItem = nil then
-  begin
-    TLogger.Append(' - искомый элемент не найден');
-    // result := false;
-    FuncEnd();
-  end;
-  QuestionKey := 3;
-  Pause();
-  TLogger.Log('Выделение памяти для нового элемента');
-  If TempItem.GetNext = nil then
-  begin
-    TempItem.IsAddAfter := true;
-
-    QuestionKey := 4;
-    Pause();
-    TLogger.Log('Заполнение информационного поля:' + NewItem.GetInfo);
-
-    NewItem.SetNext(nil);
-
-    QuestionKey := 9;
-    Pause();
-    TLogger.Log('Изменение левой ссылки у правого соседа');
-
-    NewItem.SetPrev(TempItem);
-
-    QuestionKey := 7;
-    Pause();
-    TLogger.Log('Заполнение поля ссылки на правого соседа');
-
-    TempItem.SetNext(NewItem);
-    TempItem.IsAddAfter := false;
-    TempItem.IsLast := false;
-    NewItem.IsLast := true;
-    inc(Count);
   End
-  Else
-  Begin
-    TempItem.IsAddAfter := true;
-    // TLogger.Log('Формируем поля нового элемента');
-    // Pause();
-    QuestionKey := 7;
+  else
+  // добавление в непустой список
+  begin
+    QuestionKey := 2;
     Pause();
-    TLogger.Log('Заполнение поля ссылки на правого соседа');
+    TLogger.Log('Проверка списка на пустоту: список содержит элементы');
 
-    NewItem.SetNext(TempItem.GetNext);
-
-    QuestionKey := 8;
+    QuestionKey := 5;
     Pause();
-    TLogger.Log('Заполнение поля ссылки на левого соседа');
-    NewItem.SetPrev(TempItem);
+    TLogger.Log('Поиск элемента с ключом ' + SearchItem);
 
-    QuestionKey := 9;
+    FNewItem := NewItem;
+    FTempItem := Search(SearchItem);
+    If TempItem = nil then
+    begin
+      TLogger.Append(' - искомый элемент не найден');
+      // result := false;
+      FuncEnd();
+    end;
+    QuestionKey := 3;
     Pause();
-    TLogger.Log('Изменение левой ссылки у правого соседа');
-    NewItem.GetNext.SetPrev(NewItem);
+    TLogger.Log('Выделение памяти для нового элемента');
+    //добавлление в конец
+    If TempItem.GetNext = nil then
+    begin
+      TempItem.IsAddAfter := true;
 
-    QuestionKey := 10;
-    Pause();
-    TLogger.Log('Изменение правой ссылки у левого соседа');
-    TempItem.SetNext(NewItem);
+      QuestionKey := 4;
+      Pause();
+      TLogger.Log('Заполнение информационного поля:' + NewItem.GetInfo);
 
-    inc(Count)
+      NewItem.SetNext(nil);
+
+      QuestionKey := 8;
+      Pause();
+      TLogger.Log('Заполнение поля ссылки на левого соседа');
+
+      NewItem.SetPrev(TempItem);
+
+      QuestionKey := 10;
+      Pause();
+      TLogger.Log('Изменение правой ссылки у левого соседа');
+
+      TempItem.SetNext(NewItem);
+      TempItem.IsAddAfter := false;
+      TempItem.IsLast := false;
+      NewItem.IsLast := true;
+      inc(Count);
+    End
+    Else
+    Begin
+      TempItem.IsAddAfter := true;
+      // TLogger.Log('Формируем поля нового элемента');
+      // Pause();
+      QuestionKey := 7;
+      Pause();
+      TLogger.Log('Заполнение поля ссылки на правого соседа');
+
+      NewItem.SetNext(TempItem.GetNext);
+
+      QuestionKey := 8;
+      Pause();
+      TLogger.Log('Заполнение поля ссылки на левого соседа');
+      NewItem.SetPrev(TempItem);
+
+      QuestionKey := 9;
+      Pause();
+      TLogger.Log('Изменение левой ссылки у правого соседа');
+      NewItem.GetNext.SetPrev(NewItem);
+
+      QuestionKey := 10;
+      Pause();
+      TLogger.Log('Изменение правой ссылки у левого соседа');
+      TempItem.SetNext(NewItem);
+
+      inc(Count)
+    End;
   End;
   FuncEnd();
 end;

@@ -94,7 +94,7 @@ begin
       ListItem := TListItem.Create(new.ToString);
       List.addAfter('item', ListItem);
       last := new;
-      //ждем остановки потока
+      // ждем остановки потока
       WaitForSingleObject(List.ThreadId, INFINITE);
     end
     else
@@ -103,7 +103,7 @@ begin
       ListItem := TListItem.Create(new.ToString);
       List.addAfter(last.ToString, ListItem);
       last := new;
-      //ждем остановки потока
+      // ждем остановки потока
       WaitForSingleObject(List.ThreadId, INFINITE);
     end;
   end;

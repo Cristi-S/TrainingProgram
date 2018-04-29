@@ -1,5 +1,6 @@
 unit UQuestions;
 
+// модуль для хранения все возможных вариантов ответов
 interface
 
 uses

@@ -1,5 +1,6 @@
 unit UAnwer;
 
+// модуль генерирующий вопросы, с проверкой ответов на них.
 interface
 
 uses
@@ -36,6 +37,7 @@ uses UMain;
 
 {$R *.dfm}
 
+// загружает на форму вопросы в зависимости от типа операции: добавление/удаление
 procedure TFormAnswer.Load();
 var
   i, index: integer;
@@ -72,7 +74,7 @@ begin
   end;
 end;
 
-// проверка ответа
+// проверка ответа пользователя
 procedure TFormAnswer.ButtonOkClick(Sender: TObject);
 var
   i: integer;
@@ -111,7 +113,7 @@ begin
     Action := caNone
   else
   begin
-    // ToDo: обработчик очистки формы
+    // очистка формы
     for i := 1 to 4 do
     begin
       TRadioButton(FindComponent('RadioButton' + IntToStr(i))).Checked := False;

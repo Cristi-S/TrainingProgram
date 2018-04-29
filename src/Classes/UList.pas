@@ -3,12 +3,10 @@ unit UList;
 interface
 
 Uses
-  UListItem, SyncObjs, System.Classes, Windows, dialogs, SysUtils, UQuestions;
+  UListItem, SyncObjs, System.Classes, Windows, dialogs, SysUtils, UQuestions,
+  UEnum;
 
 Type
-  TListState = (lsNormal, lsAddbefore, lsAddAfter, lsDelete);
-  TOperatingMode = (omControl, omNormal, omDemo);
-
   TList = class
   Private
     Count: Integer;
@@ -169,23 +167,25 @@ Begin
   TLogger.EnableCouner;
 
   QuestionKey := 1;
+
   if Count = 0 then
     TLogger.Log('Добавление ключа ' + NewItem.GetInfo)
   else
     TLogger.Log('Добавление ключа ' + NewItem.GetInfo + ' после ключа ' +
       SearchItem);
-  Pause();
   If First = nil then
   begin
-    TLogger.Log('Проверка списка на пустоту: список пуст');
     QuestionKey := 2;
     Pause();
-    TLogger.Log('Выделение памяти для нового элемента');
+    TLogger.Log('Проверка списка на пустоту: список пуст');
+
     QuestionKey := 3;
     Pause();
-    TLogger.Log('Заполнение информационного поля: ' + NewItem.GetInfo);
+    TLogger.Log('Выделение памяти для нового элемента');
+
     QuestionKey := 4;
     Pause();
+    TLogger.Log('Заполнение информационного поля: ' + NewItem.GetInfo);
     First := NewItem;
     NewItem.IsFirst := true;
     NewItem.IsLast := true;
@@ -194,12 +194,14 @@ Begin
     // result := true;
     FuncEnd();
   End;
-  TLogger.Log('Проверка списка на пустоту: список содержит элементы');
   QuestionKey := 2;
   Pause();
-  TLogger.Log('Поиск элемента с ключом ' + SearchItem);
+  TLogger.Log('Проверка списка на пустоту: список содержит элементы');
+
   QuestionKey := 5;
   Pause();
+  TLogger.Log('Поиск элемента с ключом ' + SearchItem);
+
   FNewItem := NewItem;
   FTempItem := Search(SearchItem);
   If TempItem = nil then
@@ -208,19 +210,21 @@ Begin
     // result := false;
     FuncEnd();
   end;
-  TLogger.Log('Выделение памяти для нового элемента');
   QuestionKey := 3;
   Pause();
-  TLogger.Log('Заполнение информационного поля:' + NewItem.GetInfo);
-  QuestionKey := 4;
-  // Pause();
+  TLogger.Log('Выделение памяти для нового элемента');
   If TempItem.GetNext = nil then
   begin
     TempItem.IsAddAfter := true;
+
+    QuestionKey := 4;
     Pause();
+    TLogger.Log('Заполнение информационного поля:' + NewItem.GetInfo);
+
     NewItem.SetNext(nil);
     TLogger.Log('Изменение левой ссылки у правого соседа');
     QuestionKey := 9;
+
     NewItem.SetPrev(TempItem);
     Pause();
     TLogger.Log('Заполнение поля ссылки на правого соседа');
@@ -486,12 +490,21 @@ begin
 end;
 
 Function TList.Search(SearchItem: string): TListItem;
+var
+  oldLogerState: boolean;
 begin
   result := nil;
   FTempItem := First;
+  // сохраняем старое состояние логгера
+  oldLogerState := Logger.Enabled;
+  // в режиме контрол - отключаем логгер
+  if Mode = omControl then
+    Logger.Enabled := false;
   while (FTempItem <> nil) do
   begin
-    Pause();
+    //в управляющем режиме вылючаем приостановку потока
+    if Mode <> omControl then
+      Pause();
     if (FTempItem.GetInfo = SearchItem) then
     begin
       TLogger.Log('Сравнение ключей ' + FTempItem.GetInfo + ' и ' + SearchItem +
@@ -507,6 +520,7 @@ begin
       // Pause();
     end;
   end;
+  Logger.Enabled := oldLogerState;
 end;
 
 procedure TList.Pause();
@@ -520,7 +534,10 @@ begin
     omNormal:
       ;
     omDemo:
-      ;
+      begin
+        GenericMyEvent;
+        SuspendThread(ThreadId);
+      end;
   end;
 
 end;

@@ -9,7 +9,8 @@ uses
   Control1 in 'Control1.pas',
   Logger in 'Logger.pas',
   UQuestions in 'UQuestions.pas',
-  UAnwer in 'UAnwer.pas' {FormAnswer};
+  UAnwer in 'UAnwer.pas' {FormAnswer},
+  UEnum in 'Enum\UEnum.pas';
 
 {$R *.res}
 

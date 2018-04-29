@@ -6,26 +6,26 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, System.Generics.Collections,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Control1, Vcl.ExtCtrls,
-  UList, UListItem, UnitNewItem, Math, UAnwer, UQuestions;
+  UList, UListItem, UnitNewItem, Math, UAnwer, UQuestions, UEnum;
 
 type
   TForm1 = class(TForm)
+    Edit1: TEdit;
+    ButtonCreate: TButton;
+    Label1: TLabel;
+    ScrollBox1: TScrollBox;
+    FlowPanel1: TPanel;
+    Memo1: TMemo;
     Panel1: TPanel;
     Panel2: TPanel;
     RadioButton2: TRadioButton;
     RadioButton1: TRadioButton;
     Panel3: TPanel;
-    ButtonAddAfter: TButton;
     ButtonAddBefore: TButton;
     ButtonDelete: TButton;
-    Edit1: TEdit;
-    ButtonCreate: TButton;
-    ButtonNext: TButton;
-    Label1: TLabel;
+    ButtonAddAfter: TButton;
     ButtonAdd: TButton;
-    ScrollBox1: TScrollBox;
-    FlowPanel1: TPanel;
-    Memo1: TMemo;
+    ButtonNext: TButton;
     procedure ButtonCreateClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ButtonClearClick(Sender: TObject);
@@ -443,8 +443,10 @@ var
   ListItem: TListItem;
   i, Count: integer;
   new, last: integer;
+  oldMode: TOperatingMode;
 begin
   // переводим режим программы в обычный - без управления потоком
+  oldMode := List.Mode;
   List.Mode := omNormal;
   // выключаем логгирование
   Logger.Enabled := false;
@@ -477,7 +479,7 @@ begin
   RedrawPanel();
   // возвращаем программу в режим управления
   Logger.Enabled := true;
-  List.Mode := omControl;
+  List.Mode := oldMode;
 end;
 
 // удаление
@@ -528,6 +530,7 @@ begin
       begin
         case List.State of
           lsAddbefore, lsAddAfter:
+            if List.QuestionKey > 1 then //пропускаем первый шаг
             begin
               FormAnswer.Load;
               FormAnswer.ShowModal;
@@ -540,7 +543,6 @@ begin
                       ShowMessage('верный ответ!')
                     else
                       ShowMessage('НЕверный ответ!')
-
               end;
             end;
         end;

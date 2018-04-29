@@ -24,13 +24,59 @@ object Form1: TForm1
     Height = 16
     Caption = #1050#1086#1083'-'#1074#1086
   end
+  object Edit1: TEdit
+    Left = 326
+    Top = 300
+    Width = 96
+    Height = 24
+    TabOrder = 0
+    OnKeyPress = Edit1KeyPress
+  end
+  object ButtonCreate: TButton
+    Left = 444
+    Top = 300
+    Width = 137
+    Height = 25
+    Caption = #1057#1092#1086#1088#1084#1080#1088#1086#1074#1072#1090#1100
+    Enabled = False
+    TabOrder = 1
+    OnClick = ButtonCreateClick
+  end
+  object ScrollBox1: TScrollBox
+    Left = 260
+    Top = 25
+    Width = 813
+    Height = 258
+    HorzScrollBar.Increment = 1
+    TabOrder = 2
+    object FlowPanel1: TPanel
+      Left = 0
+      Top = 0
+      Width = 809
+      Height = 254
+      Align = alClient
+      Color = clWindow
+      ParentBackground = False
+      TabOrder = 0
+      ExplicitLeft = -3
+      ExplicitTop = 168
+    end
+  end
+  object Memo1: TMemo
+    Left = 262
+    Top = 344
+    Width = 811
+    Height = 225
+    ScrollBars = ssVertical
+    TabOrder = 3
+  end
   object Panel1: TPanel
     Left = 0
     Top = 0
     Width = 241
     Height = 608
     Align = alLeft
-    TabOrder = 0
+    TabOrder = 4
     object Panel2: TPanel
       Left = 1
       Top = 1
@@ -162,49 +208,5 @@ object Form1: TForm1
       TabOrder = 2
       OnClick = ButtonNextClick
     end
-  end
-  object Edit1: TEdit
-    Left = 326
-    Top = 300
-    Width = 96
-    Height = 24
-    TabOrder = 1
-    OnKeyPress = Edit1KeyPress
-  end
-  object ButtonCreate: TButton
-    Left = 436
-    Top = 300
-    Width = 137
-    Height = 25
-    Caption = #1057#1092#1086#1088#1084#1080#1088#1086#1074#1072#1090#1100
-    Enabled = False
-    TabOrder = 2
-    OnClick = ButtonCreateClick
-  end
-  object ScrollBox1: TScrollBox
-    Left = 260
-    Top = 25
-    Width = 813
-    Height = 258
-    HorzScrollBar.Increment = 1
-    TabOrder = 3
-    object FlowPanel1: TPanel
-      Left = 0
-      Top = 0
-      Width = 809
-      Height = 254
-      Align = alClient
-      Color = clWindow
-      ParentBackground = False
-      TabOrder = 0
-    end
-  end
-  object Memo1: TMemo
-    Left = 262
-    Top = 344
-    Width = 811
-    Height = 225
-    ScrollBars = ssVertical
-    TabOrder = 4
   end
 end

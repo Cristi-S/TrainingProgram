@@ -3,7 +3,7 @@ unit UDriver;
 
 interface
 
-uses UMain, UEnum, Control1, UListItem, Vcl.Graphics;
+uses UMain, UEnum, Control1, UListItem, Graphics;
 
 procedure UpdateButtonState(Sender: TObject = nil);
 procedure RedrawPanel();
@@ -95,7 +95,8 @@ begin
   end;
 end;
 
-procedure TemplateControlCreate(var item: TListControl; temp: TListItem);
+procedure TemplateControlCreate(var item: TListControl; temp: TListItem;
+  State: TItemState = normal; iColor: integer = clBlack);
 begin
   with Form1 do
   begin
@@ -108,6 +109,8 @@ begin
     item.IsAddBefore := temp.IsAddBefore;
     item.IsAddAfter := temp.IsAddAfter;
     item.ItemMain.ArrowHeader.visible := temp.IsFirst;
+    item.State := State;
+    item.ItemMain.color := iColor;
   end;
 end;
 
@@ -127,7 +130,6 @@ begin
           while temp <> nil do
           begin
             TemplateControlCreate(ListControlItem, temp);
-            ListControlItem.ItemMain.ArrowHeader.visible := temp.IsFirst;
             ListControl.Add(ListControlItem);
             temp := temp.GetNext;
           end;
@@ -137,9 +139,8 @@ begin
           // если добавление перед первым
           if List.SearchItem = List.GetFirst then
           begin
-            TemplateControlCreate(NewListControlItem, List.NewItem);
-            NewListControlItem.State := new;
-            NewListControlItem.ItemMain.color := clGreen;
+            TemplateControlCreate(NewListControlItem, List.NewItem,
+              TItemState.new, clGreen);
 
             NewListControlItem.ItemMain.ArrowUpRight.visible :=
               List.NewItem.GetNext <> nil;
@@ -165,9 +166,8 @@ begin
             if Assigned(NextItem) then
               if temp.GetNext.IsAddBefore then
               begin
-                TemplateControlCreate(NewListControlItem, List.NewItem);
-                NewListControlItem.State := new;
-                NewListControlItem.ItemMain.color := clGreen;
+                TemplateControlCreate(NewListControlItem, List.NewItem,
+                  TItemState.new, clGreen);
 
                 // стрелочки
                 ListControlItem.ItemMain.ArrowRight.visible :=
@@ -194,7 +194,6 @@ begin
                     (temp.GetNext <> List.NewItem) and (temp.GetNext <> nil);
                 end;
 
-                NewListControlItem.State := new;
                 ListControlItem.State := addAfter;
                 ListControl.Add(NewListControlItem);
               end;
@@ -217,9 +216,8 @@ begin
             ListControl.Add(ListControlItem);
             if temp.IsAddAfter then
             begin
-              TemplateControlCreate(NewListControlItem, List.NewItem);
-              NewListControlItem.State := new;
-              NewListControlItem.ItemMain.color := clGreen;
+              TemplateControlCreate(NewListControlItem, List.NewItem,
+                TItemState.new, clGreen);
 
               // стрелочки
               ListControlItem.ItemMain.ArrowRight.visible :=

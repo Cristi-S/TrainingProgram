@@ -14,7 +14,7 @@ implementation
 // обновляем состояние кнопок
 procedure UpdateButtonState(Sender: TObject = nil);
 begin
-  with Form1 do
+  with FormMain do
     case List.State of
       lsNormal:
         begin
@@ -98,7 +98,7 @@ end;
 procedure TemplateControlCreate(var item: TListControl; temp: TListItem;
   State: TItemState = normal; iColor: integer = clBlack);
 begin
-  with Form1 do
+  with FormMain do
   begin
     item := TListControl.Create(FlowPanel1);
     item.ItemMain.TitleMain := temp.GetInfo;
@@ -120,7 +120,7 @@ var
   temp, NextItem: TListItem;
   ListControlItem, NewListControlItem: TListControl;
 begin
-  with Form1 do
+  with FormMain do
   begin
     ClearPanel();
     case List.State of
@@ -362,7 +362,7 @@ procedure ClearPanel(Sender: TObject = nil);
 var
   i: integer;
 begin
-  with Form1 do
+  with FormMain do
   begin
     for i := 1 to FlowPanel1.ComponentCount do
       FlowPanel1.Controls[0].DisposeOf;

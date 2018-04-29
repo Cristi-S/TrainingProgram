@@ -9,7 +9,7 @@ uses
   UList, UListItem, UnitNewItem, Math, UAnwer, UQuestions, UEnum;
 
 type
-  TForm1 = class(TForm)
+  TFormMain = class(TForm)
     Edit1: TEdit;
     ButtonCreate: TButton;
     Label1: TLabel;
@@ -44,7 +44,7 @@ type
   end;
 
 var
-  Form1: TForm1;
+  FormMain: TFormMain;
   ListControl: TList<TListControl>;
   // контейнер списка
   List: TList;
@@ -56,20 +56,20 @@ implementation
 uses Logger, UDriver;
 
 // Обработчик события ThreadSyspended  - когда отсановили поток
-procedure TForm1.OnThreadSyspended(Sender: TObject);
+procedure TFormMain.OnThreadSyspended(Sender: TObject);
 begin
   if not(Sender is TList) then
     Exit;
   RedrawPanel;
 end;
 
-procedure TForm1.RadioButton1Click(Sender: TObject);
+procedure TFormMain.RadioButton1Click(Sender: TObject);
 begin
   UpdateButtonState(Sender);
 end;
 
 // статичное формирование списка
-procedure TForm1.ButtonCreateClick(Sender: TObject);
+procedure TFormMain.ButtonCreateClick(Sender: TObject);
 var
   ListItem: TListItem;
   i, Count: integer;
@@ -114,7 +114,7 @@ begin
 end;
 
 // удаление
-procedure TForm1.ButtonDeleteClick(Sender: TObject);
+procedure TFormMain.ButtonDeleteClick(Sender: TObject);
 var
   SearchItem: string;
 begin
@@ -124,7 +124,7 @@ begin
 end;
 
 // добавление первого элемента в список
-procedure TForm1.ButtonAddClick(Sender: TObject);
+procedure TFormMain.ButtonAddClick(Sender: TObject);
 var
   ListItem: TListItem;
   info: string;
@@ -136,7 +136,7 @@ begin
 end;
 
 // возобновление работы
-procedure TForm1.ButtonNextClick(Sender: TObject);
+procedure TFormMain.ButtonNextClick(Sender: TObject);
 var
   i: integer;
 begin
@@ -175,7 +175,7 @@ begin
 end;
 
 // добавление после
-procedure TForm1.ButtonAddAfterClick(Sender: TObject);
+procedure TFormMain.ButtonAddAfterClick(Sender: TObject);
 var
   ListItem: TListItem;
   SearchItem: string;
@@ -191,7 +191,7 @@ begin
 end;
 
 // добавление перед
-procedure TForm1.ButtonAddBeforeClick(Sender: TObject);
+procedure TFormMain.ButtonAddBeforeClick(Sender: TObject);
 var
   ListItem: TListItem;
   SearchItem: string;
@@ -207,14 +207,14 @@ begin
 end;
 
 // маска для ввода чисел
-procedure TForm1.Edit1KeyPress(Sender: TObject; var Key: Char);
+procedure TFormMain.Edit1KeyPress(Sender: TObject; var Key: Char);
 begin
   If not CharInSet(Key, ['0' .. '9', #8]) then
     Key := #0;
 end;
 
 // обработчик создания формы
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TFormMain.FormCreate(Sender: TObject);
 begin
   List := TList.Create;
   // Для OnThreadSyspended назначаем обработчики события ThreadSyspended.

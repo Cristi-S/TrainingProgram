@@ -50,7 +50,7 @@ begin
           sHierarchy := chr(VK_TAB) + chr(VK_TAB);
         end;
     end;
-    Form1.Memo1.Lines.Add(sCounter + sHierarchy + sText);
+    FormMain.Memo1.Lines.Add(sCounter + sHierarchy + sText);
   end;
 end;
 
@@ -60,9 +60,9 @@ var
 begin
   if Enabled then
   begin
-    str := Form1.Memo1.Lines.Text;
+    str := FormMain.Memo1.Lines.Text;
     str := Trim(str);
-    Form1.Memo1.Lines.Text := str + ' ' + sText;
+    FormMain.Memo1.Lines.Text := str + ' ' + sText;
   end;
 end;
 

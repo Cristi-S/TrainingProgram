@@ -1,10 +1,10 @@
-object Form1: TForm1
+object FormMain: TFormMain
   Left = 0
   Top = 0
   BorderStyle = bsSingle
   Caption = #1058#1088#1077#1085#1072#1078#1077#1088#1085#1072#1103' '#1087#1088#1086#1075#1088#1072#1084#1084#1072
   ClientHeight = 608
-  ClientWidth = 1236
+  ClientWidth = 1120
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,6 +14,7 @@ object Form1: TForm1
   OldCreateOrder = False
   Position = poMainFormCenter
   PrintScale = poNone
+  Visible = True
   OnCreate = FormCreate
   PixelsPerInch = 120
   TextHeight = 16
@@ -65,6 +66,7 @@ object Form1: TForm1
     Top = 344
     Width = 811
     Height = 225
+    ReadOnly = True
     ScrollBars = ssVertical
     TabOrder = 3
   end

@@ -322,56 +322,83 @@ Begin
   SearchItem := _SearchItem;
   TLogger.EnableCouner;
 
+  QuestionKey := 1;
+
   TLogger.Log('Добавление ключа ' + NewItem.GetInfo + ' перед ключом ' +
     SearchItem);
+
+  QuestionKey := 2;
   Pause();
   TLogger.Log('Проверка списка на пустоту: список содержит элементы');
+
+  QuestionKey := 5;
   Pause();
   TLogger.Log('Поиск элемента с ключом ' + SearchItem);
-  Pause();
+
   FNewItem := NewItem;
   FTempItem := Search(SearchItem);
   If TempItem = nil then
   begin
-    TLogger.Log('Искомый элемент не найден');
+    TLogger.Append(' - искомый элемент не найден');
     // result := false;
     FuncEnd();
   end;
+
+  QuestionKey := 3;
+  Pause();
   TLogger.Log('Выделение памяти для нового элемента');
-  Pause();
-  TLogger.Log('Заполнение информационного поля:' + NewItem.GetInfo);
-  Pause();
+
   FSearchItem := FTempItem;
   If TempItem.GetPrev = nil then
   begin
     TempItem.IsAddBefore := true;
+
+    QuestionKey := 4;
+    Pause();
+    TLogger.Log('Заполнение информационного поля:' + NewItem.GetInfo);
+
     NewItem.SetPrev(nil);
+
+    QuestionKey := 9;
     Pause();
     TLogger.Log('Изменение левой ссылки у правого соседа');
+
     TempItem.SetPrev(NewItem);
+
+    QuestionKey := 7;
     Pause();
     TLogger.Log('Заполнение поля ссылки на правого соседа');
+
     NewItem.SetNext(TempItem);
-    Pause();
     inc(Count);
     First := NewItem;
     FuncEnd();
-    // result := true
   End
   Else
   Begin
     TempItem.IsAddBefore := true;
+
+    QuestionKey := 7;
+    Pause();
     TLogger.Log('Заполнение поля ссылки на правого соседа');
+
     NewItem.SetNext(TempItem);
+
+    QuestionKey := 8;
     Pause();
     TLogger.Log('Заполнение поля ссылки на левого соседа');
     NewItem.SetPrev(TempItem.GetPrev);
+
+    QuestionKey := 9;
     Pause();
     TLogger.Log('Изменение левой ссылки у правого соседа');
     TempItem.SetPrev(NewItem);
+
+    QuestionKey := 10;
     Pause();
     TLogger.Log('Изменение правой ссылки у левого соседа');
     NewItem.GetPrev.SetNext(NewItem);
+
     inc(Count)
   End;
   FuncEnd();

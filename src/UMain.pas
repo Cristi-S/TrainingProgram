@@ -223,8 +223,8 @@ begin
   QuestionsInitialize();
   UpdateButtonState;
 
-  List.Mode := omControl;
-  // List.Mode := omDemo;
+  // List.Mode := omControl;
+  List.Mode := omDemo;
 end;
 
 end.

@@ -1,4 +1,5 @@
 unit UDriver;
+// модуль связующий логическую структуру с отображаемыми данными
 
 interface
 
@@ -9,9 +10,6 @@ procedure RedrawPanel();
 procedure ClearPanel(Sender: TObject = nil);
 
 implementation
-
-{$REGION 'отрисовка'}
-// uses UMain;
 
 // обновляем состояние кнопок
 procedure UpdateButtonState(Sender: TObject = nil);
@@ -97,6 +95,22 @@ begin
   end;
 end;
 
+procedure TemplateControlCreate(var item: TListControl; temp: TListItem);
+begin
+  with Form1 do
+  begin
+    item := TListControl.Create(FlowPanel1);
+    item.ItemMain.TitleMain := temp.GetInfo;
+    item.ItemMain.TitleNext := temp.GetNextInfo;
+    item.ItemMain.TitlePrev := temp.GetPrevInfo;
+    item.IsLast := temp.IsLast;
+    item.IsFirst := temp.IsFirst;
+    item.IsAddBefore := temp.IsAddBefore;
+    item.IsAddAfter := temp.IsAddAfter;
+    item.ItemMain.ArrowHeader.visible := temp.IsFirst;
+  end;
+end;
+
 // перерисовывает панель с компонентами  взависимсти от состояния элементов, предварительно ее очищая
 procedure RedrawPanel();
 var
@@ -112,14 +126,8 @@ begin
           temp := List.GetFirst;
           while temp <> nil do
           begin
-            ListControlItem := TListControl.Create(FlowPanel1);
-            ListControlItem.ItemMain.TitleMain := temp.GetInfo;
-            ListControlItem.ItemMain.TitleNext := temp.GetNextInfo;
-            ListControlItem.ItemMain.TitlePrev := temp.GetPrevInfo;
-            ListControlItem.IsLast := temp.IsLast;
-            ListControlItem.IsFirst := temp.IsFirst;
+            TemplateControlCreate(ListControlItem, temp);
             ListControlItem.ItemMain.ArrowHeader.visible := temp.IsFirst;
-
             ListControl.Add(ListControlItem);
             temp := temp.GetNext;
           end;
@@ -129,10 +137,7 @@ begin
           // если добавление перед первым
           if List.SearchItem = List.GetFirst then
           begin
-            NewListControlItem := TListControl.Create(FlowPanel1);
-            NewListControlItem.ItemMain.TitleMain := List.NewItem.GetInfo;
-            NewListControlItem.ItemMain.TitleNext := List.NewItem.GetNextInfo;
-            NewListControlItem.ItemMain.TitlePrev := List.NewItem.GetPrevInfo;
+            TemplateControlCreate(NewListControlItem, List.NewItem);
             NewListControlItem.State := new;
             NewListControlItem.ItemMain.color := clGreen;
 
@@ -147,15 +152,7 @@ begin
           temp := List.GetFirst;
           while temp <> nil do
           begin
-            ListControlItem := TListControl.Create(FlowPanel1);
-            ListControlItem.ItemMain.TitleMain := temp.GetInfo;
-            ListControlItem.ItemMain.TitleNext := temp.GetNextInfo;
-            ListControlItem.ItemMain.TitlePrev := temp.GetPrevInfo;
-            ListControlItem.ItemMain.ArrowHeader.visible := temp.IsFirst;
-
-            ListControlItem.IsLast := temp.IsLast;
-            ListControlItem.IsFirst := temp.IsFirst;
-            ListControlItem.IsAddBefore := temp.IsAddBefore;
+            TemplateControlCreate(ListControlItem, temp);
             ListControl.Add(ListControlItem);
 
             // елси добавление перд первым, то первый элемент нужне немного подвинуть
@@ -168,12 +165,7 @@ begin
             if Assigned(NextItem) then
               if temp.GetNext.IsAddBefore then
               begin
-                NewListControlItem := TListControl.Create(FlowPanel1);
-                NewListControlItem.ItemMain.TitleMain := List.NewItem.GetInfo;
-                NewListControlItem.ItemMain.TitleNext :=
-                  List.NewItem.GetNextInfo;
-                NewListControlItem.ItemMain.TitlePrev :=
-                  List.NewItem.GetPrevInfo;
+                TemplateControlCreate(NewListControlItem, List.NewItem);
                 NewListControlItem.State := new;
                 NewListControlItem.ItemMain.color := clGreen;
 
@@ -221,25 +213,12 @@ begin
           temp := List.GetFirst;
           while temp <> nil do
           begin
-            ListControlItem := TListControl.Create(FlowPanel1);
-            ListControlItem.ItemMain.TitleMain := temp.GetInfo;
-            ListControlItem.ItemMain.TitleNext := temp.GetNextInfo;
-            ListControlItem.ItemMain.TitlePrev := temp.GetPrevInfo;
-            ListControlItem.ItemMain.ArrowHeader.visible := temp.IsFirst;
-
-            ListControlItem.IsLast := temp.IsLast;
-            ListControlItem.IsFirst := temp.IsFirst;
-            ListControlItem.IsAddAfter := temp.IsAddAfter;
+            TemplateControlCreate(ListControlItem, temp);
             ListControl.Add(ListControlItem);
             if temp.IsAddAfter then
             begin
-              NewListControlItem := TListControl.Create(FlowPanel1);
-              NewListControlItem.ItemMain.TitleMain := List.NewItem.GetInfo;
-              NewListControlItem.ItemMain.TitleNext := List.NewItem.GetNextInfo;
-              NewListControlItem.ItemMain.TitlePrev := List.NewItem.GetPrevInfo;
+              TemplateControlCreate(NewListControlItem, List.NewItem);
               NewListControlItem.State := new;
-              NewListControlItem.IsLast := List.NewItem.IsLast;
-              NewListControlItem.IsFirst := List.NewItem.IsFirst;
               NewListControlItem.ItemMain.color := clGreen;
 
               // стрелочки
@@ -300,14 +279,7 @@ begin
           temp := List.GetFirst;
           while temp <> nil do
           begin
-            ListControlItem := TListControl.Create(FlowPanel1);
-            ListControlItem.ItemMain.TitleMain := temp.GetInfo;
-            ListControlItem.ItemMain.TitleNext := temp.GetNextInfo;
-            ListControlItem.ItemMain.TitlePrev := temp.GetPrevInfo;
-            ListControlItem.ItemMain.ArrowHeader.visible := temp.IsFirst;
-            ListControlItem.IsLast := temp.IsLast;
-            ListControlItem.IsFirst := temp.IsFirst;
-
+            TemplateControlCreate(ListControlItem, temp);
             ListControl.Add(ListControlItem);
 
             // закрашивание удяляемого
@@ -404,6 +376,5 @@ begin
 
   end;
 end;
-{$ENDREGION}
 
 end.

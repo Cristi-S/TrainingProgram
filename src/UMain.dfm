@@ -15,6 +15,7 @@ object FormMain: TFormMain
   Position = poMainFormCenter
   PrintScale = poNone
   Visible = True
+  OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 120
   TextHeight = 16
@@ -25,7 +26,6 @@ object FormMain: TFormMain
     Height = 608
     Align = alLeft
     TabOrder = 0
-    ExplicitHeight = 589
     object Panel2: TPanel
       Left = 1
       Top = 1
@@ -114,6 +114,7 @@ object FormMain: TFormMain
         Height = 57
         Align = alCustom
         Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1055#1054#1057#1051#1045' '#1074#1099#1073#1088#1072#1085#1085#1086#1075#1086
+        Enabled = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -15
@@ -157,13 +158,20 @@ object FormMain: TFormMain
       TabOrder = 2
       OnClick = ButtonNextClick
     end
-    object Button1: TButton
-      Left = 33
-      Top = 536
-      Width = 184
-      Height = 49
+    object ButtonExit: TButton
+      Left = 2
+      Top = 534
+      Width = 239
+      Height = 48
       Caption = #1047#1072#1074#1077#1088#1096#1080#1090#1100
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -17
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 3
+      OnClick = ButtonExitClick
     end
   end
   object Panel4: TPanel
@@ -173,10 +181,6 @@ object FormMain: TFormMain
     Height = 608
     Align = alClient
     TabOrder = 1
-    ExplicitLeft = 656
-    ExplicitTop = 297
-    ExplicitWidth = 185
-    ExplicitHeight = 41
     object Label1: TLabel
       Left = 56
       Top = 306
@@ -227,8 +231,6 @@ object FormMain: TFormMain
         Color = clWindow
         ParentBackground = False
         TabOrder = 0
-        ExplicitLeft = -3
-        ExplicitTop = -2
       end
     end
     object StatusBar1: TStatusBar
@@ -237,6 +239,9 @@ object FormMain: TFormMain
       Width = 884
       Height = 19
       Panels = <
+        item
+          Width = 500
+        end
         item
           BiDiMode = bdLeftToRight
           ParentBiDiMode = False
@@ -258,11 +263,7 @@ object FormMain: TFormMain
           BiDiMode = bdLeftToRight
           ParentBiDiMode = False
           Width = 50
-        end
-        item
-          Width = 50
         end>
-      ExplicitWidth = 866
     end
   end
 end

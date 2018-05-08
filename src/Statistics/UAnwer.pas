@@ -32,6 +32,7 @@ var
   rIndex: integer; // номер RadioButton с правильным ответом
   QuestionsCount, CorrectQuestionsCount: integer;
   // количество вопросов и верных ответов
+  FirstName, LastName, MiddleName, Group: string;
 
 implementation
 

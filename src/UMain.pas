@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, System.Generics.Collections,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Control1, Vcl.ExtCtrls,
-  UList, UListItem, UnitNewItem, Math, UAnwer, UQuestions, UEnum, Vcl.ComCtrls;
+  UList, UListItem, Math, UAnwer, UQuestions, UEnum, Vcl.ComCtrls;
 
 type
   TFormMain = class(TForm)
@@ -20,7 +20,6 @@ type
     ButtonAddAfter: TButton;
     ButtonAdd: TButton;
     ButtonNext: TButton;
-    Button1: TButton;
     Panel4: TPanel;
     ButtonCreate: TButton;
     Edit1: TEdit;
@@ -29,6 +28,7 @@ type
     ScrollBox1: TScrollBox;
     FlowPanel1: TPanel;
     StatusBar1: TStatusBar;
+    ButtonExit: TButton;
     procedure ButtonCreateClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Edit1KeyPress(Sender: TObject; var Key: Char);
@@ -40,6 +40,8 @@ type
     procedure OnThreadSyspended(Sender: TObject);
     procedure ButtonDeleteClick(Sender: TObject);
     procedure RadioButton1Click(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure ButtonExitClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -51,12 +53,13 @@ var
   ListControl: TList<TListControl>;
   // контейнер списка
   List: TList;
+  ApplicationMode: TOperatingMode;
 
 implementation
 
 {$R *.dfm}
 
-uses Logger, UDriver;
+uses Logger, UDriver, UResult;
 
 // Обработчик события ThreadSyspended  - когда отсановили поток
 procedure TFormMain.OnThreadSyspended(Sender: TObject);
@@ -124,8 +127,16 @@ var
   SearchItem: string;
 begin
   SearchItem := InputBox('Удаление',
-    'Введите элемент, который нужно удалить :', 'item1');
+    'Введите элемент, который нужно удалить :', '3');
   List.Delete(SearchItem);
+end;
+
+procedure TFormMain.ButtonExitClick(Sender: TObject);
+begin
+  FormResult.EditQuestionsCount.Text:= QuestionsCount.ToString;
+  FormResult.EditCorrectAnswerCount.Text:= CorrectQuestionsCount.ToString;
+
+  FormResult.Show;
 end;
 
 // добавление первого элемента в список
@@ -134,8 +145,8 @@ var
   ListItem: TMyListItem;
   info: string;
 begin
-  Form2.ShowModal;
-  info := Form2.Edit1.Text;
+  info := InputBox('Добавление первого эдемента',
+    'Введите номер нового элемента :', '7');;
   ListItem := TMyListItem.Create(info);
   List.addAfter('', ListItem);
 end;
@@ -161,12 +172,14 @@ var
   info: string;
 begin
   if List.Getcount <> 0 then
-    Form2.ShowModal;
-  info := Form2.Edit1.Text;
-  ListItem := TMyListItem.Create(info);
-  SearchItem := InputBox('Добавление после заданного',
-    'Введите элемент, после которого добавить новый :', 'item1');
-  List.addAfter(SearchItem, ListItem);
+  begin
+    info := InputBox('Добавление после заданного',
+      'Введите номер нового элемента :', '12');
+    ListItem := TMyListItem.Create(info);
+    SearchItem := InputBox('Добавление после заданного',
+      'Введите элемент, после которого добавить новый :', '5');
+    List.addAfter(SearchItem, ListItem);
+  end;
 end;
 
 // добавление перед
@@ -177,12 +190,14 @@ var
   info: string;
 begin
   if List.Getcount <> 0 then
-    Form2.ShowModal;
-  info := Form2.Edit1.Text;
-  ListItem := TMyListItem.Create(info);
-  SearchItem := InputBox('Добавление перед заданным',
-    'Введите элемент, перед которым добавить новый :', 'item1');
-  List.AddBefore(SearchItem, ListItem);
+  begin
+    info := InputBox('Добавление после заданного',
+      'Введите номер нового элемента :', '12');
+    ListItem := TMyListItem.Create(info);
+    SearchItem := InputBox('Добавление перед заданным',
+      'Введите элемент, перед которым добавить новый :', '8');
+    List.AddBefore(SearchItem, ListItem);
+  end;
 end;
 
 // маска для ввода чисел
@@ -193,6 +208,12 @@ begin
 end;
 
 // обработчик создания формы
+procedure TFormMain.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  // обработчик закрытия
+  Application.Terminate;
+end;
+
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   List := TList.Create;
@@ -200,10 +221,11 @@ begin
   List.OnThreadSyspended := OnThreadSyspended;
   ListControl := TList<TListControl>.Create;
   QuestionsInitialize();
-  UpdateButtonState;
+  // UpdateButtonState;
 
-  List.Mode := omControl;
-  // List.Mode := omDemo;
+  List.Mode := ApplicationMode;
+  StatusBar1.Panels[0].Text := Group + ' ' + LastName + ' ' + FirstName +
+    ' ' + MiddleName + '.';
 end;
 
 end.

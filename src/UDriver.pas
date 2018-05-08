@@ -69,8 +69,8 @@ begin
 
     // statusbar
     StatusBar1.Visible := (List.Mode = omControl);
-    StatusBar1.Panels[1].Text := QuestionsCount.ToString;
-    StatusBar1.Panels[3].Text := CorrectQuestionsCount.ToString;
+    StatusBar1.Panels[2].Text := QuestionsCount.ToString;
+    StatusBar1.Panels[4].Text := CorrectQuestionsCount.ToString;
 
   end;
 end;

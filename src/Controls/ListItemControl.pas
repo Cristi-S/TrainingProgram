@@ -1,11 +1,11 @@
-﻿unit Control1;
+﻿unit ListItemControl;
 
 interface
 
 uses
   Winapi.Windows, System.SysUtils, System.Types, System.Classes, Vcl.Controls,
   Vcl.Graphics,
-  Vcl.StdCtrls, Math;
+  Vcl.StdCtrls, UITypes, Math;
 
 type
   TCross = record

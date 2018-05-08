@@ -4,7 +4,7 @@ object FormMain: TFormMain
   BorderStyle = bsSingle
   Caption = #1058#1088#1077#1085#1072#1078#1077#1088#1085#1072#1103' '#1087#1088#1086#1075#1088#1072#1084#1084#1072
   ClientHeight = 608
-  ClientWidth = 1109
+  ClientWidth = 1127
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,66 +18,14 @@ object FormMain: TFormMain
   OnCreate = FormCreate
   PixelsPerInch = 120
   TextHeight = 16
-  object Label1: TLabel
-    Left = 280
-    Top = 304
-    Width = 40
-    Height = 16
-    Caption = #1050#1086#1083'-'#1074#1086
-  end
-  object Edit1: TEdit
-    Left = 326
-    Top = 300
-    Width = 96
-    Height = 24
-    TabOrder = 0
-    OnKeyPress = Edit1KeyPress
-  end
-  object ButtonCreate: TButton
-    Left = 444
-    Top = 300
-    Width = 137
-    Height = 25
-    Caption = #1057#1092#1086#1088#1084#1080#1088#1086#1074#1072#1090#1100
-    Enabled = False
-    TabOrder = 1
-    OnClick = ButtonCreateClick
-  end
-  object ScrollBox1: TScrollBox
-    Left = 260
-    Top = 25
-    Width = 813
-    Height = 258
-    HorzScrollBar.Increment = 1
-    TabOrder = 2
-    object FlowPanel1: TPanel
-      Left = 0
-      Top = 0
-      Width = 809
-      Height = 254
-      Align = alClient
-      Color = clWindow
-      ParentBackground = False
-      TabOrder = 0
-    end
-  end
-  object Memo1: TMemo
-    Left = 262
-    Top = 344
-    Width = 811
-    Height = 225
-    ReadOnly = True
-    ScrollBars = ssVertical
-    TabOrder = 3
-  end
   object Panel1: TPanel
     Left = 0
     Top = 0
     Width = 241
-    Height = 589
+    Height = 608
     Align = alLeft
-    TabOrder = 4
-    ExplicitHeight = 608
+    TabOrder = 0
+    ExplicitHeight = 589
     object Panel2: TPanel
       Left = 1
       Top = 1
@@ -218,29 +166,103 @@ object FormMain: TFormMain
       TabOrder = 3
     end
   end
-  object StatusBar1: TStatusBar
-    Left = 0
-    Top = 589
-    Width = 1109
-    Height = 19
-    Panels = <
-      item
-        BiDiMode = bdLeftToRight
-        ParentBiDiMode = False
-        Text = #1050#1086#1083#1080#1095#1077#1089#1090#1074#1086' '#1074#1086#1087#1088#1086#1089#1086#1074':'
-        Width = 200
+  object Panel4: TPanel
+    Left = 241
+    Top = 0
+    Width = 886
+    Height = 608
+    Align = alClient
+    TabOrder = 1
+    ExplicitLeft = 656
+    ExplicitTop = 297
+    ExplicitWidth = 185
+    ExplicitHeight = 41
+    object Label1: TLabel
+      Left = 56
+      Top = 306
+      Width = 40
+      Height = 16
+      Caption = #1050#1086#1083'-'#1074#1086
+    end
+    object ButtonCreate: TButton
+      Left = 220
+      Top = 302
+      Width = 137
+      Height = 25
+      Caption = #1057#1092#1086#1088#1084#1080#1088#1086#1074#1072#1090#1100
+      Enabled = False
+      TabOrder = 0
+      OnClick = ButtonCreateClick
+    end
+    object Edit1: TEdit
+      Left = 102
+      Top = 302
+      Width = 96
+      Height = 24
+      TabOrder = 1
+      OnKeyPress = Edit1KeyPress
+    end
+    object Memo1: TMemo
+      Left = 40
+      Top = 344
+      Width = 811
+      Height = 225
+      ReadOnly = True
+      ScrollBars = ssVertical
+      TabOrder = 2
+    end
+    object ScrollBox1: TScrollBox
+      Left = 40
+      Top = 25
+      Width = 813
+      Height = 258
+      HorzScrollBar.Increment = 1
+      TabOrder = 3
+      object FlowPanel1: TPanel
+        Left = 0
+        Top = 0
+        Width = 809
+        Height = 254
+        Align = alClient
+        Color = clWindow
+        ParentBackground = False
+        TabOrder = 0
+        ExplicitLeft = -3
+        ExplicitTop = -2
       end
-      item
-        Width = 50
-      end
-      item
-        BiDiMode = bdLeftToRight
-        ParentBiDiMode = False
-        Text = #1042#1077#1088#1085#1099#1093' '#1086#1090#1074#1077#1090#1086#1074
-        Width = 50
-      end>
-    ExplicitLeft = 752
-    ExplicitTop = 584
-    ExplicitWidth = 0
+    end
+    object StatusBar1: TStatusBar
+      Left = 1
+      Top = 588
+      Width = 884
+      Height = 19
+      Panels = <
+        item
+          BiDiMode = bdLeftToRight
+          ParentBiDiMode = False
+          Text = #1050#1086#1083#1080#1095#1077#1089#1090#1074#1086' '#1074#1086#1087#1088#1086#1089#1086#1074':'
+          Width = 140
+        end
+        item
+          BiDiMode = bdLeftToRight
+          ParentBiDiMode = False
+          Width = 50
+        end
+        item
+          BiDiMode = bdLeftToRight
+          ParentBiDiMode = False
+          Text = #1042#1077#1088#1085#1099#1093' '#1086#1090#1074#1077#1090#1086#1074':'
+          Width = 100
+        end
+        item
+          BiDiMode = bdLeftToRight
+          ParentBiDiMode = False
+          Width = 50
+        end
+        item
+          Width = 50
+        end>
+      ExplicitWidth = 866
+    end
   end
 end

@@ -6,7 +6,7 @@ uses
   UList in 'Classes\UList.pas',
   UListItem in 'Classes\UListItem.pas',
   UnitNewItem in 'UnitNewItem.pas' {Form2},
-  Control1 in 'Controls\Control1.pas',
+  ListItemControl in 'Controls\ListItemControl.pas',
   Logger in 'Utilites\Logger.pas',
   UQuestions in 'Statistics\UQuestions.pas',
   UAnwer in 'Statistics\UAnwer.pas' {FormAnswer},

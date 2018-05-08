@@ -3,11 +3,11 @@ unit UListItem;
 interface
 
 Type
-  TListItem = class
+  TMyListItem = class
   Private
     Info: string;
-    Next: TListItem;
-    Prev: TListItem;
+    Next: TMyListItem;
+    Prev: TMyListItem;
     FIsFirst: boolean;
     FIsLast: boolean;
     FIsAddBefore: boolean;
@@ -18,11 +18,11 @@ Type
     Function GetInfo: string;
     Function GetPrevInfo: string;
     Function GetNextInfo: string;
-    Function GetNext: TListItem;
-    Function GetPrev: TListItem;
+    Function GetNext: TMyListItem;
+    Function GetPrev: TMyListItem;
     Procedure SetInfo(sInfo: string);
-    Procedure SetNext(aNext: TListItem);
-    Procedure SetPrev(aPrev: TListItem);
+    Procedure SetNext(aNext: TMyListItem);
+    Procedure SetPrev(aPrev: TMyListItem);
     function ToString(): string; override;
     property IsFirst: boolean read FIsFirst write FIsFirst;
     property IsLast: boolean read FIsLast write FIsLast;
@@ -33,7 +33,7 @@ Type
 
 implementation
 
-Constructor TListItem.Create(sInfo: string);
+Constructor TMyListItem.Create(sInfo: string);
 begin
   Info := sInfo;
   Next := nil;
@@ -44,12 +44,12 @@ begin
   FIsAddAfter := false;
 end;
 
-Function TListItem.GetInfo: string;
+Function TMyListItem.GetInfo: string;
 begin
   result := Info;
 end;
 
-Function TListItem.GetNextInfo: string;
+Function TMyListItem.GetNextInfo: string;
 begin
   if Assigned(Next) then
     result := Next.ToString()
@@ -57,7 +57,7 @@ begin
     result := 'nul';
 end;
 
-Function TListItem.GetPrevInfo: string;
+Function TMyListItem.GetPrevInfo: string;
 begin
   if Assigned(Prev) then
     result := Prev.ToString
@@ -65,32 +65,32 @@ begin
     result := 'nul';
 end;
 
-Function TListItem.GetNext: TListItem;
+Function TMyListItem.GetNext: TMyListItem;
 begin
   result := Next;
 end;
 
-Function TListItem.GetPrev: TListItem;
+Function TMyListItem.GetPrev: TMyListItem;
 begin
   result := Prev;
 end;
 
-Procedure TListItem.SetInfo(sInfo: string);
+Procedure TMyListItem.SetInfo(sInfo: string);
 begin
   Info := sInfo;
 end;
 
-Procedure TListItem.SetNext(aNext: TListItem);
+Procedure TMyListItem.SetNext(aNext: TMyListItem);
 begin
   Next := aNext;
 end;
 
-Procedure TListItem.SetPrev(aPrev: TListItem);
+Procedure TMyListItem.SetPrev(aPrev: TMyListItem);
 begin
   Prev := aPrev;
 end;
 
-function TListItem.ToString(): string;
+function TMyListItem.ToString(): string;
 begin
   result := 'ÀÄÐ[' + Info+']';
 end;

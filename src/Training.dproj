@@ -101,7 +101,7 @@
             <Form>Form2</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="Controls\Control1.pas"/>
+        <DCCReference Include="Controls\ListItemControl.pas"/>
         <DCCReference Include="Utilites\Logger.pas"/>
         <DCCReference Include="Statistics\UQuestions.pas"/>
         <DCCReference Include="Statistics\UAnwer.pas">

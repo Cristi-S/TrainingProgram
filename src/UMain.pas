@@ -10,12 +10,6 @@ uses
 
 type
   TFormMain = class(TForm)
-    Edit1: TEdit;
-    ButtonCreate: TButton;
-    Label1: TLabel;
-    ScrollBox1: TScrollBox;
-    FlowPanel1: TPanel;
-    Memo1: TMemo;
     Panel1: TPanel;
     Panel2: TPanel;
     RadioButton2: TRadioButton;
@@ -27,6 +21,13 @@ type
     ButtonAdd: TButton;
     ButtonNext: TButton;
     Button1: TButton;
+    Panel4: TPanel;
+    ButtonCreate: TButton;
+    Edit1: TEdit;
+    Label1: TLabel;
+    Memo1: TMemo;
+    ScrollBox1: TScrollBox;
+    FlowPanel1: TPanel;
     StatusBar1: TStatusBar;
     procedure ButtonCreateClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -73,7 +74,7 @@ end;
 // статичное формирование списка
 procedure TFormMain.ButtonCreateClick(Sender: TObject);
 var
-  ListItem: TListItem;
+  ListItem: TMyListItem;
   i, Count: integer;
   new, last: integer;
   oldMode: TOperatingMode;
@@ -93,7 +94,7 @@ begin
     if i = 0 then
     begin
       new := Random(80) + 20;
-      ListItem := TListItem.Create(new.ToString);
+      ListItem := TMyListItem.Create(new.ToString);
       List.addAfter('item', ListItem);
       last := new;
       // ждем остановки потока
@@ -102,18 +103,19 @@ begin
     else
     begin
       new := Random(80) + 20;
-      ListItem := TListItem.Create(new.ToString);
+      ListItem := TMyListItem.Create(new.ToString);
       List.addAfter(last.ToString, ListItem);
       last := new;
       // ждем остановки потока
       WaitForSingleObject(List.ThreadId, INFINITE);
     end;
   end;
-  // перерисовываем панель
-  RedrawPanel();
+
   // возвращаем программу в режим управления
   Logger.Enabled := true;
   List.Mode := oldMode;
+  // перерисовываем панель
+  RedrawPanel();
 end;
 
 // удаление
@@ -129,12 +131,12 @@ end;
 // добавление первого элемента в список
 procedure TFormMain.ButtonAddClick(Sender: TObject);
 var
-  ListItem: TListItem;
+  ListItem: TMyListItem;
   info: string;
 begin
   Form2.ShowModal;
   info := Form2.Edit1.Text;
-  ListItem := TListItem.Create(info);
+  ListItem := TMyListItem.Create(info);
   List.addAfter('', ListItem);
 end;
 
@@ -154,14 +156,14 @@ end;
 // добавление после
 procedure TFormMain.ButtonAddAfterClick(Sender: TObject);
 var
-  ListItem: TListItem;
+  ListItem: TMyListItem;
   SearchItem: string;
   info: string;
 begin
   if List.Getcount <> 0 then
     Form2.ShowModal;
   info := Form2.Edit1.Text;
-  ListItem := TListItem.Create(info);
+  ListItem := TMyListItem.Create(info);
   SearchItem := InputBox('Добавление после заданного',
     'Введите элемент, после которого добавить новый :', 'item1');
   List.addAfter(SearchItem, ListItem);
@@ -170,14 +172,14 @@ end;
 // добавление перед
 procedure TFormMain.ButtonAddBeforeClick(Sender: TObject);
 var
-  ListItem: TListItem;
+  ListItem: TMyListItem;
   SearchItem: string;
   info: string;
 begin
   if List.Getcount <> 0 then
     Form2.ShowModal;
   info := Form2.Edit1.Text;
-  ListItem := TListItem.Create(info);
+  ListItem := TMyListItem.Create(info);
   SearchItem := InputBox('Добавление перед заданным',
     'Введите элемент, перед которым добавить новый :', 'item1');
   List.AddBefore(SearchItem, ListItem);

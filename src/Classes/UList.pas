@@ -15,18 +15,18 @@ Type
   TList = class
   Private
     Count: Integer;
-    First: TListItem;
+    First: TMyListItem;
     // ThreadId: Integer;
     // FState: TListState;
-    FTempItem: TListItem;
-    FNewItem: TListItem;
+    FTempItem: TMyListItem;
+    FNewItem: TMyListItem;
     // Поле ссылающееся на обработчик события MyEvent.
     // Тип TNotifyEvent описан в модуле Clases так: TNotifyEvent = procedure(Sender: TObject) of object;
     // Фраза  "of object" означает, что в качестве обработчика можно назначить только метод какого-либо
     // класса, а не произвольную процедуру.
     FOnThreadSuspended: TNotifyEvent;
-    FDeleteItem: TListItem;
-    FSearchItem: TListItem;
+    FDeleteItem: TMyListItem;
+    FSearchItem: TMyListItem;
     procedure _AddAfter();
     procedure _AddBefore();
     Function _Delete(): boolean;
@@ -38,11 +38,11 @@ Type
     Mode: TOperatingMode;
     Constructor Create;
     Function Getcount: Integer;
-    Function GetFirst: TListItem;
-    Function AddAfter(SearchItem: string; NewItem: TListItem): boolean;
-    Function AddBefore(SearchItem: string; NewItem: TListItem): boolean;
+    Function GetFirst: TMyListItem;
+    Function AddAfter(SearchItem: string; NewItem: TMyListItem): boolean;
+    Function AddBefore(SearchItem: string; NewItem: TMyListItem): boolean;
     Function Delete(SearchItem: string): boolean;
-    Function Search(SearchItem: string): TListItem;
+    Function Search(SearchItem: string): TMyListItem;
     procedure NextStep();
     // Эта процедура проверяет задан ли обработчик события. И, если задан, запускает его.
     procedure DoMyEvent; dynamic;
@@ -53,10 +53,10 @@ Type
     // Таких процедур может быть несколько - везде где может возникнуть событие MyEvent.
     // Если событие MyEvent произошло, то вызвается процедура DoMyEvent().
     procedure GenericMyEvent;
-    property NewItem: TListItem read FNewItem;
-    property TempItem: TListItem read FTempItem;
-    property DeleteItem: TListItem read FDeleteItem;
-    property SearchItem: TListItem read FSearchItem;
+    property NewItem: TMyListItem read FNewItem;
+    property TempItem: TMyListItem read FTempItem;
+    property DeleteItem: TMyListItem read FDeleteItem;
+    property SearchItem: TMyListItem read FSearchItem;
   End;
 
 implementation
@@ -66,7 +66,7 @@ uses Logger;
 var
   CritSec: TCriticalSection; // объект критической секции
   // переменные для хранения входных парамтеров в функцию добавления
-  _NewItem: TListItem;
+  _NewItem: TMyListItem;
   _SearchItem: string;
 
 Constructor TList.Create;
@@ -85,12 +85,12 @@ begin
   result := Count;
 end;
 
-Function TList.GetFirst: TListItem;
+Function TList.GetFirst: TMyListItem;
 begin
   result := First;
 end;
 
-function TList.AddAfter(SearchItem: string; NewItem: TListItem): boolean;
+function TList.AddAfter(SearchItem: string; NewItem: TMyListItem): boolean;
 var
   id: longword;
 begin
@@ -100,7 +100,7 @@ begin
   ThreadId := BeginThread(nil, 0, @TList._AddAfter, Self, 0, id);
 end;
 
-function TList.AddBefore(SearchItem: string; NewItem: TListItem): boolean;
+function TList.AddBefore(SearchItem: string; NewItem: TMyListItem): boolean;
 var
   id: longword;
 begin
@@ -125,12 +125,12 @@ end;
 
 procedure TList._AddAfter();
 var
-  NewItem: TListItem;
+  NewItem: TMyListItem;
   SearchItem: string;
 {$REGION 'вложенные функции для добавления'}
   procedure CLeanListItemsStates;
   var
-    temp, last: TListItem;
+    temp, last: TMyListItem;
   begin
     temp := First;
     while temp <> nil do
@@ -282,12 +282,12 @@ end;
 
 procedure TList._AddBefore();
 var
-  NewItem: TListItem;
+  NewItem: TMyListItem;
   SearchItem: string;
 {$REGION 'вложенные функции для добавления'}
   procedure CLeanListItemsStates;
   var
-    temp, last: TListItem;
+    temp, last: TMyListItem;
   begin
     temp := First;
     while temp <> nil do
@@ -416,7 +416,7 @@ Function TList._Delete(): boolean;
 {$REGION 'вложенные функции для удаления'}
   procedure CLeanListItemsStates;
   var
-    temp, last: TListItem;
+    temp, last: TMyListItem;
   begin
     temp := First;
     while temp <> nil do
@@ -532,7 +532,7 @@ begin
   FuncEnd;
 end;
 
-Function TList.Search(SearchItem: string): TListItem;
+Function TList.Search(SearchItem: string): TMyListItem;
 var
   oldLogerState: boolean;
 begin

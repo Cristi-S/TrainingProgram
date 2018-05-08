@@ -3,7 +3,7 @@ unit UDriver;
 
 interface
 
-uses UMain, UEnum, Control1, UListItem, Graphics;
+uses UMain, UEnum, Control1, UListItem, Graphics, UAnwer, SysUtils;
 
 procedure UpdateButtonState(Sender: TObject = nil);
 procedure RedrawPanel();
@@ -12,9 +12,11 @@ procedure ClearPanel(Sender: TObject = nil);
 implementation
 
 // обновляем состояние кнопок
+
 procedure UpdateButtonState(Sender: TObject = nil);
 begin
   with FormMain do
+  begin
     case List.State of
       lsNormal:
         begin
@@ -64,6 +66,13 @@ begin
           ButtonNext.Enabled := true;
         end;
     end;
+
+    // statusbar
+    StatusBar1.Visible := (List.Mode = omControl);
+    StatusBar1.Panels[1].Text := QuestionsCount.ToString;
+    StatusBar1.Panels[3].Text := CorrectQuestionsCount.ToString;
+
+  end;
 end;
 
 // перемещает все контролы в ряд по порядку
@@ -96,7 +105,7 @@ begin
 end;
 
 // процедура для поддержки RedrawPanel()
-procedure TemplateControlCreate(var item: TListControl; temp: TListItem;
+procedure TemplateControlCreate(var item: TListControl; temp: TMyListItem;
   State: TItemState = normal; iColor: integer = clBlack);
 begin
   with FormMain do
@@ -109,7 +118,7 @@ begin
     item.IsFirst := temp.IsFirst;
     item.IsAddBefore := temp.IsAddBefore;
     item.IsAddAfter := temp.IsAddAfter;
-    item.ItemMain.ArrowHeader.visible := temp.IsFirst;
+    item.ItemMain.ArrowHeader.Visible := temp.IsFirst;
     item.State := State;
     item.ItemMain.color := iColor;
   end;
@@ -118,7 +127,7 @@ end;
 // перерисовывает панель с компонентами  взависимсти от состояния элементов, предварительно ее очищая
 procedure RedrawPanel();
 var
-  temp, NextItem: TListItem;
+  temp, NextItem: TMyListItem;
   ListControlItem, NewListControlItem: TListControl;
 begin
   with FormMain do
@@ -143,9 +152,9 @@ begin
             TemplateControlCreate(NewListControlItem, List.NewItem,
               TItemState.new, clGreen);
 
-            NewListControlItem.ItemMain.ArrowUpRight.visible :=
+            NewListControlItem.ItemMain.ArrowUpRight.Visible :=
               List.NewItem.GetNext <> nil;
-            NewListControlItem.ItemMain.ArrowDownRight.visible :=
+            NewListControlItem.ItemMain.ArrowDownRight.Visible :=
               List.SearchItem.GetPrev = List.NewItem;
 
             ListControl.Add(NewListControlItem);
@@ -171,27 +180,27 @@ begin
                   TItemState.new, clGreen);
 
                 // стрелочки
-                ListControlItem.ItemMain.ArrowRight.visible :=
+                ListControlItem.ItemMain.ArrowRight.Visible :=
                   (temp.GetNext = List.NewItem) and (temp.IsLast);
 
                 // стрелочки при добавлении в середину для нового элемента
                 if temp.GetNext <> nil then
                 begin
-                  NewListControlItem.ItemMain.ArrowUpRight.visible :=
+                  NewListControlItem.ItemMain.ArrowUpRight.Visible :=
                     (temp.GetNext = List.NewItem.GetNext);
-                  NewListControlItem.ItemMain.ArrowDownRight.visible :=
+                  NewListControlItem.ItemMain.ArrowDownRight.Visible :=
                     (List.NewItem = temp.GetNext.GetPrev);
 
-                  ListControlItem.ItemMain.ArrowDownLeft.visible :=
+                  ListControlItem.ItemMain.ArrowDownLeft.Visible :=
                     (temp.GetNext = List.NewItem);
-                  ListControlItem.ItemMain.ArrowUpLeft.visible :=
+                  ListControlItem.ItemMain.ArrowUpLeft.Visible :=
                     (temp = List.NewItem.GetPrev);
 
                   // длинные
-                  ListControlItem.ItemMain.ArrowLongLeft.visible :=
+                  ListControlItem.ItemMain.ArrowLongLeft.Visible :=
                     (temp.GetNext <> List.NewItem) and
                     (temp.GetNext.GetPrev = temp);
-                  ListControlItem.ItemMain.ArrowLongRight.visible :=
+                  ListControlItem.ItemMain.ArrowLongRight.Visible :=
                     (temp.GetNext <> List.NewItem) and (temp.GetNext <> nil);
                 end;
 
@@ -221,27 +230,27 @@ begin
                 TItemState.new, clGreen);
 
               // стрелочки
-              ListControlItem.ItemMain.ArrowRight.visible :=
+              ListControlItem.ItemMain.ArrowRight.Visible :=
                 (temp.GetNext = List.NewItem) and (temp.IsLast);
 
               // стрелочки при добавлении в середину для нового элемента
               if temp.GetNext <> nil then
               begin
-                NewListControlItem.ItemMain.ArrowUpRight.visible :=
+                NewListControlItem.ItemMain.ArrowUpRight.Visible :=
                   (temp.GetNext = List.NewItem.GetNext);
-                NewListControlItem.ItemMain.ArrowDownRight.visible :=
+                NewListControlItem.ItemMain.ArrowDownRight.Visible :=
                   (List.NewItem = temp.GetNext.GetPrev);
 
-                ListControlItem.ItemMain.ArrowDownLeft.visible :=
+                ListControlItem.ItemMain.ArrowDownLeft.Visible :=
                   (temp.GetNext = List.NewItem);
-                ListControlItem.ItemMain.ArrowUpLeft.visible :=
+                ListControlItem.ItemMain.ArrowUpLeft.Visible :=
                   (temp = List.NewItem.GetPrev);
 
                 // длинные
-                ListControlItem.ItemMain.ArrowLongLeft.visible :=
+                ListControlItem.ItemMain.ArrowLongLeft.Visible :=
                   (temp.GetNext <> List.NewItem) and
                   (temp.GetNext.GetPrev = temp);
-                ListControlItem.ItemMain.ArrowLongRight.visible :=
+                ListControlItem.ItemMain.ArrowLongRight.Visible :=
                   (temp.GetNext <> List.NewItem) and (temp.GetNext <> nil);
               end;
 
@@ -249,10 +258,10 @@ begin
               begin
                 ListControlItem.IsLast := false;
                 NewListControlItem.State := normal;
-                ListControlItem.ItemMain.ArrowRight.visible :=
+                ListControlItem.ItemMain.ArrowRight.Visible :=
                   (temp.GetNext <> nil);
 
-                ListControlItem.ItemMain.ArrowLeft.visible :=
+                ListControlItem.ItemMain.ArrowLeft.Visible :=
                   (List.NewItem.GetPrev <> nil);
               end
               else
@@ -300,7 +309,7 @@ begin
               begin
                 if temp = List.DeleteItem then
                   if temp.GetNext.GetPrev <> temp then
-                    ListControlItem.ItemMain.ArrowLeft.cross.visible := true;
+                    ListControlItem.ItemMain.ArrowLeft.cross.Visible := true;
               end;
               // если удаляем с конца (последний элеменет)
               if List.DeleteItem.GetNext = nil then
@@ -309,7 +318,7 @@ begin
                 if (List.DeleteItem.GetPrev = temp) and
                   (temp.GetNext <> List.DeleteItem) then
                 begin
-                  ListControlItem.ItemMain.ArrowRight.cross.visible := true;
+                  ListControlItem.ItemMain.ArrowRight.cross.Visible := true;
                 end;
               end
               else
@@ -319,8 +328,8 @@ begin
                 if (List.DeleteItem.GetPrev = temp) and
                   (temp.GetNext <> List.DeleteItem) then
                 begin
-                  ListControlItem.ItemMain.ArrowRightPolygon.visible := true;
-                  ListControlItem.ItemMain.ArrowRight.cross.visible := true;
+                  ListControlItem.ItemMain.ArrowRightPolygon.Visible := true;
+                  ListControlItem.ItemMain.ArrowRight.cross.Visible := true;
                 end;
                 // длинная стрелочка назад
                 if (List.DeleteItem.GetNext = temp.GetNext) and
@@ -328,14 +337,14 @@ begin
                   (temp <> List.DeleteItem) and (temp.GetNext.GetPrev = temp)
                 then
                 begin
-                  ListControlItem.ItemMain.ArrowLeftPolygon.visible := true;
+                  ListControlItem.ItemMain.ArrowLeftPolygon.Visible := true;
                 end;
                 // крестик
                 if (temp = List.DeleteItem) and
                   (List.DeleteItem.GetNext.GetPrev = List.DeleteItem.GetPrev)
                 then
                 begin
-                  ListControlItem.ItemMain.ArrowLeft.cross.visible := true;
+                  ListControlItem.ItemMain.ArrowLeft.cross.Visible := true;
                 end;
               end;
             end;

@@ -32,6 +32,6 @@ requires
   vcl;
 
 contains
-  Control1 in 'Control1.pas';
+  ListItemControl in 'ListItemControl.pas';
 
 end.

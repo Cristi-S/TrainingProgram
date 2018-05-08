@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, System.Generics.Collections,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Control1, Vcl.ExtCtrls,
-  UList, UListItem, UnitNewItem, Math, UAnwer, UQuestions, UEnum;
+  UList, UListItem, UnitNewItem, Math, UAnwer, UQuestions, UEnum, Vcl.ComCtrls;
 
 type
   TFormMain = class(TForm)
@@ -26,6 +26,8 @@ type
     ButtonAddAfter: TButton;
     ButtonAdd: TButton;
     ButtonNext: TButton;
+    Button1: TButton;
+    StatusBar1: TStatusBar;
     procedure ButtonCreateClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Edit1KeyPress(Sender: TObject; var Key: Char);

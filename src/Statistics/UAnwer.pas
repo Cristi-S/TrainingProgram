@@ -30,6 +30,8 @@ type
 var
   FormAnswer: TFormAnswer;
   rIndex: integer; // номер RadioButton с правильным ответом
+  QuestionsCount, CorrectQuestionsCount: integer;
+  // количество вопросов и верных ответов
 
 implementation
 
@@ -79,6 +81,7 @@ procedure TFormAnswer.ButtonOkClick(Sender: TObject);
 var
   i: integer;
 begin
+  Inc(QuestionsCount);
   case List.State of
     lsAddbefore, lsAddAfter:
       if List.QuestionKey > 1 then // пропускаем первый шаг
@@ -87,10 +90,7 @@ begin
           if (TRadioButton(FindComponent('RadioButton' + IntToStr(i))).Checked)
           then
             if rIndex = i then
-              ShowMessage('верный ответ!')
-            else
-              ShowMessage
-                ('Неверный ответ. Правильный ответ смотри в окне вывода')
+              Inc(CorrectQuestionsCount);
       end;
   end;
   Close;

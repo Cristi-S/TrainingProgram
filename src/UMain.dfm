@@ -4,7 +4,7 @@ object FormMain: TFormMain
   BorderStyle = bsSingle
   Caption = #1058#1088#1077#1085#1072#1078#1077#1088#1085#1072#1103' '#1087#1088#1086#1075#1088#1072#1084#1084#1072
   ClientHeight = 608
-  ClientWidth = 1120
+  ClientWidth = 1109
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -74,9 +74,10 @@ object FormMain: TFormMain
     Left = 0
     Top = 0
     Width = 241
-    Height = 608
+    Height = 589
     Align = alLeft
     TabOrder = 4
+    ExplicitHeight = 608
     object Panel2: TPanel
       Left = 1
       Top = 1
@@ -208,5 +209,38 @@ object FormMain: TFormMain
       TabOrder = 2
       OnClick = ButtonNextClick
     end
+    object Button1: TButton
+      Left = 33
+      Top = 536
+      Width = 184
+      Height = 49
+      Caption = #1047#1072#1074#1077#1088#1096#1080#1090#1100
+      TabOrder = 3
+    end
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 589
+    Width = 1109
+    Height = 19
+    Panels = <
+      item
+        BiDiMode = bdLeftToRight
+        ParentBiDiMode = False
+        Text = #1050#1086#1083#1080#1095#1077#1089#1090#1074#1086' '#1074#1086#1087#1088#1086#1089#1086#1074':'
+        Width = 200
+      end
+      item
+        Width = 50
+      end
+      item
+        BiDiMode = bdLeftToRight
+        ParentBiDiMode = False
+        Text = #1042#1077#1088#1085#1099#1093' '#1086#1090#1074#1077#1090#1086#1074
+        Width = 50
+      end>
+    ExplicitLeft = 752
+    ExplicitTop = 584
+    ExplicitWidth = 0
   end
 end

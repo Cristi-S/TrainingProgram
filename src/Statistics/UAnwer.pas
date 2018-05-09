@@ -94,8 +94,10 @@ begin
           then
           begin
             if rIndex = i then
+            begin
               Inc(CorrectQuestionsCount);
-            correct := true;
+              correct := true;
+            end;
             cheked := i;
           end;
       end;
@@ -113,8 +115,8 @@ begin
   else
     sCorrect := 'НЕВЕРНО';
 
-  FormResult.Memo2.Lines.Add('Тестируемый ответил ' + cheked.ToString +
-    ', ответ ' + sCorrect);
+  FormResult.Memo2.Lines.Add('Тестируемый ответил ' + cheked.ToString + ' - ' +
+    sCorrect);
   FormResult.Memo2.Lines.Add('====================================');
   Close;
 end;

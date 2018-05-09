@@ -21,6 +21,7 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFormStart, FormStart);
   Application.CreateForm(TFormResult, FormResult);
+  Application.CreateForm(TFormAnswer, FormAnswer);
   Application.Run;
 
 end.

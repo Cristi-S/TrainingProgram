@@ -36,7 +36,7 @@ var
 
 implementation
 
-uses UMain;
+uses UMain, UResult;
 
 {$R *.dfm}
 
@@ -80,7 +80,9 @@ end;
 // проверка ответа пользователя
 procedure TFormAnswer.ButtonOkClick(Sender: TObject);
 var
-  i: integer;
+  i, cheked: integer;
+  correct: boolean;
+  sCorrect: string;
 begin
   Inc(QuestionsCount);
   case List.State of
@@ -90,17 +92,37 @@ begin
         for i := 1 to 4 do
           if (TRadioButton(FindComponent('RadioButton' + IntToStr(i))).Checked)
           then
+          begin
             if rIndex = i then
               Inc(CorrectQuestionsCount);
+            correct := true;
+            cheked := i;
+          end;
       end;
   end;
+
+  FormResult.Memo2.Lines.Add('Вопрос: ' + QuestionsCount.ToString);
+  FormResult.Memo2.Lines.Add('Какой следующий шаг алгоритма?');
+
+  for i := 1 to 4 do
+    FormResult.Memo2.Lines.Add('-' + i.ToString + '-' +
+      TRadioButton(FindComponent('RadioButton' + IntToStr(i))).Caption);
+
+  if correct then
+    sCorrect := 'ВЕРНО'
+  else
+    sCorrect := 'НЕВЕРНО';
+
+  FormResult.Memo2.Lines.Add('Тестируемый ответил ' + cheked.ToString +
+    ', ответ ' + sCorrect);
+  FormResult.Memo2.Lines.Add('====================================');
   Close;
 end;
 
 // закрытие окна
 procedure TFormAnswer.FormClose(Sender: TObject; var Action: TCloseAction);
 var
-  isChecked: Boolean;
+  isChecked: boolean;
   i: integer;
 begin
   // если не выбран ни один чекбокс, то окно не закрываем

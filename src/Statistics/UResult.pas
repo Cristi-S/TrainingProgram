@@ -9,13 +9,10 @@ uses
 
 type
   TFormResult = class(TForm)
-    Label1: TLabel;
-    Label2: TLabel;
-    EditQuestionsCount: TEdit;
-    EditCorrectAnswerCount: TEdit;
-    Label3: TLabel;
     Button1: TButton;
     SaveDialog1: TSaveDialog;
+    Memo1: TMemo;
+    Memo2: TMemo;
     procedure Button1Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
@@ -34,9 +31,15 @@ implementation
 uses UMain;
 
 procedure TFormResult.Button1Click(Sender: TObject);
+var
+  str: string;
 begin
   if SaveDialog1.Execute then
-    FormMain.Memo1.Lines.SaveToFile(SaveDialog1.FileName);
+  begin
+    str := Memo2.Lines.Text;
+    Memo2.Lines.Text := Memo1.Lines.Text + str;
+    Memo2.Lines.SaveToFile(SaveDialog1.FileName);
+  end;
 
   Close;
 end;

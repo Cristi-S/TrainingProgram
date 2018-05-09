@@ -221,7 +221,7 @@ Begin
     QuestionKey := 3;
     Pause();
     TLogger.Log('Выделение памяти для нового элемента');
-    //добавлление в конец
+    // добавлление в конец
     If TempItem.GetNext = nil then
     begin
       TempItem.IsAddAfter := true;

@@ -132,11 +132,29 @@ begin
 end;
 
 procedure TFormMain.ButtonExitClick(Sender: TObject);
+var
+  uncorrect: integer;
+  persent: double;
 begin
-  FormResult.EditQuestionsCount.Text:= QuestionsCount.ToString;
-  FormResult.EditCorrectAnswerCount.Text:= CorrectQuestionsCount.ToString;
+  uncorrect := QuestionsCount - CorrectQuestionsCount;
+  persent := CorrectQuestionsCount / QuestionsCount * 100;
 
-  FormResult.Show;
+  FormResult.Memo1.Lines.Add('Студент: ' + LastName + ' ' + FirstName + ' ' +
+    MiddleName);
+  FormResult.Memo1.Lines.Add('Группа: ' + Group);
+  FormResult.Memo1.Lines.Add('====================================');
+  FormResult.Memo1.Lines.Add('Всего полученных вопросов: ' +
+    QuestionsCount.ToString);
+  FormResult.Memo1.Lines.Add('Из них, отвеченных ВЕРНО: ' +
+    CorrectQuestionsCount.ToString);
+  FormResult.Memo1.Lines.Add('Из них, отвеченных НЕВЕРНО: ' +
+    (QuestionsCount - CorrectQuestionsCount).ToString);
+  FormResult.Memo1.Lines.Add('====================================');
+  FormResult.Memo1.Lines.Add('РЕЗУЛЬТАТ ТЕСТИРОВАНИЯ: ' + FormatFloat('0.##',
+    persent) + ' %');
+  FormResult.Memo1.Lines.Add('');
+
+  FormResult.ShowModal;
 end;
 
 // добавление первого элемента в список
@@ -224,8 +242,8 @@ begin
   // UpdateButtonState;
 
   List.Mode := ApplicationMode;
-  StatusBar1.Panels[0].Text := Group + ' ' + LastName + ' ' + FirstName +
-    ' ' + MiddleName + '.';
+  StatusBar1.Panels[0].Text := Group + ' ' + LastName + ' ' + FirstName + ' ' +
+    MiddleName + '.';
 end;
 
 end.

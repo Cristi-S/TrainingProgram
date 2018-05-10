@@ -191,9 +191,19 @@ Begin
     QuestionKey := 4;
     Pause();
     TLogger.Log('Заполнение информационного поля: ' + NewItem.GetInfo);
+
+    QuestionKey := 12;
+    Pause();
+    TLogger.Log('Изменяем указатель First');
+
     First := NewItem;
     NewItem.IsFirst := true;
     NewItem.IsLast := true;
+
+    QuestionKey := 11;
+    Pause();
+    TLogger.Log('Увеличиваем количество элементов');
+
     inc(Count);
     FuncEnd();
   End
@@ -243,6 +253,11 @@ Begin
       TempItem.IsAddAfter := false;
       TempItem.IsLast := false;
       NewItem.IsLast := true;
+
+      QuestionKey := 11;
+      Pause();
+      TLogger.Log('Увеличиваем количество элементов');
+
       inc(Count);
     End
     Else
@@ -268,6 +283,10 @@ Begin
       Pause();
       TLogger.Log('Изменение правой ссылки у левого соседа');
       TempItem.SetNext(NewItem);
+
+      QuestionKey := 11;
+      Pause();
+      TLogger.Log('Увеличиваем количество элементов');
 
       inc(Count)
     End;
@@ -370,7 +389,16 @@ Begin
     TLogger.Log('Заполнение поля ссылки на правого соседа');
 
     NewItem.SetNext(TempItem);
+
+    QuestionKey := 11;
+    Pause();
+    TLogger.Log('Увеличиваем количество элементов');
+
     inc(Count);
+
+    QuestionKey := 12;
+    Pause();
+    TLogger.Log('Изменяем указатель First');
     First := NewItem;
     FuncEnd();
   End
@@ -398,6 +426,10 @@ Begin
     Pause();
     TLogger.Log('Изменение правой ссылки у левого соседа');
     NewItem.GetPrev.SetNext(NewItem);
+
+    QuestionKey := 11;
+    Pause();
+    TLogger.Log('Увеличиваем количество элементов');
 
     inc(Count)
   End;

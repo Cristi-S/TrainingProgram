@@ -72,7 +72,24 @@ begin
       end;
     lsDelete:
       begin
+        begin
+          rIndex := Random(3) + 1; // слуйчайное число от 1 до 4
+          // записываем в RadioButton один из вариантов ответа
+          TRadioButton(FindComponent('RadioButton' + IntToStr(rIndex))).Caption
+            := _hashDelete.Items[List.QuestionKey];
+          for i := 1 to 4 do
+            if i <> rIndex then
+            begin
+              // генерируем случайные ключ ответа, пока не найдем уникальный
+              repeat
+                index := Random(UQuestions._hashDelete.Count) + 1;
+              until not UniqueAnswer.Contains(index);
+              UniqueAnswer.Add(index);
 
+              TRadioButton(FindComponent('RadioButton' + IntToStr(i))).Caption
+                := _hashDelete.Items[index];
+            end;
+        end;
       end;
   end;
 end;
@@ -86,8 +103,8 @@ var
 begin
   Inc(QuestionsCount);
   case List.State of
-    lsAddbefore, lsAddAfter:
-      if List.QuestionKey > 1 then // пропускаем первый шаг
+    lsAddbefore, lsAddAfter, lsDelete:
+      // if List.QuestionKey > 1 then // пропускаем первый шаг
       begin
         for i := 1 to 4 do
           if (TRadioButton(FindComponent('RadioButton' + IntToStr(i))).Checked)

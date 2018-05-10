@@ -117,7 +117,6 @@ begin
   State := lsDelete;
   _SearchItem := SearchItem;
   ThreadId := BeginThread(nil, 0, @TList._Delete, Self, 0, id);
-  // _Delete(SearchItem);
 end;
 
 {$ENDREGION}
@@ -196,7 +195,6 @@ Begin
     NewItem.IsFirst := true;
     NewItem.IsLast := true;
     inc(Count);
-    // result := true;
     FuncEnd();
   End
   else
@@ -215,7 +213,6 @@ Begin
     If TempItem = nil then
     begin
       TLogger.Append(' - искомый элемент не найден');
-      // result := false;
       FuncEnd();
     end;
     QuestionKey := 3;
@@ -251,8 +248,6 @@ Begin
     Else
     Begin
       TempItem.IsAddAfter := true;
-      // TLogger.Log('Формируем поля нового элемента');
-      // Pause();
       QuestionKey := 7;
       Pause();
       TLogger.Log('Заполнение поля ссылки на правого соседа');
@@ -346,7 +341,6 @@ Begin
   If TempItem = nil then
   begin
     TLogger.Append(' - искомый элемент не найден');
-    // result := false;
     FuncEnd();
   end;
 
@@ -411,8 +405,6 @@ Begin
 end;
 
 Function TList._Delete(): boolean;
-// var
-// temp: TListItem;
 {$REGION 'вложенные функции для удаления'}
   procedure CLeanListItemsStates;
   var
@@ -443,7 +435,8 @@ Function TList._Delete(): boolean;
     State := lsNormal;
     CLeanListItemsStates;
     GenericMyEvent;
-    TLogger.Log('=====Элемент удален из списка=====');
+    TLogger.DisableCouner;
+    TLogger.Log('');
     CritSec.Leave;
     EndThread(0);
     exit;
@@ -458,23 +451,22 @@ begin
 
   QuestionKey := 1;
   Pause();
-  TLogger.Log('Проверка наличия элементов в списке');
-  TLogger.Log('   count= ' + IntToStr(Count));
+  TLogger.Log('Проверка наличия элементов в списке: count= ' + IntToStr(Count));
   result := false;
   if Count = 0 then
     FuncEnd;
 
   QuestionKey := 2;
-  TLogger.Log('Поиск заданного элемента');
   Pause();
+  TLogger.Log('Поиск заданного элемента');
+
   FTempItem := Search(_SearchItem);
+
   If TempItem = nil then
   begin
     TLogger.Log('Искомый элемент не найден');
-    // result := false;
     FuncEnd();
   end;
-  TLogger.Log('Искомый элемент найден, адресуем его указателем pTemp');
 
   FTempItem.IsDelete := true;
   FDeleteItem := FTempItem;
@@ -484,10 +476,13 @@ begin
     // удаление единственного эл.
     If First.GetNext = nil then
     begin
-      TLogger.Log('=====Удаление единственного элемента из списка=====');
       result := true;
+      QuestionKey := 2;
+      Pause();
       TLogger.Log('Указатель First адресуем в nil');
       First := nil;
+
+      QuestionKey := 4;
       Pause();
       TLogger.Log('Уменьшаем количество элементов');
       Count := 0;
@@ -495,46 +490,56 @@ begin
     End
     else
     begin
-      // удаление первого эл.
-      TLogger.Log('=====Удаление первого элемента из списка=====');
-      TLogger.Log
-        ('3. Изменяем адресное поле Prev у элемента следующего после удаляемого');
-      First.GetNext.SetPrev(nil);
+      QuestionKey := 5;
       Pause();
       TLogger.Log
-        ('4. Указатель First адресуем в следующий за удаляемым элементом');
+        ('Изменяем адресное поле Prev у элемента следующего после удаляемого');
+      First.GetNext.SetPrev(nil);
+
+      QuestionKey := 6;
+      Pause();
+      TLogger.Log
+        ('Указатель First адресуем в следующий за удаляемым элементом');
       First := FTempItem.GetNext;
       CLeanListItemsStates;
+
+      QuestionKey := 4;
       Pause();
-      TLogger.Log('5. Уменьшаем количество элементов');
+      TLogger.Log('Уменьшаем количество элементов');
       Count := Count - 1;
       result := true;
-      TLogger.Log('6. Обрабатываем удаляемый элемент');
+
+      QuestionKey := 7;
+      Pause();
+      TLogger.Log('Обрабатываем удаляемый элемент');
       FTempItem := nil;
       FuncEnd;
     end;
   End;
-  // удаление из середины списка
-  if FTempItem.GetNext <> nil then
-    TLogger.Log('=====Удаление элемента из середины списка=====')
-  else
-    TLogger.Log('=====Удаление элемента из конца списка=====');
 
-  TLogger.Log
-    ('3. Изменяем адресное поле next у элемента, предшествующего удаляемому на адрес элемента, следующего за удаляемым');
-  TempItem.GetPrev.SetNext(FTempItem.GetNext);
+  QuestionKey := 8;
   Pause();
+  TLogger.Log
+    ('Изменяем адресное поле next у элемента, предшествующего удаляемому на адрес элемента, следующего за удаляемым');
+  TempItem.GetPrev.SetNext(FTempItem.GetNext);
+
   if FTempItem.GetNext <> nil then
   begin
+    QuestionKey := 9;
+    Pause();
     TLogger.Log
-      ('4. Изменяем адресное поле prev у следующего за удаляемым элемента на адрес элемента, предшествующего удаляемому');
+      ('Изменяем адресное поле prev у следующего за удаляемым элемента на адрес элемента, предшествующего удаляемому');
     FTempItem.GetNext.SetPrev(FTempItem.GetPrev);
   end;
+
+  QuestionKey := 7;
   Pause();
-  TLogger.Log('5. Обрабатываем удаляемый элемент');
+  TLogger.Log('Обрабатываем удаляемый элемент');
   FTempItem := nil;
+
+  QuestionKey := 4;
   Pause();
-  Count := Count - 1;
+  TLogger.Log('Уменьшаем количество элементов');
   result := true;
   FuncEnd;
 end;
@@ -558,7 +563,7 @@ begin
     if (FTempItem.GetInfo = SearchItem) then
     begin
       TLogger.Log('Сравнение ключей ' + FTempItem.GetInfo + ' и ' + SearchItem +
-        ' равны - найдено место для вставки');
+        ' равны - нашли');
       result := FTempItem;
       break;
     end
@@ -567,7 +572,6 @@ begin
       TLogger.Log('Сравнение ключей ' + FTempItem.GetInfo + ' и ' + SearchItem +
         ' не равны - переход к следующему элементу');
       FTempItem := FTempItem.GetNext;
-      // Pause();
     end;
   end;
   Logger.Enabled := oldLogerState;

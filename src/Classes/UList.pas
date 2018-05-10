@@ -524,8 +524,7 @@ begin
     begin
       QuestionKey := 5;
       Pause();
-      TLogger.Log
-        ('Изменяем адресное поле Prev у элемента следующего после удаляемого');
+      TLogger.Log('Изменение левой ссылки у правого соседа');
       First.GetNext.SetPrev(nil);
 
       QuestionKey := 6;
@@ -551,16 +550,14 @@ begin
 
   QuestionKey := 8;
   Pause();
-  TLogger.Log
-    ('Изменяем адресное поле next у элемента, предшествующего удаляемому на адрес элемента, следующего за удаляемым');
+  TLogger.Log('Изменение правой ссылки у левого соседа');
   TempItem.GetPrev.SetNext(FTempItem.GetNext);
 
   if FTempItem.GetNext <> nil then
   begin
     QuestionKey := 9;
     Pause();
-    TLogger.Log
-      ('Изменяем адресное поле prev у следующего за удаляемым элемента на адрес элемента, предшествующего удаляемому');
+    TLogger.Log('Изменение левой ссылки у правого соседа');
     FTempItem.GetNext.SetPrev(FTempItem.GetPrev);
   end;
 
@@ -609,7 +606,8 @@ begin
   Logger.Enabled := oldLogerState;
   if Mode = omControl then
     if Assigned(result) then
-      TLogger.Append(' - найдено место для вставки');
+      if State in [lsAddbefore, lsAddAfter] then
+        TLogger.Append(' - найдено место для вставки');
 end;
 
 procedure TList.Pause();

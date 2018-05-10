@@ -3,7 +3,7 @@ unit UDriver;
 
 interface
 
-uses UMain, UEnum, Control1, UListItem, Graphics, UAnwer, SysUtils;
+uses UMain, UEnum, ListItemControl, UListItem, Graphics, UAnwer, SysUtils;
 
 procedure UpdateButtonState(Sender: TObject = nil);
 procedure RedrawPanel();

@@ -5,8 +5,9 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, System.Generics.Collections,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Control1, Vcl.ExtCtrls,
-  UList, UListItem, Math, UAnwer, UQuestions, UEnum, Vcl.ComCtrls;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,
+  UList, UListItem, Math, UAnwer, UQuestions, UEnum, Vcl.ComCtrls,
+  ListItemControl;
 
 type
   TFormMain = class(TForm)

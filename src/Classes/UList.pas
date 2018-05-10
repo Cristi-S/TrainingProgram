@@ -169,7 +169,6 @@ Begin
 
   NewItem := _NewItem;
   SearchItem := _SearchItem;
-  TLogger.EnableCouner;
 
   QuestionKey := 1;
 
@@ -178,6 +177,7 @@ Begin
   else
     TLogger.Log('Добавление ключа ' + NewItem.GetInfo + ' после ключа ' +
       SearchItem);
+  TLogger.EnableCouner;
   // добавление первого элемента
   If First = nil then
   begin
@@ -326,7 +326,6 @@ Begin
 
   NewItem := _NewItem;
   SearchItem := _SearchItem;
-  TLogger.EnableCouner;
 
   QuestionKey := 1;
 
@@ -335,6 +334,7 @@ Begin
 
   QuestionKey := 2;
   Pause();
+  TLogger.EnableCouner;
   TLogger.Log('Проверка списка на пустоту: список содержит элементы');
 
   QuestionKey := 5;
@@ -452,14 +452,21 @@ Function TList._Delete(): boolean;
 
 begin
   CritSec.Enter;
-  TLogger.Log('=====Удаление элемента из списка=====');
-  TLogger.Log('1. Проверка наличия элементов в списке');
+
+  TLogger.Log('Удаление элемента из списка');
+  TLogger.EnableCouner;
+
+  QuestionKey := 1;
+  Pause();
+  TLogger.Log('Проверка наличия элементов в списке');
   TLogger.Log('   count= ' + IntToStr(Count));
   result := false;
   if Count = 0 then
     FuncEnd;
 
-  TLogger.Log('2. Поиск заданного элемента');
+  QuestionKey := 2;
+  TLogger.Log('Поиск заданного элемента');
+  Pause();
   FTempItem := Search(_SearchItem);
   If TempItem = nil then
   begin

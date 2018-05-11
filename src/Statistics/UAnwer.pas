@@ -117,6 +117,8 @@ begin
             end;
             cheked := i;
           end;
+        if not correct then
+          FormMain.Memo1.Lines.Add('ОШИБКА! Правильный ответ: ');
       end;
   end;
 

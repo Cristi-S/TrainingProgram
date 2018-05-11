@@ -194,7 +194,7 @@ Begin
 
     QuestionKey := 12;
     Pause();
-    TLogger.Log('Изменяем указатель First');
+    TLogger.Log('Изменяем указатель First на адрес элемента '+ NewItem.GetInfo);
 
     First := NewItem;
     NewItem.IsFirst := true;
@@ -398,7 +398,7 @@ Begin
 
     QuestionKey := 12;
     Pause();
-    TLogger.Log('Изменяем указатель First');
+    TLogger.Log('Изменяем указатель First на адрес элемента '+ NewItem.GetInfo);
     First := NewItem;
     FuncEnd();
   End

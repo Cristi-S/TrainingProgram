@@ -236,10 +236,21 @@ begin
               // стрелочки при добавлении в середину для нового элемента
               if temp.GetNext <> nil then
               begin
+                // NewListControlItem.ItemMain.ArrowUpRight.Visible :=
+                // (temp.GetNext = List.NewItem.GetNext);
+                // NewListControlItem.ItemMain.ArrowDownRight.Visible :=
+                // (List.NewItem = temp.GetNext.GetPrev);
+                //
+                // ListControlItem.ItemMain.ArrowDownLeft.Visible :=
+                // (temp.GetNext = List.NewItem);
+                // ListControlItem.ItemMain.ArrowUpLeft.Visible :=
+                // (temp = List.NewItem.GetPrev);
+
                 NewListControlItem.ItemMain.ArrowUpRight.Visible :=
-                  (temp.GetNext = List.NewItem.GetNext);
+                  Assigned(List.NewItem.GetNext);
                 NewListControlItem.ItemMain.ArrowDownRight.Visible :=
-                  (List.NewItem = temp.GetNext.GetPrev);
+                  Assigned(List.NewItem.GetNext) and
+                  List.NewItem.GetNext.GetPrev = List.NewItem;
 
                 ListControlItem.ItemMain.ArrowDownLeft.Visible :=
                   (temp.GetNext = List.NewItem);

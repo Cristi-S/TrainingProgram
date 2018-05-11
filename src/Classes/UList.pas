@@ -571,6 +571,7 @@ begin
   QuestionKey := 4;
   Pause();
   TLogger.Log('Уменьшаем количество элементов');
+  Count := Count - 1;
   result := true;
   FuncEnd;
 end;

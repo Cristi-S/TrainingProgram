@@ -194,7 +194,8 @@ Begin
 
     QuestionKey := 12;
     Pause();
-    TLogger.Log('Изменяем указатель First на адрес элемента '+ NewItem.GetInfo);
+    TLogger.Log('Изменяем указатель First на адрес элемента ' +
+      NewItem.GetInfo);
 
     First := NewItem;
     NewItem.IsFirst := true;
@@ -398,7 +399,8 @@ Begin
 
     QuestionKey := 12;
     Pause();
-    TLogger.Log('Изменяем указатель First на адрес элемента '+ NewItem.GetInfo);
+    TLogger.Log('Изменяем указатель First на адрес элемента ' +
+      NewItem.GetInfo);
     First := NewItem;
     FuncEnd();
   End
@@ -478,7 +480,7 @@ Function TList._Delete(): boolean;
 begin
   CritSec.Enter;
 
-  TLogger.Log('Удаление элемента из списка');
+  TLogger.Log('Удаление элемента ' + _SearchItem + ' из списка');
   TLogger.EnableCouner;
 
   QuestionKey := 1;

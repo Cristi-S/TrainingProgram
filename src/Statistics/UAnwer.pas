@@ -43,13 +43,20 @@ uses UMain, UResult;
 // загружает на форму вопросы в зависимости от типа операции: добавление/удаление
 procedure TFormAnswer.Load();
 var
-  i, index: integer;
+  i, index, exclusiveKey: integer;
   UniqueAnswer: TList<integer>;
   // вспомогательный список для хранения уникальных индекссов ответов
 begin
   Randomize;
   UniqueAnswer := TList<integer>.Create;
   UniqueAnswer.Add(List.QuestionKey);
+
+  exclusiveKey := 0;
+  if List.QuestionKey = 7 then
+    exclusiveKey := 8;
+  if List.QuestionKey = 8 then
+    exclusiveKey := 7;
+
   case List.State of
     lsAddAfter, lsAddbefore:
       begin
@@ -63,7 +70,7 @@ begin
             // генерируем случайные ключ ответа, пока не найдем уникальный
             repeat
               index := Random(UQuestions._hashAdd.Count) + 1;
-            until not UniqueAnswer.Contains(index);
+            until not UniqueAnswer.Contains(index) and (exclusiveKey <> index);
             UniqueAnswer.Add(index);
 
             TRadioButton(FindComponent('RadioButton' + IntToStr(i))).Caption :=

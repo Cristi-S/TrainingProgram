@@ -20,7 +20,7 @@ object FormAnswer: TFormAnswer
     Top = 32
     Width = 537
     Height = 217
-    Caption = #1057#1083#1077#1076#1091#1102#1097#1080#1081' '#1096#1072#1075'?'
+    Caption = #1057#1083#1077#1076#1091#1102#1097#1080#1081' '#1096#1072#1075'...'
     TabOrder = 0
   end
   object RadioButton1: TRadioButton

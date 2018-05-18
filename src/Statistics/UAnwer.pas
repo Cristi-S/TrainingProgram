@@ -36,16 +36,48 @@ var
 
 implementation
 
-uses UMain, UResult;
+uses UMain, UResult, UListItem;
 
 {$R *.dfm}
 
 // загружает на форму вопросы в зависимости от типа операции: добавление/удаление
 procedure TFormAnswer.Load();
 var
-  i, index, exclusiveKey: integer;
-  UniqueAnswer: TList<integer>;
+  i, hashKey: integer;
+  exclusiveKey: integer; // кобч - исключение  не попадет в перечень вопросов
   // вспомогательный список для хранения уникальных индекссов ответов
+  UniqueAnswer: TList<integer>;
+  QuestionsString: string;
+  // функия для сборки строки вопроса, принимает 2 параметра:
+  // hashKey - ключ из хэша с вопросам
+  // возвращает вариант ответа со случайным номером вершины
+  function StringBuild(ihashKey: integer): string;
+  var
+    RandomListItem: integer;
+    temp: TMyListItem;
+  begin
+    RandomListItem := -1;
+    if i = rIndex then
+    begin
+      // в зависимости от текущей операции брать нужно правильный ключ!!!
+      if Assigned(List.NewItem) then
+        RandomListItem := List.NewItem.GetInfo.ToInteger;
+    end
+    else
+    begin
+      temp := List.GetItem(Random(List.Getcount) + 1);
+      if temp <> nil then
+        RandomListItem := temp.GetInfo.ToInteger;
+    end;
+
+    // заменяем в строке символы подстаовки на значения ключей
+    if _hashAdd.Items[ihashKey].Contains(':x') then
+      result := StringReplace(_hashAdd.Items[ihashKey], ':x',
+        RandomListItem.ToString, [rfReplaceAll, rfIgnoreCase])
+    else
+      result := _hashAdd.Items[ihashKey];
+  end;
+
 begin
   Randomize;
   UniqueAnswer := TList<integer>.Create;
@@ -62,20 +94,27 @@ begin
       begin
         rIndex := Random(3) + 1; // слуйчайное число от 1 до 4
         // записываем в RadioButton один из вариантов ответа
-        TRadioButton(FindComponent('RadioButton' + IntToStr(rIndex))).Caption :=
-          _hashAdd.Items[List.QuestionKey];
+        // TRadioButton(FindComponent('RadioButton' + IntToStr(rIndex))).Caption :=
+        // _hashAdd.Items[List.QuestionKey];
         for i := 1 to 4 do
+        begin
           if i <> rIndex then
           begin
             // генерируем случайные ключ ответа, пока не найдем уникальный
             repeat
-              index := Random(UQuestions._hashAdd.Count) + 1;
-            until not UniqueAnswer.Contains(index) and (exclusiveKey <> index);
-            UniqueAnswer.Add(index);
+              hashKey := Random(UQuestions._hashAdd.Count) + 1;
+            until not UniqueAnswer.Contains(hashKey) and
+              (exclusiveKey <> hashKey);
+            UniqueAnswer.Add(hashKey);
+          end
+          else
+            hashKey := List.QuestionKey;
 
-            TRadioButton(FindComponent('RadioButton' + IntToStr(i))).Caption :=
-              _hashAdd.Items[index];
-          end;
+          QuestionsString := StringBuild(hashKey);
+          TRadioButton(FindComponent('RadioButton' + IntToStr(i))).Caption :=
+            QuestionsString;
+          // _hashAdd.Items[hashKey];
+        end;
       end;
     lsDelete:
       begin
@@ -89,12 +128,12 @@ begin
             begin
               // генерируем случайные ключ ответа, пока не найдем уникальный
               repeat
-                index := Random(UQuestions._hashDelete.Count) + 1;
-              until not UniqueAnswer.Contains(index);
-              UniqueAnswer.Add(index);
+                hashKey := Random(UQuestions._hashDelete.Count) + 1;
+              until not UniqueAnswer.Contains(hashKey);
+              UniqueAnswer.Add(hashKey);
 
               TRadioButton(FindComponent('RadioButton' + IntToStr(i))).Caption
-                := _hashDelete.Items[index];
+                := _hashDelete.Items[hashKey];
             end;
         end;
       end;

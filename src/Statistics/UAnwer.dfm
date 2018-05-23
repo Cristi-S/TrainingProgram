@@ -1,7 +1,7 @@
 object FormAnswer: TFormAnswer
   Left = 0
   Top = 0
-  Caption = 'FormAnswer'
+  Caption = #1058#1077#1089#1090#1080#1074#1099#1081' '#1074#1086#1087#1088#1086#1089
   ClientHeight = 291
   ClientWidth = 633
   Color = clBtnFace
@@ -20,7 +20,7 @@ object FormAnswer: TFormAnswer
     Top = 32
     Width = 537
     Height = 217
-    Caption = #1057#1083#1077#1076#1091#1102#1097#1080#1081' '#1096#1072#1075'?'
+    Caption = #1057#1083#1077#1076#1091#1102#1097#1080#1081' '#1096#1072#1075'...'
     TabOrder = 0
   end
   object RadioButton1: TRadioButton

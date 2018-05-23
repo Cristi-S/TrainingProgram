@@ -127,7 +127,7 @@ end;
 // перерисовывает панель с компонентами  взависимсти от состояния элементов, предварительно ее очищая
 procedure RedrawPanel();
 var
-  temp, NextItem: TMyListItem;
+  temp, NextItem, last: TMyListItem;
   ListControlItem, NewListControlItem: TListControl;
 begin
   with FormMain do
@@ -229,6 +229,7 @@ begin
               TemplateControlCreate(NewListControlItem, List.NewItem,
                 TItemState.new, clGreen);
 
+              last := List.NewItem;
               // стрелочки
               ListControlItem.ItemMain.ArrowRight.Visible :=
                 (temp.GetNext = List.NewItem) and (temp.IsLast);
@@ -237,9 +238,13 @@ begin
               if temp.GetNext <> nil then
               begin
                 NewListControlItem.ItemMain.ArrowUpRight.Visible :=
-                  (temp.GetNext = List.NewItem.GetNext);
+                  (List.NewItem.GetNext <> nil);
+
                 NewListControlItem.ItemMain.ArrowDownRight.Visible :=
                   (List.NewItem = temp.GetNext.GetPrev);
+                if List.NewItem.GetNext <> nil then
+                  if (List.NewItem.GetNext.GetPrev = List.NewItem) then
+                    NewListControlItem.ItemMain.ArrowDownRight.Visible := true;
 
                 ListControlItem.ItemMain.ArrowDownLeft.Visible :=
                   (temp.GetNext = List.NewItem);
@@ -280,6 +285,10 @@ begin
             end;
 
             temp := temp.GetNext;
+            if Assigned(last) then
+              if temp = last then
+                temp := temp.GetNext;
+
           end;
         end;
       lsDelete:

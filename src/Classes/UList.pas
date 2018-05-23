@@ -38,7 +38,6 @@ Type
     Mode: TOperatingMode;
     Constructor Create;
     Function Getcount: Integer;
-    function GetItem(index: Integer): TMyListItem;
     Function GetFirst: TMyListItem;
     Function AddAfter(SearchItem: string; NewItem: TMyListItem): boolean;
     Function AddBefore(SearchItem: string; NewItem: TMyListItem): boolean;
@@ -86,23 +85,6 @@ begin
   result := Count;
 end;
 
-function TList.GetItem(index: Integer): TMyListItem;
-var
-  temp: TMyListItem;
-  i: Integer;
-begin
-  i := 1;
-  temp := First;
-  if temp = nil then
-    temp := NewItem;
-  while (temp <> nil) and (i <> index) do
-  begin
-    temp := temp.GetNext;
-    inc(i);
-  end;
-  result := temp;
-end;
-
 Function TList.GetFirst: TMyListItem;
 begin
   result := First;
@@ -142,7 +124,7 @@ end;
 
 procedure TList._AddAfter();
 var
-  // NewItem: TMyListItem;
+  NewItem: TMyListItem;
   SearchItem: string;
 {$REGION 'вложенные функции для добавления'}
   procedure CLeanListItemsStates;
@@ -184,7 +166,7 @@ var
 Begin
   CritSec.Enter;
 
-  FNewItem := _NewItem;
+  NewItem := _NewItem;
   SearchItem := _SearchItem;
 
   QuestionKey := 1;
